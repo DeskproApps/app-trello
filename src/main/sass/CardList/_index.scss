@@ -1,0 +1,50 @@
+.ui.segment.trelloapp-card-list-item {
+
+  overflow: hidden;
+
+  .content {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+  }
+
+  .options {
+    z-index: 2;
+    position: absolute;
+    left: 100%;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255,255,255, 0.9);
+    transition:all 0.25s ease-in;
+
+    i.option {
+      display: block;
+      text-align: left;
+      margin-left: 1em;
+    }
+  }
+
+  &:hover {
+    background-color: #a7c7e4;
+  }
+
+  &:hover {
+    background-color: #a7c7e4;
+
+    .options {
+      background-color: rgba(255,255,255, 0.9);
+      left: 80%;
+      transition:all 0.25s ease-in;
+    }
+
+  }
+}
+
+.ui.segment.link.trelloapp-card-list-item {
+  cursor: pointer;
+  opacity: .8;
+  -webkit-transition: opacity .1s ease;
+  transition: opacity .1s ease;
+}

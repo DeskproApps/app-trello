@@ -1,0 +1,37 @@
+{
+  "name": "deskproapps-trello",
+  "version": "0.1.0",
+  "description": "a trello integration built with deskpro apps sdk",
+  "main": "lib/main/javascript/index.js",
+  "scripts": {
+    "dev": "./node_modules/.bin/webpack-dev-server --config src/webpack/webpack.config-development.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DeskproApps/trello.git"
+  },
+  "keywords": [
+    "deskpro",
+    "apps",
+    "deskpro",
+    "sdk"
+  ],
+  "author": "Deskpro",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DeskproApps/trello/issues"
+  },
+  "homepage": "https://github.com/DeskproApps/trello#readme",
+  "devDependencies": {
+    "deskproapps-sdk-react": "file:../deskproapps-sdk-react",
+    "dpat": "file:../dpat",
+    "error-wrapper": "2.1.0",
+    "superagent": "3.5.2",
+    "superagent-promise": "1.1.0",
+    "react": "15.5.3",
+    "react-dom": "15.5.3",
+    "semantic-ui-react": "0.67.2"
+  },
+  "dependencies": {}
+}
