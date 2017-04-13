@@ -27,13 +27,13 @@ configParts.push({
         publicPath: `/${ASSET_PATH}/`,
         watchContentBase: true
     },
-    devtool: 'eval-source-map',
+    devtool: 'inline-source-map',
     entry: {
         main: [
-            `webpack-dev-server/client?http://localhost:31080`,
+            `webpack-dev-server/client?http://localhost:3100`,
             path.resolve(PROJECT_ROOT_PATH, 'src/webpack/entrypoint.js')
         ],
-        vendor: ['react', 'react-dom', 'semantic-ui-react']
+        vendor: ['react', 'react-dom', 'semantic-ui-react', 'deskproapps-sdk-react']
     },
     module: {
         loaders: [
@@ -52,15 +52,8 @@ configParts.push({
                 include: [ path.resolve(PROJECT_ROOT_PATH, 'src/main/sass') ],
                 loader: extractCssPlugin.extract({ use: ['css-loader', 'sass-loader'] }),
                 test: /\.scss$/
-            },
-            { test: require.resolve('react'), loader: 'expose-loader?React' },
-            { test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM' },
-            { test: /\.(html?|css)$/, loader: 'raw-loader' }
+            }
         ],
-        noParse: [
-            path.resolve(PROJECT_ROOT_PATH, 'node_modules/xcomponent/dist/xcomponent.js'),
-            path.resolve(PROJECT_ROOT_PATH, 'node_modules/post-robot/dist/post-robot.js')
-        ]
     },
     output: {
         chunkFilename: `${ASSET_PATH}/[name].js`,
@@ -71,19 +64,12 @@ configParts.push({
     plugins: [
         extractCssPlugin,
 
-        new webpack.DefinePlugin({ DEVELOPMENT: true }),
-
-        new webpack.NamedModulesPlugin(),
-        new WebpackChunkHash(),
         new webpack.optimize.CommonsChunkPlugin({ name: ['vendor'], minChunks: Infinity }),
-        new ChunkManifestPlugin({ filename: 'chunk-manifest.json', manifestVariable: 'webpackManifest' }),
-        //new webpack.optimize.CommonsChunkPlugin({ name: ['vendor', 'manifest'], minChunks: Infinity }),
-        //new ChunkManifestPlugin({ filename: artifactName('manifest.json'), manifestVariable: 'DeskproAppsReactManifest' }),
-
+        new webpack.NamedModulesPlugin(),
         copyWebpackPlugin,
 
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin(),
     ],
     resolve: {
         extensions: ['*', '.js', '.jsx', '.scss', '.css']

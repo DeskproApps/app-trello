@@ -27,11 +27,12 @@
     "deskproapps-sdk-react": "file:../deskproapps-sdk-react",
     "dpat": "file:../dpat",
     "error-wrapper": "2.1.0",
-    "superagent": "3.5.2",
-    "superagent-promise": "1.1.0",
     "react": "15.5.3",
     "react-dom": "15.5.3",
-    "semantic-ui-react": "0.67.2"
+    "react-hot-loader": "^3.0.0-beta.6",
+    "semantic-ui-react": "0.67.2",
+    "superagent": "3.5.2",
+    "superagent-promise": "1.1.0"
   },
   "dependencies": {}
 }

@@ -40,7 +40,6 @@ function transformHtml(content, path) {
 function createPlugin(copyCommands)
 {
     const commands = copyCommands instanceof Array ? copyCommands : getCopyCommands();
-    console.log(commands);
     const options = { debug: true, force: true };
 
     return new CopyWebpackPlugin(commands, options);
