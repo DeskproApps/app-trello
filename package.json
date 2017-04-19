@@ -4,7 +4,8 @@
   "description": "a trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/webpack-dev-server --config src/webpack/webpack.config-development.js",
+    "dev": "./node_modules/.bin/dpat server .",
+    "dist": "WEBPACK='node_modules/.bin/webpack --config src/webpack/webpack.config-distribution.js'; rm -rf dist/* && DPA_PACKAGE_MODE=slim ${WEBPACK}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,7 +30,6 @@
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-dom": "15.5.3",
-    "react-hot-loader": "^3.0.0-beta.6",
     "semantic-ui-react": "0.67.2",
     "superagent": "3.5.2",
     "superagent-promise": "1.1.0"
