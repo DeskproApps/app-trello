@@ -1,7 +1,7 @@
 {
   "name": "deskproapps-trello",
   "version": "0.1.0",
-  "description": "a trello integration built with deskpro apps sdk",
+  "description": "Trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {
     "dev": "./node_modules/.bin/dpat server .",
@@ -18,7 +18,10 @@
     "deskpro",
     "sdk"
   ],
-  "author": "Deskpro",
+  "author": {
+    "name" : "Deskproapps",
+    "email": "apps@deskpro.com"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/DeskproApps/trello/issues"

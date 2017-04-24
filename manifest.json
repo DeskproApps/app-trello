@@ -1,25 +1,17 @@
 {
-  "name": "Your app name",
-
-  "description": "A short description that supports **Markdown**",
-
-  "url": "http://my-app.com/",
-
+  "version": "2.0.0",
+  "name": "Trello",
+  "description": "Trello integration built with deskpro apps sdk",
   "author": {
-    "name": "John Doe",
-    "email": "email@example.com",
-    "url": "https://example.com/"
+    "name" : "Deskproapps",
+    "email": "apps@deskpro.com",
+    "url": "https://www.deskpro.com"
   },
-
   "is_single": true,
-
   "scope": "agent",
-
   "targets": [
-    { "target": "ticket-sidebar", "url": "html/ticket-sidebar.html" },
-    { "target": "person", "url": "html/person.html" }
+    { "target": "ticket-sidebar", "url": "html/ticket-sidebar.html" }
   ],
-
   "settings": [
     {
       "name": "my_setting",
@@ -33,9 +25,7 @@
       ]
     }
   ],
-
   "deskpro_api_tags": ["tickets.*"],
-
   "external_apis": [
     "https://my-domain.com/*",
     "/^https?://w+.deskpro.com/.*?$",
