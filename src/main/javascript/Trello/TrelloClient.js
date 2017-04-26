@@ -139,11 +139,12 @@ class TrelloClient {
 
   /**
    * @param {Array<String>} cardIdList
+   * @return {Promise}
    */
   getCardList = (cardIdList) => {
 
     if (!cardIdList || !cardIdList.length) {
-      return [];
+      return Promise.resolve([]);
     }
 
     const { trelloApiClient } = this;
