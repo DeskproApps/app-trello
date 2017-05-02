@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Divider } from 'semantic-ui-react';
-import { Layout,  } from 'deskproapps-sdk-react';
+import { Layout,  } from '@deskproapps/deskproapps-sdk-react';
 
 const LinkToCardSection = ({ onCreate, onPick, onSearch }) => {
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout, Form } from 'deskproapps-sdk-react';
+import { Layout, Form } from '@deskproapps/deskproapps-sdk-react';
 import CardsListComponent from './CardListComponent';
 
 /**

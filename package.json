@@ -4,7 +4,8 @@
   "description": "Trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {
-    "dev": "./node_modules/.bin/dpat server .",
+    "dev": "dpat server .",
+    "package": "dpat package .",
     "dist": "WEBPACK='node_modules/.bin/webpack --config src/webpack/webpack.config-distribution.js'; rm -rf dist/* && DPA_PACKAGE_MODE=slim ${WEBPACK}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -28,8 +29,10 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "devDependencies": {
-    "deskproapps-sdk-react": "file:../deskproapps-sdk-react",
-    "dpat": "file:../dpat",
+
+    "@deskproapps/dpat": "0.2.3",
+    "@deskproapps/deskproapps-sdk-react": "0.1.5",
+
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-dom": "15.5.3",

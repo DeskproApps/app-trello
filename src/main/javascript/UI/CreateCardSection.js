@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
 
-import { Form, Layout } from 'deskproapps-sdk-react';
+import { Form, Layout } from '@deskproapps/deskproapps-sdk-react';
 
 /**
  * @param {Array<TrelloBoard>} boards

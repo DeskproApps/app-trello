@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from 'semantic-ui-react';
-import { Layout } from 'deskproapps-sdk-react';
+import { Layout } from '@deskproapps/deskproapps-sdk-react';
 import CardsListComponent from './CardListComponent';
 import SearchInputComponent from './SearchInputComponent';
 

@@ -19,8 +19,8 @@ function createTransformHtml(destination) {
       replacement: destination == 'dist' ? '//unpkg.com/react-dom@15.5.3/dist/react-dom.min.js' : '../assets/react-dom.js'
     },
     {
-      pattern: '(https?:)?//unpkg.com/deskproapps-sdk-react/dist/deskproapps-sdk-react.min.js'.replace('.', '\.'),
-      replacement: destination == 'dist' ? '../assets/deskproapps-sdk-react.js' : '../assets/deskproapps-sdk-react.js'
+      pattern: '(https?:)?//unpkg.com/@deskproapps/deskproapps-sdk-react/dist/deskproapps-sdk-react.min.js'.replace('.', '\.'),
+      replacement: destination == 'dist' ? '//unpkg.com/@deskproapps/deskproapps-sdk-react@0.1.4/dist/deskproapps-sdk-react.js' : '../assets/deskproapps-sdk-react.js'
     }
   ];
 
@@ -69,18 +69,18 @@ function getCopyPatterns(destination, projectRoot)
       from: path.resolve(projectRoot, 'manifest.json'),
       to: path.join(projectRoot, destination, 'manifest.json'),
       force: true
-    },
-    {
-      from: path.resolve(projectRoot, 'node_modules', 'deskproapps-sdk-react', 'dist', 'deskproapps-sdk-react.js'),
-      to: path.join(projectRoot, destination, 'assets', 'deskproapps-sdk-react.js'),
-      force: true
-    },
+    }
   ];
 
   // patterns for copying distribution files for dev
   let patternsForTarget = [];
   if (destination == 'target') {
     patternsForTarget = [
+      {
+        from: path.resolve(projectRoot, 'node_modules', '@deskproapps', 'deskproapps-sdk-react', 'dist', 'deskproapps-sdk-react.js'),
+        to: path.join(projectRoot, 'target', 'assets', 'deskproapps-sdk-react.js'),
+        force: true
+      },
       {
         from: path.resolve(projectRoot, 'node_modules', 'react', 'dist', 'react.js'),
         to: path.join(projectRoot, 'target', 'assets', 'react.js'),
