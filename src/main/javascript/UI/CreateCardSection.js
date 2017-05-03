@@ -1,6 +1,4 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
-
 import { Form, Layout } from '@deskproapps/deskproapps-sdk-react';
 
 /**
@@ -121,7 +119,7 @@ const CreateCardSection = ({ onCancel, onSubmit, onChange, model, boards, lists 
               <Form.Fields fields={['duedate', 'labels']} />
 
               <Layout.Block label="ATTACHEMENTS">
-                <Button fluid> Choose files </Button>
+                <Layout.Button> Choose files </Layout.Button>
               </Layout.Block>
 
             </div>

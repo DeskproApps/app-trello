@@ -1,15 +1,15 @@
 import React from 'react';
-import { Button, Divider } from 'semantic-ui-react';
-import { Layout,  } from '@deskproapps/deskproapps-sdk-react';
+import { Divider } from 'semantic-ui-react';
+import { Layout } from '@deskproapps/deskproapps-sdk-react';
 
 const LinkToCardSection = ({ onCreate, onPick, onSearch }) => {
   return (
     <Layout.Section title="LINK TO ANOTHER CARD">
-      <Button basic fluid color="black" onClick={onSearch}>Search for card</Button>
+      <Layout.Button onClick={onSearch}>Search for card</Layout.Button>
       <Divider hidden />
-      <Button basic fluid color="black" onClick={onPick}>Pick card</Button>
+      <Layout.Button onClick={onPick}>Pick card</Layout.Button>
       <Divider hidden />
-      <Button basic fluid color="black" onClick={onCreate}>Create new card</Button>
+      <Layout.Button onClick={onCreate}>Create new card</Layout.Button>
     </Layout.Section>
   )};
 

@@ -1,48 +1,105 @@
-.ui.segment.trelloapp-card-list-item {
+@import "../deskpro/variables";
 
+@mixin slideIn($left) {
+  left: $left;
+  transition:all 0.25s ease-in;
+}
+
+.ui.trelloapp-card-list-item {
+  line-height: 1.5em;
+  position: relative;
   overflow: hidden;
+  border-top: solid thin transparent;
+  border-bottom: solid thin transparent;
+
+  .hidden {
+    position: absolute;
+    left: 100%;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    transition:all 0.25s ease-in;
+  }
+
+  &:hover {
+    border-top: solid thin $dp-sonic-primary;
+    border-bottom: solid thin $dp-sonic-primary;
+
+    background-color: #AAC9E5;
+
+    .options-hint {
+      @include slideIn(85%);
+    }
+
+    > div:hover .options-hint {
+      opacity:0;
+    }
+  }
 
   .content {
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+    padding: 0.5em;
+    * { margin: 0; }
   }
 
-  .options {
+  .options-hint {
     z-index: 2;
-    position: absolute;
-    left: 100%;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    background-color: rgba(255,255,255, 0.9);
-    transition:all 0.25s ease-in;
+    @extend .hidden;
+    color: #2b2f2f;
 
-    i.option {
-      display: block;
-      text-align: left;
-      margin-left: 1em;
+    border-left: solid thin $dp-sonic-primary;
+    background-color: rgba(255,255,255, 1);
+
+    &:hover {
+      @include slideIn(85%);
+    }
+
+    &:hover ~ .options:not(:hover) {
+      @include slideIn(85%);
+    }
+  }
+  
+  .options {
+    z-index: 4;
+    @extend .hidden;
+
+    > nav {
+      background-color: rgba(255,255,255, 1);
+      padding: 0.25em;
+      border: solid thin $dp-sonic-primary;
+
+      position: absolute;
+      top: 50%;
+      transform: translate(0, -50%);
+
+      i.option {
+        color: $dp-greyscale-400;
+        display: block;
+        text-align: left;
+        margin-top: 0.25em;
+
+        &:first-child {
+          margin-top: 0;
+          margin-bottom: 0.25em;
+        }
+
+        &:hover {
+          color: $dp-sonic-primary;
+        }
+      }
+    }
+
+    &:hover {
+      left: 85%;
     }
   }
 
-  &:hover {
-    background-color: #a7c7e4;
-  }
-
-  &:hover {
-    background-color: #a7c7e4;
-
-    .options {
-      background-color: rgba(255,255,255, 0.9);
-      left: 80%;
-      transition:all 0.25s ease-in;
-    }
-
-  }
 }
 
-.ui.segment.link.trelloapp-card-list-item {
+.ui.trelloapp-card-list-item.link {
   cursor: pointer;
   opacity: .8;
   -webkit-transition: opacity .1s ease;

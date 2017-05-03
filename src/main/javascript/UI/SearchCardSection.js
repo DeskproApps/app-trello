@@ -1,10 +1,13 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
 import { Layout } from '@deskproapps/deskproapps-sdk-react';
 import CardsListComponent from './CardListComponent';
 import SearchInputComponent from './SearchInputComponent';
 
 const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange, cards, ...otherProps }) => {
+
+  console.log('on select card', onSelectCard, onGotoCard);
+  console.log('on goto card', onGotoCard);
+
   return (
     <Layout.Section title="SEARCH FOR A CARD">
       <Layout.Block>
@@ -21,7 +24,7 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
       </Layout.Block>
 
       <Layout.Block>
-        <Button onClick={onCancel}>Cancel</Button>
+        <Layout.Button onClick={onCancel}>Cancel</Layout.Button>
       </Layout.Block>
 
     </Layout.Section>

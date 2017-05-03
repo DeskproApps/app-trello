@@ -1,6 +1,5 @@
 import React from 'react';
-import { Segment, Divider, Icon } from 'semantic-ui-react';
-
+import { Icon } from 'semantic-ui-react';
 
 const labelStyle = {
   border: 0,
@@ -83,10 +82,14 @@ function createOnClickHandler(cardList, commands) {
   return handleOnClick;
 }
 
+function renderPeopleList(card) {
+  return (<div>&nbsp;</div>);
+}
+
 function renderBoardName(card) {
   if (card.board) {
     return (
-      <span>in <span className="ui label basic small grey compact" style={labelStyle}>{card.board.name}</span></span>
+      <span>in <span className="ui dp-greyscale-500" style={labelStyle}>{card.board.name}</span></span>
     );
   }
 
@@ -96,7 +99,7 @@ function renderBoardName(card) {
 function renderListName(card) {
   if (card.list) {
     return (
-      <span>on <span className="ui label basic small grey compact" style={labelStyle}>{card.list.name}</span></span>
+      <span>on <span className="ui dp-greyscale-500" style={labelStyle}>{card.list.name}</span></span>
     );
   }
 
@@ -104,7 +107,7 @@ function renderListName(card) {
 }
 
 function renderTitle(card) {
-  return (<span className="ui label basic large compact" style={labelStyle}>{card.name}</span>)
+  return (<div className="ui tiny header dp-greyscale-850" style={labelStyle}>{card.name}</div>)
 }
 
 /**
@@ -119,7 +122,8 @@ function renderCardOption(card, cardIndex, cardOption) {
     <Icon
       key={['icon', command.name, card.id].join('-')}
       link
-      fitted size="big"
+      fitted
+      size="large"
       name={iconName}
       className="option"
       data-card-list-command={[command.name, cardIndex].join(':')}
@@ -136,17 +140,23 @@ function renderCard(card, cardIndex, cardOptions) {
   const options = cardOptions.map(cardOption => renderCardOption(card, cardIndex, cardOption));
 
   return (
-    <Segment vertical raised={false} key={card.id} className="trelloapp-card-list-item link">
-      <div className="content" data-card-list-command={['selectcard', cardIndex].join(':')}>
+    <div className="ui trelloapp-card-list-item">
+      <div className="link content" data-card-list-command={['selectcard', cardIndex].join(':')}>
         {renderTitle(card)}
-        <br />
         {renderBoardName(card)} {renderListName(card)}
+        {renderPeopleList(card)}
       </div>
 
-      <div className="options">
-        {options}
+      <div>
+        <div className="options-hint">
+          <i className="ellipsis horizontal large icon"/>
+        </div>
+
+        <div className="options">
+          <nav>{options}</nav>
+        </div>
       </div>
-    </Segment>
+    </div>
   );
 }
 
@@ -158,7 +168,7 @@ const CardListComponent = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =>
   if (onGotoCard) {
     command = new CardCommand('gotocard', onGotoCard);
     commands.push(command);
-    cardOptions.push(new CardOption('external', command));
+    cardOptions.push(new CardOption('sign in', command));
   }
 
   if (onUnlinkCard) {
@@ -170,12 +180,10 @@ const CardListComponent = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =>
   if (onSelectCard) {
     command = new CardCommand('selectcard', onSelectCard);
     commands.push(command);
+    cardOptions.push(new CardOption('chain', command));
   }
 
   const children = cards.map((card, cardIndex) => renderCard(card, cardIndex, cardOptions));
-  if (cards.length) {
-    children.push((<Divider fluid basic fitted />));
-  }
 
   return (
     <div onClick={createOnClickHandler(cards, commands)}>

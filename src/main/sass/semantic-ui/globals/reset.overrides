@@ -1,0 +1,140 @@
+/** normalize **/
+html {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+.dp-greyscale-1000 { color: #2b2f2f; }
+.dp-greyscale-950 { color:  #323636; }
+.dp-greyscale-900 { color: #3a3c3d; }
+.dp-greyscale-850 { color: #4c4f50; }
+.dp-greyscale-800 { color: #535657; }
+.dp-greyscale-750 { color: #646869; }
+.dp-greyscale-700 { color: #707576; }
+.dp-greyscale-650 { color: #747a7b; }
+.dp-greyscale-600 { color: #7f8383; }
+.dp-greyscale-550 { color: #878d8f; }
+.dp-greyscale-500 { color: #8c9295; }
+.dp-greyscale-450 { color: #aab0b1; }
+.dp-greyscale-400 { color: #c0c4c4; }
+.dp-greyscale-350 { color: #cacece; }
+.dp-greyscale-300 { color: #d4d7d8; }
+.dp-greyscale-250 { color: #e3e3e3; }
+.dp-greyscale-200 { color: #ebecec; }
+.dp-greyscale-150 { color: #f4f5f5; }
+.dp-greyscale-100 { color: #fcfcfc; }
+.dp-greyscale-50 { color: #ffffff; }
+
+
+.dp-sonic-secondary { color: #59a8e2; }
+.dp-sonic-primary { color: #4696dc; }
+.dp-sonic-tertiary { color: #3c90ce; }
+.dp-sonic-midnight { color: #3c82b4; }
+
+
+/* .deskpro-app-menu.ui.menu */
+.deskpro-app-menu.ui.menu {
+    font-size: 1rem;
+}
+
+/* app menu icon */
+.deskpro-app-menu.ui.menu .ui.header .ui.icon.deskpro-app-icon {
+    width: 1.3333em ;
+    height: 1.3333em;
+    font-size: 1.3333em;
+}
+
+.deskpro-app-menu.ui.menu .ui.header .ui.icon.deskpro-app-icon > img {
+    width: 1em ;
+    height: 1em;
+}
+
+/* app menu header */
+.deskpro-app-menu.ui.menu .ui.header {
+    /*dp-greyscale-850: #4c4f50;*/
+    color: #4c4f50;
+}
+
+/** app options icons */
+.deskpro-app-menu.ui.menu .menu > .item {
+    /** dp-greyscale-450: #aab0b1; **/
+    color: #aab0b1;
+}
+
+/** app options icons */
+.deskpro-app-menu.ui.menu .menu > .item.big {
+    /** dp-greyscale-450: #aab0b1; **/
+    color: #aab0b1;
+    font-size: 1.1666em;
+}
+
+.deskpro-app-menu.ui.menu .menu > .item.dp-greyscale-850 {
+    /*dp-greyscale-850: #4c4f50;*/
+    color: #4c4f50;
+}
+
+/** layout section header **/
+.deskpro-layout-section.ui .ui.header {
+    /*dp-greyscale-700: #707576;*/
+    color: #707576;
+    font-weight: 600;
+}
+
+/** layout section field **/
+.deskpro-layout-section.ui .ui.form .field > label {
+    /*dp-greyscale-700: #707576;*/
+    color: #707576;
+    /** aiming for 10px **/
+    font-size: 0.83333333333333333333em;
+}
+
+.deskpro-layout-section.ui .ui.form select,
+.deskpro-layout-section.ui .ui.form input,
+.deskpro-layout-section.ui .ui.form textarea
+{
+    /*dp-greyscale-850: #4c4f50;*/
+    color: #4c4f50;
+}
+
+.deskpro-layout-section.ui .ui.form select:focus,
+.deskpro-layout-section.ui .ui.form input:focus,
+.deskpro-layout-section.ui .ui.form textarea:focus
+{
+    /*$dp-sonic-primary: #4696dc;*/
+    border-color: #4696dc;
+}
+
+.deskpro-layout-section.ui .ui.form select:hover,
+.deskpro-layout-section.ui .ui.form input:hover,
+.deskpro-layout-section.ui .ui.form textarea:hover
+{
+    /*$dp-sonic-primary: #4696dc;*/
+    border-color: #4696dc;
+}
+
+/* layout section buttons */
+.deskpro-layout-section.ui .ui.button:hover {
+    /*$dp-sonic-primary: #4696dc;*/
+    box-shadow: 0px 0px 0px 1px #4696dc inset !important;
+    /*border-color: #4696dc;*/
+}
+
+/* layout section buttons */
+.deskpro-layout-section.ui .ui.button {
+    /*dp-greyscale-850: #4c4f50;*/
+    color: #4c4f50;
+    font-size: 1.1em;
+    padding: 0.4615em 1.5em 0.4615em;
+}
+
+/* layout section buttons */
+.deskpro-layout-section.ui .ui.button.primary {
+    /*$dp-sonic-primary: #4696dc;*/
+    background-color: #4696dc;
+    color: white;
+}
+
+/* layout section divider */
+.deskpro-layout-section.ui .ui.divider:not(.horizontal) {
+    margin: 0.5rem 0;
+}
