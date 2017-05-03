@@ -101,7 +101,7 @@ const CreateCardSection = ({ onCancel, onSubmit, onChange, model, boards, lists 
     };
 
     return (
-        <Layout.Section title="LINK TO ANOTHER CARD">
+        <Layout.Section title="CREATE A NEW CARD">
           <Form.Form
               fields={fields}
               model={model}

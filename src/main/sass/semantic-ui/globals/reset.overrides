@@ -73,6 +73,11 @@ html {
     color: #4c4f50;
 }
 
+.deskpro-layout-section.ui {
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
 /** layout section header **/
 .deskpro-layout-section.ui .ui.header {
     /*dp-greyscale-700: #707576;*/
