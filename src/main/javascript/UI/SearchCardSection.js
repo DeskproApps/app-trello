@@ -20,7 +20,7 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
       </Layout.Block>
 
       <Layout.Block>
-        <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} />
+        <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} showBorder={true} />
       </Layout.Block>
 
       <Layout.Block>

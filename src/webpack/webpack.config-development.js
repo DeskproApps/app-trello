@@ -43,7 +43,7 @@ module.exports = function (env) {
         `webpack-dev-server/client?http://localhost:31080`,
         path.resolve(PROJECT_ROOT_PATH, 'src/webpack/entrypoint.js')
       ],
-      vendor: ['react', 'react-dom', 'semantic-ui-react', '@deskproapps/deskproapps-sdk-react']
+      vendor: ['react', 'react-dom', 'semantic-ui-react','react-custom-scrollbars', '@deskproapps/deskproapps-sdk-react']
     },
     module: {
       loaders: [

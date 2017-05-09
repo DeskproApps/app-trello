@@ -93,42 +93,9 @@ const getFieldsDefinition = (boards, lists) => {
     };
 };
 
-const CreateCardSection = ({ onCancel, onSubmit, onChange, model, boards, lists }) => {
-    const fields = getFieldsDefinition(boards || [], lists || []);
+class CreateCardSection extends React.Component {
 
-    const optionalFieldsStyle = {
-        display: 'none'
-    };
-
-    return (
-        <Layout.Section title="CREATE A NEW CARD">
-          <Form.Form
-              fields={fields}
-              model={model}
-              onSubmit={onSubmit}
-              onChange={onChange}
-              onCancel={onCancel}
-          >
-            <Form.Fields fields={['board', 'list', 'title', 'description']} />
-
-            <Layout.Block>
-              <a href="#">SHOW 5 OPTIONAL FIELDS</a>
-            </Layout.Block>
-
-            <div style={optionalFieldsStyle}>
-              <Form.Fields fields={['duedate', 'labels']} />
-
-              <Layout.Block label="ATTACHEMENTS">
-                <Layout.Button> Choose files </Layout.Button>
-              </Layout.Block>
-
-            </div>
-          </Form.Form>
-        </Layout.Section>
-    );
-};
-
-CreateCardSection.propTypes = {
+  static propTypes = {
     onCancel: React.PropTypes.func,
     onSubmit: React.PropTypes.func,
     onChange: React.PropTypes.func,
@@ -136,6 +103,62 @@ CreateCardSection.propTypes = {
     model: React.PropTypes.object,
     boards: React.PropTypes.array,
     lists: React.PropTypes.array
-};
+  };
+
+  static defaultProps = {
+    boards: [],
+    lists: []
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = { showOptionalFields: false };
+  }
+
+  toggleOptionalFieldsVisibility  = () => {
+    const { showOptionalFields } = this.state;
+    this.setState({ showOptionalFields: !showOptionalFields });
+  };
+
+  render () {
+    const { boards, lists } = this.props;
+    const { showOptionalFields } = this.state;
+    const fields = getFieldsDefinition(boards , lists);
+
+    const optionalFieldsStyle = {
+      display: showOptionalFields ? 'block' : 'none'
+    };
+    const toggleOptionalFieldsLabel = showOptionalFields ? 'HIDE OPTIONAL FIELDS' : 'SHOW 4 OPTIONAL FIELDS';
+
+
+    const { model, onSubmit, onChange, onCancel } = this.props;
+    return (
+      <Layout.Section title="CREATE A NEW CARD">
+        <Form.Form
+          fields={fields}
+          model={model}
+          submitLabel={"Create card"}
+          onSubmit={onSubmit}
+          onChange={onChange}
+          onCancel={onCancel}
+        >
+          <Form.Fields fields={['board', 'list', 'title', 'description']} />
+
+          <Layout.Block style={optionalFieldsStyle}>
+            <Form.Fields fields={['duedate', 'labels']} />
+
+            <Layout.Block label="ATTACHEMENTS">
+              <Layout.Button> Choose files </Layout.Button>
+            </Layout.Block>
+          </Layout.Block>
+
+          <Layout.Block>
+            <a href="#" onClick={this.toggleOptionalFieldsVisibility}>{toggleOptionalFieldsLabel}</a>
+          </Layout.Block>
+        </Form.Form>
+      </Layout.Section>
+    );
+  }
+}
 
 export default CreateCardSection;

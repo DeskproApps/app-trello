@@ -1,5 +1,6 @@
 import React from 'react';
 import { Layout, Form } from '@deskproapps/deskproapps-sdk-react';
+
 import CardsListComponent from './CardListComponent';
 
 /**
@@ -61,7 +62,7 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onSubmit, onChang
       >
         <Form.Fields fields={['board', 'list']} />
         <Layout.Block label="CARDS">
-          <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} />
+          <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
         </Layout.Block>
       </Form.Form>
     </Layout.Section>

@@ -1,4 +1,4 @@
 import { connect } from '@deskproapps/deskproapps-sdk-react';
 import TrelloApp from './TrelloApp';
 
-connect(TrelloApp).render('#app');
+connect(TrelloApp, 'Trello').render('#deskpro-app');

@@ -1,10 +1,6 @@
 import React from 'react';
 import { Icon } from 'semantic-ui-react';
-
-const labelStyle = {
-  border: 0,
-  padding: 0
-};
+import { Scrollbars } from 'react-custom-scrollbars';
 
 class CardCommand {
   /**
@@ -89,25 +85,25 @@ function renderPeopleList(card) {
 function renderBoardName(card) {
   if (card.board) {
     return (
-      <span>in <span className="ui dp-greyscale-500" style={labelStyle}>{card.board.name}</span></span>
+      <span><span>in </span> <span className="ui board-name dp-greyscale-750">{card.board.name}</span></span>
     );
   }
 
-  return null;
+  return <span>&nbsp;</span>;
 }
 
 function renderListName(card) {
   if (card.list) {
     return (
-      <span>on <span className="ui dp-greyscale-500" style={labelStyle}>{card.list.name}</span></span>
+      <span><span>on </span> <span className="ui list-name dp-greyscale-750">{card.list.name}</span></span>
     );
   }
 
-  return null;
+  return <span>&nbsp;</span>;
 }
 
 function renderTitle(card) {
-  return (<div className="ui tiny header dp-greyscale-850" style={labelStyle}>{card.name}</div>)
+  return (<div className="ui card-title dp-greyscale-950">{card.name}</div>)
 }
 
 /**
@@ -131,21 +127,22 @@ function renderCardOption(card, cardIndex, cardOption) {
   );
 }
 
+function renderCardLocation(card, cardIndex)
+{
+  return (<span className="long-content">{renderBoardName(card)} {renderListName(card)}</span>);
+}
+
 /**
+ * @param {Object} renderOptions
  * @param {TrelloCard} card
  * @param {Number} cardIndex
  * @param {Array<CardOption>} cardOptions
  */
-function renderCard(card, cardIndex, cardOptions) {
+function renderCard(renderOptions, card, cardIndex, cardOptions) {
   const options = cardOptions.map(cardOption => renderCardOption(card, cardIndex, cardOption));
 
   return (
     <div className="ui trelloapp-card-list-item">
-      <div className="link content" data-card-list-command={['selectcard', cardIndex].join(':')}>
-        {renderTitle(card)}
-        {renderBoardName(card)} {renderListName(card)}
-        {renderPeopleList(card)}
-      </div>
 
       <div>
         <div className="options-hint">
@@ -156,14 +153,27 @@ function renderCard(card, cardIndex, cardOptions) {
           <nav>{options}</nav>
         </div>
       </div>
+
+      <div className="link content dp-greyscale-500" data-card-list-command={['selectcard', cardIndex].join(':')}>
+        {renderTitle(card)}
+        {renderOptions.showCardLocation ? renderCardLocation(card, cardIndex) : null}
+        {renderPeopleList(card)}
+      </div>
     </div>
   );
 }
 
-const CardListComponent = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) => {
+const CardListComponent = ({ cards, showCardLocation, showBorder, onGotoCard, onUnlinkCard, onSelectCard }) => {
+
+  if (! cards.length) {
+    return null;
+  }
+
   let command = null;
   const commands = [];
   const cardOptions = [];
+
+  const renderOptions = { showCardLocation, showBorder };
 
   if (onGotoCard) {
     command = new CardCommand('gotocard', onGotoCard);
@@ -183,19 +193,43 @@ const CardListComponent = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =>
     cardOptions.push(new CardOption('chain', command));
   }
 
-  const children = cards.map((card, cardIndex) => renderCard(card, cardIndex, cardOptions));
-
+  const children = cards.map((card, cardIndex) => renderCard(renderOptions, card, cardIndex, cardOptions));
+  const classNames = ['trelloapp-card-list'];
+  if (!showBorder) {
+    classNames.push('borderless');
+  }
   return (
-    <div onClick={createOnClickHandler(cards, commands)}>
+    <div onClick={createOnClickHandler(cards, commands)} className={classNames.join(' ')}>
+      <Scrollbars renderThumbVertical={renderScrollbarThumb} autoHeightMax={400} autoHeight={true} autoHideTimeout={500}>
       {children}
+      </Scrollbars>
     </div>
+  );
+};
+
+const renderScrollbarThumb = ({ style, ...props }) => {
+  const thumbStyle = {
+    backgroundColor: "#cccccc",
+    zIndex:400
+  };
+  return (
+    <div
+      style={{ ...style, ...thumbStyle }}
+      {...props}/>
   );
 };
 
 CardListComponent.propTypes = {
   cards: React.PropTypes.array.isRequired,
+  showCardLocation: React.PropTypes.bool,
+  showBorder: React.PropTypes.bool,
   onGotoCard: React.PropTypes.func,
   onUnlinkCard: React.PropTypes.func,
   onSelectCard: React.PropTypes.func,
+};
+
+CardListComponent.defaultProps = {
+  showCardLocation: true,
+  showBorder: false
 };
 export default CardListComponent;

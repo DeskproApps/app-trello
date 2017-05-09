@@ -20,7 +20,7 @@
     "sdk"
   ],
   "author": {
-    "name" : "Deskproapps",
+    "name": "Deskproapps",
     "email": "apps@deskpro.com"
   },
   "license": "MIT",
@@ -29,16 +29,14 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "devDependencies": {
-
-    "@deskproapps/dpat": "0.2.3",
     "@deskproapps/deskproapps-sdk-react": "0.1.5",
-
+    "@deskproapps/dpat": "0.2.3",
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
+    "react-custom-scrollbars": "4.1.1",
     "react-dom": "15.5.3",
     "semantic-ui-react": "0.67.2",
     "superagent": "3.5.2",
     "superagent-promise": "1.1.0"
-  },
-  "dependencies": {}
+  }
 }
