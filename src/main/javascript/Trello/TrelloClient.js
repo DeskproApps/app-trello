@@ -214,7 +214,7 @@ class TrelloClient {
 
   searchCards = (query) => {
     const { trelloApiClient } = this;
-    const args = { query, card_fields: 'id', cards_limit: 5, modelTypes: 'cards' };
+    const args = { query, card_fields: 'id', cards_limit: 25, modelTypes: 'cards' };
     return trelloApiClient.get('/1/search', args).then(data => data.cards.map(card => card.id)).then(idList => this.getCardList(idList));
   };
 }
