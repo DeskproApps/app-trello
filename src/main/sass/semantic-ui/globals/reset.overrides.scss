@@ -1,38 +1,109 @@
-@import "../../deskpro/variables";
+// fonts
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+$open-sans: 'Open Sans', sans-serif;
 
-$dp-greyscale-850: map_get($dp-colors, 'dp-greyscale-850');
+
+@import "../../deskpro/variables";
+$dp-greyscale-350: map_get($dp-colors, 'dp-greyscale-350');
 $dp-greyscale-450: map_get($dp-colors, 'dp-greyscale-450');
 $dp-greyscale-700: map_get($dp-colors, 'dp-greyscale-700');
+$dp-greyscale-850: map_get($dp-colors, 'dp-greyscale-850');
+$dp-greyscale-950: map_get($dp-colors, 'dp-greyscale-950');
 $dp-sonic-primary: map_get($dp-colors, 'dp-sonic-primary');
 
 /** normalize **/
 $viewport-width: 240px;
 
 /** globals **/
-.deskpro-sidebar
-{
+.deskpro-sidebar {
+
+  &html {
+    @extend .text;
+    line-height: normal;
+    color: $dp-greyscale-850;
+  }
+
   body {
     width: $viewport-width;
     min-width: $viewport-width;
     max-width: $viewport-width;
+
+    font-family: $open-sans;
+    @extend .text;
+    line-height: normal;
+  }
+
+  .label {
+    font-size: 10px;
+    font-weight: 400;
+    font-family: $open-sans;
+
+    line-height: normal;
+    color: $dp-greyscale-700;
+  }
+
+  .subheading {
+    font-weight: 600;
+    font-size: 12px;
+    font-family: $open-sans;
+
+    line-height: normal;
+
+    color: $dp-greyscale-700;
+  }
+
+  .heading {
+    font-weight: 600;
+    font-size: 12px;
+    font-family: $open-sans;
+
+    line-height: normal;
+
+    color: $dp-greyscale-850;
+  }
+
+  a { @extend .text; }
+
+  p {  @extend .text; }
+
+  .text
+  {
     font-size: 12px;
     font-weight: 400;
+    line-height: normal;
+
+    color: $dp-greyscale-850;
+
+    &.small
+    {
+      font-size: 10px;
+      font-weight: 400;
+    }
   }
 
   .ui.container {
     margin: 10px !important;
-    line-height: 1em;
+    @extend .text;
   }
+
+  .app-body .ui.input input { font-family: $open-sans; }
+
+  .app-body .ui.form .field { @extend .text; }
+
+  .app-body .ui.form .field > label {  @extend .label;  }
+
+  .app-body .ui.header { @extend .subheading; }
+
+  //.ui.text.container has different font-family
 }
 
 /** app menu **/
 .deskpro-sidebar .deskpro-app .app-menu {
 
-  @media only screen and (max-width: $viewport-width) {
-
     /* all menu items */
-    .ui.menu {
-      font-size: 1rem;
+    &.ui.menu {
+      font-size: inherit;
+      min-height: initial;
     }
 
     .app-header {
@@ -40,26 +111,37 @@ $viewport-width: 240px;
     }
 
     /** app option */
-    .deskpro-app .app-menu .menu > .item.big {
-      font-size: 1.1666em;
+    .item.big {
+      font-size: 14px;
     }
 
     /** app title **/
     .ui.header {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: normal;
+
+      margin: 0;
+
       .content {
         padding-left: 8px;
       }
 
       .ui.icon {
-        font-size: 1em;
+        font-size: 16px;
+
+        line-height: 16px;
+
+        padding: 0;
+        width: 16px;
+        height: 16px;
       }
 
       .ui.icon > img {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
       }
     }
-  }
 }
 
 /* app menu header text */
@@ -87,27 +169,58 @@ $viewport-width: 240px;
     padding-right: 10px !important;
   }
 
+  .ui.header {
+    margin: 0;
+    padding: 0;
+  }
+
+  .ui.header.dividing {
+    margin: 0 0 6px;
+    padding: 0 0 4px;
+    border-bottom-color: $dp-greyscale-350;
+  }
+
   .ui.segment {
       padding: 0;
   }
 
   .ui.button {
-    font-size: 0.9em;
-    padding: 0.5em;
+    padding: 6px;
+
+    font-size: 13px;
+    font-family: $open-sans;
+
+    color: $dp-greyscale-850;
+
+    &:hover {
+      box-shadow: 0 0 0 1px $dp-sonic-primary inset !important;
+    }
+
+    &.primary {
+      background-color: $dp-sonic-primary;
+      color: white;
+    }
   }
 
   .ui.form .field > label {
-    /** aiming for 10px **/
-    font-size: 0.83333333333333333333em;
     padding: 0;
+    margin: 0 0 6px;
   }
 
-  .ui.form select {
-    padding: 0.31em 0.5em;
+  .ui.form .field {
+    margin-bottom: 12px;
+  }
+
+  .ui.form select, .ui.form textarea {
+    font-size: 12px;
+    font-weight: 400;
+    padding: 7px;
   }
 
   .ui.form input:not([type]), .ui.form input[type="date"], .ui.form input[type="datetime-local"], .ui.form input[type="email"], .ui.form input[type="number"], .ui.form input[type="password"], .ui.form input[type="search"], .ui.form input[type="tel"], .ui.form input[type="time"], .ui.form input[type="text"], .ui.form input[type="url"] {
-    padding: 0.31em 0.5em;
+    font-size: 12px;
+    font-weight: 400;
+    padding: 7px;
   }
 
   /* layout section divider */
@@ -120,16 +233,6 @@ $viewport-width: 240px;
 /** body colors **/
 .deskpro-sidebar .deskpro-app .app-body {
 
-  .ui.header {
-    /*dp-greyscale-700: #707576;*/
-    color: $dp-greyscale-700;
-    font-weight: 600;
-  }
-
-  /** layout section field **/
-  .ui.form .field > label {
-    color: $dp-greyscale-700;
-  }
 
   .ui.form select,
   .ui.form input,
@@ -152,18 +255,6 @@ $viewport-width: 240px;
     border-color: $dp-sonic-primary;
   }
 
-  /* layout section buttons */
-  .ui.button {
-    color: $dp-greyscale-850;
-
-    &:hover {
-      box-shadow: 0px 0px 0px 1px $dp-sonic-primary inset !important;
-    }
-
-    &.primary {
-      background-color: $dp-sonic-primary;
-      color: white;
-    }
-  }
 }
+
 

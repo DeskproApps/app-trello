@@ -5,7 +5,7 @@ $dp-greyscale-950: map_get($dp-colors, 'dp-greyscale-950');
 
 $light-blue: #E9F7FF;
 $options-menu-transition: all 0.25s ease-in;
-$options-menu-width: 3em;
+$options-menu-width: 40px;
 
 @mixin border-via-box-shadow($color, $top: '', $right: '', $bottom: '', $left : '')
 {
@@ -34,7 +34,9 @@ $options-menu-width: 3em;
   }
 }
 
-.trelloapp-card-list .options-hint
+.trelloapp-card-list .options-multiple:hover .options-hint { $color: $dp-sonic-primary }
+
+.trelloapp-card-list .options-multiple .options-hint
 {
   position: absolute;
   z-index: 2;
@@ -46,17 +48,15 @@ $options-menu-width: 3em;
   @include border-via-box-shadow($dp-sonic-primary);
 
   color: $dp-greyscale-950;
-  background-color: rgba(255,255,255, 1);
+  background-color: #FFFFFF;
 
   transition: $options-menu-transition;
 
   &:hover { background-color: $light-blue; }
-
   &:hover ~ .options:not(:hover) { left: 80%; }
-
 }
 
-.trelloapp-card-list .options
+.trelloapp-card-list .options-multiple .options
 {
   position: absolute;
   z-index: 4;
@@ -64,42 +64,60 @@ $options-menu-width: 3em;
   top: 0;
   bottom: 0;
 
+  margin-left: 5px;
+  margin-top: 5px;
+
   width: $options-menu-width;
   transition: $options-menu-transition;
 
   &:hover { left: 80%; }
 
-  > nav
-  {
-    position: absolute;
-
-    top: 50%;
-    -webkit-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%);
-
+  nav {
     border: solid 1px $dp-sonic-primary;
     border-right-width: 0;
     box-shadow: -1px 0 0 0 $dp-sonic-primary inset; /* right */
     border-radius: 0.285714rem;
-
-    padding: 0.25em;
     background-color: rgba(255,255,255, 1);
-
-    i.option
-    {
-      color: $dp-greyscale-400;
-      display: block;
-      text-align: left;
-
-      margin-bottom: 0.25em;
-
-      &:last-child { margin-bottom: 0; }
-
-      &:hover { color: $dp-sonic-primary; }
-    }
   }
 }
+
+.trelloapp-card-list .options nav
+{
+  position: absolute;
+  padding: 0.25em;
+
+  i.option
+  {
+    color: $dp-greyscale-400;
+    display: block;
+    text-align: left;
+
+    margin-bottom: 0.25em;
+
+    &:last-child { margin-bottom: 0; }
+    &:hover { color: $dp-sonic-primary; }
+  }
+}
+
+.trelloapp-card-list .options-single
+{
+  position: absolute;
+  z-index: 2;
+  right: -1 * $options-menu-width;
+  top: 0;
+  bottom: 0;
+
+  width: $options-menu-width;
+  @include border-via-box-shadow($dp-sonic-primary);
+
+  color: $dp-greyscale-950;
+  background-color: #FFFFFF;
+
+  transition: $options-menu-transition;
+
+  &:hover { background-color: $light-blue; }
+}
+
 
 .trelloapp-card-list
 {
@@ -117,8 +135,41 @@ $options-menu-width: 3em;
 
   @include border-via-box-shadow($color: transparent, $bottom: #CCCCCC);
 
-  padding-left: 0.5em;
-  line-height: 1.5em;
+  &:last-child
+  {
+    @include border-via-box-shadow($color: transparent);
+  }
+
+  &:hover
+  {
+    @include border-via-box-shadow($color: $dp-sonic-primary);
+    .options-multiple .options-hint { right: 0; }
+    .options-single { right: 0; }
+  }
+
+  .content
+  {
+    padding-left: 0.5em;
+
+    .card-title {
+      color: $dp-greyscale-950;
+    }
+
+    .card-title, .board-name, .list-name
+    {
+      border: 0;
+      padding: 0;
+    }
+
+    .list-name { max-width: 50px; }
+
+    &:hover {
+      @include border-via-box-shadow($color: transparent, $top: $dp-sonic-primary, $bottom: $dp-sonic-primary);
+      background-color: $light-blue;
+
+      .card-title, .board-name, .list-name, .content { color: $dp-sonic-primary }
+    }
+  }
 
   .content span.long-content
   {
@@ -128,29 +179,6 @@ $options-menu-width: 3em;
 
     white-space: nowrap;
     text-overflow: ellipsis;
-  }
-
-  .card-title, .board-name, .list-name
-  {
-    border: 0;
-    padding: 0;
-
-    font-weight: bold;
-  }
-
-  .list-name { max-width: 50px; }
-
-  &:last-child {
-    @include border-via-box-shadow($color: transparent);
-  }
-
-  &:hover {
-    @include border-via-box-shadow($dp-sonic-primary);
-    background-color: $light-blue;
-
-    .options-hint { right: 0; }
-    > div:hover .options-hint { opacity:0; }
-    .card-title, .board-name, .list-name, .content { color: $dp-sonic-primary }
   }
 }
 
@@ -173,10 +201,7 @@ $options-menu-width: 3em;
 .trelloapp-card-list.borderless .trelloapp-card-list-item
 {
   &:hover {
-    box-shadow:
-      0 1px 0 0 $dp-sonic-primary inset, /* top */
-      0 -1px 0 0 $dp-sonic-primary inset, /* bottom */
-    ;
+    @include border-via-box-shadow($color: transparent, $top: $dp-sonic-primary, $bottom: $dp-sonic-primary);
   }
 }
 

@@ -82,28 +82,48 @@ function renderPeopleList(card) {
   return (<div>&nbsp;</div>);
 }
 
-function renderBoardName(card) {
+function renderBoardName(card, cardIndex) {
   if (card.board) {
+    const commandAttributes = {
+      'data-card-list-command': ['selectcard', cardIndex].join(':')
+    };
     return (
-      <span><span>in </span> <span className="ui board-name dp-greyscale-750">{card.board.name}</span></span>
+    <span {...commandAttributes} className="small text">in <span {...commandAttributes} className="board-name small text">{card.board.name}</span></span>
     );
   }
 
   return <span>&nbsp;</span>;
 }
 
-function renderListName(card) {
+function renderListName(card, cardIndex) {
+  const commandAttributes = {
+    'data-card-list-command': ['selectcard', cardIndex].join(':')
+  };
+
   if (card.list) {
     return (
-      <span><span>on </span> <span className="ui list-name dp-greyscale-750">{card.list.name}</span></span>
+      <span {...commandAttributes} className="small text">on  <span {...commandAttributes} className="list-name small text">{card.list.name}</span></span>
     );
   }
 
-  return <span>&nbsp;</span>;
+  return <span {...commandAttributes} className="small text">&nbsp;</span>;
 }
 
-function renderTitle(card) {
-  return (<div className="ui card-title dp-greyscale-950">{card.name}</div>)
+
+function renderCardLocation(card, cardIndex)
+{
+  const commandAttributes = {
+    'data-card-list-command': ['selectcard', cardIndex].join(':')
+  };
+  return (<span className="long-content small text" {...commandAttributes}>{renderBoardName(card, cardIndex)} {renderListName(card, cardIndex)}</span>);
+}
+
+function renderTitle(card, cardIndex) {
+  const commandAttributes = {
+    'data-card-list-command': ['selectcard', cardIndex].join(':')
+  };
+
+  return (<div className="ui header card-title" {...commandAttributes}>{card.name}</div>)
 }
 
 /**
@@ -127,9 +147,30 @@ function renderCardOption(card, cardIndex, cardOption) {
   );
 }
 
-function renderCardLocation(card, cardIndex)
-{
-  return (<span className="long-content">{renderBoardName(card)} {renderListName(card)}</span>);
+function renderCardOptionsLayout(card, cardIndex, cardOptions) {
+  const options = cardOptions.map(cardOption => renderCardOption(card, cardIndex, cardOption));
+
+  if (options.length == 1) {
+    return (
+      <div className="options-single">
+        <div className="options">
+          <nav>{options}</nav>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="options-multiple">
+      <div className="options-hint">
+        <i className="ellipsis horizontal large icon"/>
+      </div>
+
+      <div className="options">
+        <nav>{options}</nav>
+      </div>
+    </div>
+  );
 }
 
 /**
@@ -139,25 +180,15 @@ function renderCardLocation(card, cardIndex)
  * @param {Array<CardOption>} cardOptions
  */
 function renderCard(renderOptions, card, cardIndex, cardOptions) {
-  const options = cardOptions.map(cardOption => renderCardOption(card, cardIndex, cardOption));
-
   return (
     <div className="ui trelloapp-card-list-item">
 
-      <div>
-        <div className="options-hint">
-          <i className="ellipsis horizontal large icon"/>
-        </div>
+      {renderCardOptionsLayout(card, cardIndex, cardOptions)}
 
-        <div className="options">
-          <nav>{options}</nav>
-        </div>
-      </div>
-
-      <div className="link content dp-greyscale-500" data-card-list-command={['selectcard', cardIndex].join(':')}>
-        {renderTitle(card)}
+      <div className="link content" data-card-list-command={['selectcard', cardIndex].join(':')}>
+        {renderTitle(card, cardIndex)}
         {renderOptions.showCardLocation ? renderCardLocation(card, cardIndex) : null}
-        {renderPeopleList(card)}
+        {renderPeopleList(card, cardIndex)}
       </div>
     </div>
   );
@@ -166,7 +197,7 @@ function renderCard(renderOptions, card, cardIndex, cardOptions) {
 const CardListComponent = ({ cards, showCardLocation, showBorder, onGotoCard, onUnlinkCard, onSelectCard }) => {
 
   if (! cards.length) {
-    return null;
+    return <noscript/>;
   }
 
   let command = null;
@@ -190,7 +221,6 @@ const CardListComponent = ({ cards, showCardLocation, showBorder, onGotoCard, on
   if (onSelectCard) {
     command = new CardCommand('selectcard', onSelectCard);
     commands.push(command);
-    cardOptions.push(new CardOption('chain', command));
   }
 
   const children = cards.map((card, cardIndex) => renderCard(renderOptions, card, cardIndex, cardOptions));

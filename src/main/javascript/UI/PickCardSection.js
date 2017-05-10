@@ -62,7 +62,7 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onSubmit, onChang
       >
         <Form.Fields fields={['board', 'list']} />
         <Layout.Block label="CARDS">
-          <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
+          <CardsListComponent cards={cards || []} onGotoCard={onGotoCard} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
         </Layout.Block>
       </Form.Form>
     </Layout.Section>

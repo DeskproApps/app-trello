@@ -153,7 +153,7 @@ class CreateCardSection extends React.Component {
           </Layout.Block>
 
           <Layout.Block>
-            <a href="#" onClick={this.toggleOptionalFieldsVisibility}>{toggleOptionalFieldsLabel}</a>
+            <a href="#" onClick={this.toggleOptionalFieldsVisibility} className="text small">{toggleOptionalFieldsLabel}</a>
           </Layout.Block>
         </Form.Form>
       </Layout.Section>
