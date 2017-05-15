@@ -7,10 +7,7 @@ import { CreateCardSection, LinkedCardsSection, LinkToCardSection, PickCardSecti
 
 export default class TrelloApp extends React.Component {
 
-  static propTypes = {
-    dpapp: React.PropTypes.object,
-    ui: React.PropTypes.func.isRequired
-  };
+  static propTypes = { dpapp: React.PropTypes.object.isRequired };
 
   constructor(props) {
     super(props);
@@ -24,10 +21,11 @@ export default class TrelloApp extends React.Component {
   }
 
   componentDidMount() {
-    const { dpapp, ui } = this.props;
+    const { dpapp } = this.props;
 
-    ui('options', { onSettings: this.onSettings, onRefresh: false, onCollapse: false })
-      .and('enable', { options: false, loader: true });
+    dpapp.on('ui.show-settings', this.onSettings);
+    dpapp.ui.showLoading();
+    dpapp.ui.hideMenu();
 
     // notify dp the app is ready
     dpapp.state().asyncGetPrivate('auth')
@@ -40,7 +38,7 @@ export default class TrelloApp extends React.Component {
         return err;
       })
       .then(mixed => {
-        ui('enable', { loader: false });
+        dpapp.ui.hideLoading();
         return mixed;
       })
       .then(mixed => {
@@ -65,7 +63,7 @@ export default class TrelloApp extends React.Component {
   };
 
   onExistingAuthStateReceived = (authState) => {
-    const { ui } = this.props;
+    const { dpapp } = this.props;
     const { trelloApiClient, trelloClient } = this;
 
     if (authState) {
@@ -74,14 +72,14 @@ export default class TrelloApp extends React.Component {
         .then(data => {
           trelloClient.setApiClient(trelloApiClient);
           this.setState({ authState, authUser: data });
-          ui('enable', { options: true });
+          dpapp.ui.showMenu();
           return data;
         });
     }
   };
 
   onNewAuthStateReceived = (authState) => {
-    const { dpapp, ui } = this.props;
+    const { dpapp } = this.props;
     const { trelloApiClient, trelloClient } = this;
 
     if (authState) {
@@ -93,7 +91,7 @@ export default class TrelloApp extends React.Component {
         .then(data => dpapp.state().asyncSavePrivate('auth', authState).then(() => data))
         .then(data => {
           this.setState({ authState, authUser: data, uiState: authorizedUIState });
-          ui('enable', { options: true });
+          dpapp.ui.showMenu();
           return authState;
         });
     }
@@ -180,7 +178,7 @@ export default class TrelloApp extends React.Component {
       },
       type: 'popup',
     };
-    const { ui } = this.props;
+    const { dpapp } = this.props;
     const { trelloApiClient } = this;
 
     trelloApiClient.auth(authOptions)
@@ -189,7 +187,7 @@ export default class TrelloApp extends React.Component {
       .then(() => this.retrieveApplicationContext())
       .catch(err => { console.log('on authenticate error ', err); return err; })
       .then(mixed => {
-        ui('enable', { loader: false });
+        dpapp.emit('ui-state', 'ready');
         return mixed;
       });
   };
@@ -245,19 +243,6 @@ export default class TrelloApp extends React.Component {
     };
   };
 
-
-  uiStateTransition = (...args) => {
-    if (args.length === 1) {
-      return this.sameUIStateTransition(args[0]);
-    }
-
-    if (args.length === 2) {
-      return this.nextUIStateTransition(args[0], args[1]);
-    }
-
-    throw new Error('bad method invocation uiStateTransition');
-  };
-
   sameUIStateTransition = (transition) => {
     const { uiState } = this.state;
     return this.nextUIStateTransition(uiState, transition);
@@ -269,17 +254,17 @@ export default class TrelloApp extends React.Component {
    */
   nextUIStateTransition = (nextState, transition) => {
 
-    const { ui } = this.props;
-    ui('enable', { loader: true });
+    const { dpapp } = this.props;
+    dpapp.emit('ui-state', 'loading');
 
     return transition.then(
       value => {
-        ui('enable', { loader: false });
+        dpapp.emit('ui-state', 'ready');
         this.setState({ authorizedUIState: nextState, uiState: nextState, ...value });
         return value;
       },
       error => {
-        ui('enable', { loader: false });
+        dpapp.emit('ui-state', 'ready');
         console.log('state transition error', error);
         return error;
       }

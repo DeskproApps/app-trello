@@ -14,16 +14,19 @@ $dp-sonic-primary: map_get($dp-colors, 'dp-sonic-primary');
 /** normalize **/
 $viewport-width: 240px;
 
+html.deskpro-sidebar {
+  height: inherit; // must be overwritten to allow for autoresize in xcomponent
+  @extend .text;
+  line-height: normal;
+  color: $dp-greyscale-850;
+
+}
+
 /** globals **/
 .deskpro-sidebar {
 
-  &html {
-    @extend .text;
-    line-height: normal;
-    color: $dp-greyscale-850;
-  }
-
   body {
+    height: inherit; // must be overwritten to allow for autoresize in xcomponent
     width: $viewport-width;
     min-width: $viewport-width;
     max-width: $viewport-width;

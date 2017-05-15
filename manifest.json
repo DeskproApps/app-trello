@@ -1,6 +1,7 @@
 {
   "version": "2.0.0",
-  "name": "Trello",
+  "name": "deskproapps-trello",
+  "title": "Trello",
   "description": "Trello integration built with deskpro apps sdk",
   "author": {
     "name" : "Deskproapps",
