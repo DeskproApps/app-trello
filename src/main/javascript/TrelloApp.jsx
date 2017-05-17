@@ -31,7 +31,7 @@ export default class TrelloApp extends React.Component {
       boards: [],
       lists: [],
 
-      ticketState: { ticketId, trello_cards: [], saveAction: 'create' },
+      ticketState: { ticketId, trello_cards: [] },
 
       uiState: this.initUiState,
 
@@ -42,6 +42,8 @@ export default class TrelloApp extends React.Component {
 
   componentDidMount() {
     const { dpapp } = this.props;
+
+
     const { ticketId } = this.state.ticketState;
 
     dpapp.on('ui.show-settings', this.onSettings);
@@ -49,7 +51,11 @@ export default class TrelloApp extends React.Component {
     dpapp.ui.hideMenu();
 
     // notify dp the app is ready
-    dpapp.state.asyncGetPrivate('auth')
+    const { appState } = this.props.dpapp;
+
+    console.log('fucking appState', appState);
+
+    appState.asyncGetPrivate('auth')
       .then(state => this.onExistingAuthStateReceived(state))
       .then(() => this.retrieveTicketState(ticketId))
       .catch(err => {
@@ -92,7 +98,6 @@ export default class TrelloApp extends React.Component {
   };
 
   onNewAuthStateReceived = (authState) => {
-    const { dpapp } = this.props;
     const { trelloApiClient, trelloClient } = this;
 
     if (authState) {
@@ -100,11 +105,13 @@ export default class TrelloApp extends React.Component {
       trelloApiClient.setToken(authState);
       trelloClient.setApiClient(trelloApiClient);
 
+      const { appState, ui } = this.props.dpapp;
+
       return this.retrieveTrelloAuthUser()
-        .then(data => dpapp.state.asyncSavePrivate('auth', authState).then(() => data))
+        .then(data => appState.asyncSetPrivate('auth', authState).then(() => data))
         .then(data => {
           this.setState({ authState, authUser: data, uiState: authorizedUIState });
-          dpapp.ui.showMenu();
+          ui.showMenu();
           return authState;
         });
     }
@@ -126,15 +133,16 @@ export default class TrelloApp extends React.Component {
    */
   onLinkTrelloCard = (card) => {
     const { ticketState, linkedCards } = this.state;
-    const { saveAction,  ticketId } = ticketState;
+    const { ticketId } = ticketState;
 
-    const newTicketState = Object.assign({}, ticketState, { saveAction: 'update', trello_cards: [card.id].concat(ticketState.trello_cards) });
+    const newTicketState = Object.assign({}, ticketState, { trello_cards: [card.id].concat(ticketState.trello_cards) });
     const newLinkedCards = [card].concat(linkedCards);
 
-    const { dpapp } = this.props;
-    const api = dpapp.state;
-    const saveStatePromise = saveAction === 'create' ? api.asyncCreateShared(ticketId, newTicketState) : api.asyncUpdateShared(ticketId, newTicketState);
-    return saveStatePromise.then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }));
+    const { appState } = this.props.dpapp;
+    return appState
+      .asyncSetShared(ticketId, newTicketState)
+      .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
+    ;
   };
 
   /**
@@ -158,10 +166,11 @@ export default class TrelloApp extends React.Component {
     }
     const newTicketState = Object.assign({}, ticketState, { trello_cards: newLinkedCards.map(linkedCard => linkedCard.id) });
 
-    const { dpapp } = this.props;
-    const api = dpapp.state;
-    const saveStatePromise = ticketState ? api.asyncUpdateShared(ticketId, newTicketState) : api.asyncCreateShared(ticketId, newTicketState);
-    return saveStatePromise.then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }));
+    const { appState } = this.props.dpapp;
+    return appState
+      .asyncSetShared(ticketId, newTicketState)
+      .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
+    ;
   };
 
   /**
@@ -206,13 +215,12 @@ export default class TrelloApp extends React.Component {
   };
 
   verifyTrelloAuthentication = () => {
-
-    const { dpapp } = this.props;
+    const { appState } = this.props.dpapp;
 
     return this.trelloApiClient.get('/1/members/me?fields=username,fullName')
       .catch(err => {
         if (err instanceof TrelloApiError && err.response.status === 401) {
-          return dpapp.state.asyncDeletePrivate('auth').then(() => new AuthenticationRequiredError('authentication error', err));
+          return appState.asyncDeletePrivate('auth').then(() => new AuthenticationRequiredError('authentication error', err));
         }
         return err;
       })
@@ -225,13 +233,9 @@ export default class TrelloApp extends React.Component {
   };
 
   retrieveTicketState = ticketId => {
-    const { dpapp } = this.props;
-
+    const { appState } = this.props.dpapp;
     // notify dp the app is ready
-    return dpapp.state
-      .asyncGetShared(ticketId)
-      .then(state => this.onTicketStateReceived(state))
-    ;
+    return appState.asyncGetShared(ticketId).then(state => this.onTicketStateReceived(state));
   };
 
   retrieveTrelloAuthUser = () => this.trelloApiClient.get('/1/members/me?fields=username,fullName');
