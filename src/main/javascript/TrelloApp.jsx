@@ -56,10 +56,10 @@ export default class TrelloApp extends React.Component {
 
   onContextReceived = (context) => {
     // TODO establish structure of message in the context of the api
-    const { objectId } = context;
-    this.setState({ ticketId: objectId.toString() });
+    const { entityId } = context;
+    this.setState({ ticketId: entityId.toString() });
 
-    return objectId;
+    return entityId;
   };
 
   onExistingAuthStateReceived = (authState) => {
@@ -215,7 +215,7 @@ export default class TrelloApp extends React.Component {
     const { dpapp } = this.props;
 
     // notify dp the app is ready
-    return dpapp.context
+    return dpapp.contextApi
       .asyncGet()
       .then(context => this.onContextReceived(context))
       .then(ticketId => dpapp.state.asyncGetShared(ticketId))
