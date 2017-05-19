@@ -42,8 +42,6 @@ export default class TrelloApp extends React.Component {
 
   componentDidMount() {
     const { dpapp } = this.props;
-
-
     const { ticketId } = this.state.ticketState;
 
     dpapp.on('ui.show-settings', this.onSettings);
@@ -52,8 +50,6 @@ export default class TrelloApp extends React.Component {
 
     // notify dp the app is ready
     const { appState } = this.props.dpapp;
-
-    console.log('fucking appState', appState);
 
     appState.asyncGetPrivate('auth')
       .then(state => this.onExistingAuthStateReceived(state))
@@ -119,7 +115,7 @@ export default class TrelloApp extends React.Component {
 
   onTicketStateReceived = newTicketState => {
     const uiState = this.getInitialUIState();
-    const ticketState = newTicketState || this.state.ticketState;
+    const ticketState = newTicketState || this.state.ticketState; // TODO Must not overwrite state blindly like this !!!
 
     this.trelloClient
       .getCardList(ticketState.trello_cards)
@@ -133,7 +129,7 @@ export default class TrelloApp extends React.Component {
    */
   onLinkTrelloCard = (card) => {
     const { ticketState, linkedCards } = this.state;
-    const { ticketId } = ticketState;
+    const { ticketId } = this.state.ticketState;
 
     const newTicketState = Object.assign({}, ticketState, { trello_cards: [card.id].concat(ticketState.trello_cards) });
     const newLinkedCards = [card].concat(linkedCards);
@@ -158,7 +154,7 @@ export default class TrelloApp extends React.Component {
    */
   onUnlinkTrelloCard = (card) => {
     const { ticketState, linkedCards } = this.state;
-    const { ticketId } = ticketState;
+    const { ticketId } = this.state.ticketState;
 
     const newLinkedCards = linkedCards.filter(linkedCard => linkedCard.id !== card.id);
     if (newLinkedCards.length === linkedCards.length) { // card is not a previously linked card
@@ -202,11 +198,12 @@ export default class TrelloApp extends React.Component {
     };
     const { dpapp } = this.props;
     const { trelloApiClient } = this;
+    const { ticketId } = this.state.ticketState;
 
     trelloApiClient.auth(authOptions)
       .then(() => trelloApiClient.token)
       .then(token => this.onNewAuthStateReceived(token))
-      .then(() => this.retrieveTicketState())
+      .then(() => this.retrieveTicketState(ticketId))
       .catch(err => { console.log('on authenticate error ', err); return err; })
       .then(mixed => {
         dpapp.emit('ui-state', 'ready');
@@ -262,7 +259,7 @@ export default class TrelloApp extends React.Component {
       },
       error => {
         dpapp.emit('ui-state', 'ready');
-        console.log('state transition error', error);
+        //console.log('state transition error', error);
         return error;
       }
     );

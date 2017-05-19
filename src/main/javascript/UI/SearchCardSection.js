@@ -5,8 +5,8 @@ import SearchInputComponent from './SearchInputComponent';
 
 const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange, cards, ...otherProps }) => {
 
-  console.log('on select card', onSelectCard, onGotoCard);
-  console.log('on goto card', onGotoCard);
+  // console.log('on select card', onSelectCard, onGotoCard);
+  // console.log('on goto card', onGotoCard);
 
   return (
     <Layout.Section title="SEARCH FOR A CARD">
