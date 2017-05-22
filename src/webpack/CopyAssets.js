@@ -1,7 +1,7 @@
 "use strict";
 
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const path = require('path');
+const CopyWebpackPlugin = require('@deskproapps/dpat/node_modules/copy-webpack-plugin');
 
 /**
  * @param {String} destination

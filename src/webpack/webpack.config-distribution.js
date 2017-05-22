@@ -1,9 +1,12 @@
+const execSync = require('child_process').execSync;
+const nodeRoot = execSync('npm root -g').toString().trim();
+
 const path = require('path');
-const dpatRootPath = require.resolve('@deskproapps/dpat').split('dpat').shift().concat('dpat');
+const dpatNodeModulesPath = path.join(nodeRoot, '@deskproapps', 'dpat', 'node_modules');
 
 const webpack = require('@deskproapps/dpat/node_modules/webpack');
-const ManifestPlugin = require('@deskproapps/dpat/node_modules//webpack-manifest-plugin');
-const ChunkManifestPlugin = require('@deskproapps/dpat/node_modules/chunk-manifest-webpack-plugin');
+const ManifestPlugin = require('@deskproapps/dpat/node_modules/chunk-manifest-webpack-plugin');
+const ChunkManifestPlugin = require('@deskproapps/dpat/node_modules/webpack-chunk-hash');
 const WebpackChunkHash = require('@deskproapps/dpat/node_modules/webpack-chunk-hash');
 const ExtractTextPlugin = require('@deskproapps/dpat/node_modules/extract-text-webpack-plugin');
 
@@ -11,7 +14,7 @@ module.exports = function (env) {
 
   const PROJECT_ROOT_PATH = env && env.DP_PROJECT_ROOT ? env.DP_PROJECT_ROOT : path.resolve(__dirname, '../../');
   const ASSET_PATH = 'assets';
-  const PRODUCTION = !env.NODE_ENV || env.NODE_ENV === 'production';
+  const PRODUCTION = !env || !env.NODE_ENV || env.NODE_ENV === 'production';
 
   const copyWebpackPlugin = require('./CopyAssets').copyWebpackPlugin(PROJECT_ROOT_PATH)('dist');
   const extractCssPlugin = new ExtractTextPlugin({ filename: '[name].css', publicPath: `/${ASSET_PATH}/`, allChunks: true });
@@ -78,7 +81,7 @@ module.exports = function (env) {
       extensions: ['*', '.js', '.jsx', '.scss', '.css']
     },
     resolveLoader: {
-      modules: [ "node_modules", path.join(dpatRootPath, "node_modules") ],
+      modules: [ "node_modules", dpatNodeModulesPath ],
     },
     node: { fs: 'empty' },
     bail: true

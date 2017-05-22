@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "dpat server .",
     "package": "dpat package .",
-    "dist": "NPM_ROOT=$(npm root -g); WEBPACK=${NPM_ROOT}'/@deskproapps/dpat/node_modules/.bin/webpack --config src/webpack/webpack.config-dist.js'; rm -rf dist/* && DPA_PACKAGE_MODE=slim ${WEBPACK}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

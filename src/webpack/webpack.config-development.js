@@ -1,5 +1,8 @@
+const execSync = require('child_process').execSync;
+const nodeRoot = execSync('npm root -g').toString().trim();
+
 const path = require('path');
-const dpatRootPath = require.resolve('@deskproapps/dpat').split('dpat').shift().concat('dpat');
+const dpatNodeModulesPath = path.join(nodeRoot, '@deskproapps', 'dpat', 'node_modules');
 
 const webpack = require('@deskproapps/dpat/node_modules/webpack');
 const ExtractTextPlugin = require('@deskproapps/dpat/node_modules/extract-text-webpack-plugin');
@@ -85,10 +88,11 @@ module.exports = function (env) {
       new webpack.NoEmitOnErrorsPlugin(),
     ],
     resolve: {
-      extensions: ['*', '.js', '.jsx', '.scss', '.css']
+      extensions: ['*', '.js', '.jsx', '.scss', '.css'],
+      modules: [ "node_modules", dpatNodeModulesPath ],
     },
     resolveLoader: {
-      modules: [ "node_modules", path.join(dpatRootPath, "node_modules") ],
+      modules: [ "node_modules", dpatNodeModulesPath ],
     },
     node: {fs: 'empty'},
     bail: true
