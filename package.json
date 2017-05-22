@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "dpat server .",
     "package": "dpat package .",
-    "dist": "WEBPACK='node_modules/.bin/webpack --config src/webpack/webpack.config-distribution.js'; rm -rf dist/* && DPA_PACKAGE_MODE=slim ${WEBPACK}",
+    "dist": "NPM_ROOT=$(npm root -g); WEBPACK=${NPM_ROOT}'/@deskproapps/dpat/node_modules/.bin/webpack --config src/webpack/webpack.config-dist.js'; rm -rf dist/* && DPA_PACKAGE_MODE=slim ${WEBPACK}",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -29,8 +29,7 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "devDependencies": {
-    "@deskproapps/deskproapps-sdk-react": "0.2.0",
-    "@deskproapps/dpat": "0.2.3",
+    "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha",
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-custom-scrollbars": "4.1.1",

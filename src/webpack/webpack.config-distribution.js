@@ -1,9 +1,11 @@
 const path = require('path');
-const webpack = require('webpack');
-const ManifestPlugin = require('webpack-manifest-plugin');
-const ChunkManifestPlugin = require('chunk-manifest-webpack-plugin');
-const WebpackChunkHash = require('webpack-chunk-hash');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const dpatRootPath = require.resolve('@deskproapps/dpat').split('dpat').shift().concat('dpat');
+
+const webpack = require('@deskproapps/dpat/node_modules/webpack');
+const ManifestPlugin = require('@deskproapps/dpat/node_modules//webpack-manifest-plugin');
+const ChunkManifestPlugin = require('@deskproapps/dpat/node_modules/chunk-manifest-webpack-plugin');
+const WebpackChunkHash = require('@deskproapps/dpat/node_modules/webpack-chunk-hash');
+const ExtractTextPlugin = require('@deskproapps/dpat/node_modules/extract-text-webpack-plugin');
 
 module.exports = function (env) {
 
@@ -74,6 +76,9 @@ module.exports = function (env) {
     ],
     resolve: {
       extensions: ['*', '.js', '.jsx', '.scss', '.css']
+    },
+    resolveLoader: {
+      modules: [ "node_modules", path.join(dpatRootPath, "node_modules") ],
     },
     node: { fs: 'empty' },
     bail: true

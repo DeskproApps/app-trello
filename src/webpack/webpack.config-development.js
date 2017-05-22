@@ -1,8 +1,9 @@
 const path = require('path');
-const webpack = require('webpack');
+const dpatRootPath = require.resolve('@deskproapps/dpat').split('dpat').shift().concat('dpat');
 
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const WriteFilePlugin = require('write-file-webpack-plugin');
+const webpack = require('@deskproapps/dpat/node_modules/webpack');
+const ExtractTextPlugin = require('@deskproapps/dpat/node_modules/extract-text-webpack-plugin');
+const WriteFilePlugin = require('@deskproapps/dpat/node_modules/write-file-webpack-plugin');
 
 module.exports = function (env) {
 
@@ -85,6 +86,9 @@ module.exports = function (env) {
     ],
     resolve: {
       extensions: ['*', '.js', '.jsx', '.scss', '.css']
+    },
+    resolveLoader: {
+      modules: [ "node_modules", path.join(dpatRootPath, "node_modules") ],
     },
     node: {fs: 'empty'},
     bail: true
