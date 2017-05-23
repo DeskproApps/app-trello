@@ -31,6 +31,7 @@ export default class TrelloApp extends React.Component {
       boards: [],
       lists: [],
 
+      stateTransitionsCount: 0,
       ticketState: { ticketId, trello_cards: [] },
 
       uiState: this.initUiState,
@@ -40,6 +41,14 @@ export default class TrelloApp extends React.Component {
     };
   };
 
+  shouldComponentUpdate (nextProps, nextState)
+  {
+    return this.state.uiState != nextState.uiState
+      || this.state.authorizedUIState !== nextState.authorizedUIState
+      || this.state.stateTransitionsCount !== nextState.stateTransitionsCount
+    ;
+  }
+
   componentDidMount() {
     const { dpapp } = this.props;
     const { ticketId } = this.state.ticketState;
@@ -48,7 +57,6 @@ export default class TrelloApp extends React.Component {
     dpapp.ui.showLoading();
     dpapp.ui.hideMenu();
 
-    // notify dp the app is ready
     const { appState } = this.props.dpapp;
 
     appState.asyncGetPrivate('auth')
@@ -73,9 +81,7 @@ export default class TrelloApp extends React.Component {
     ;
   }
 
-  onSettings = () => {
-      alert('on settings clicked');
-  };
+  onSettings = () => { alert('on settings clicked'); };
 
   onExistingAuthStateReceived = (authState) => {
     const { dpapp } = this.props;
@@ -135,6 +141,7 @@ export default class TrelloApp extends React.Component {
     const newLinkedCards = [card].concat(linkedCards);
 
     const { appState } = this.props.dpapp;
+
     return appState
       .asyncSetShared(ticketId, newTicketState)
       .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
@@ -163,6 +170,7 @@ export default class TrelloApp extends React.Component {
     const newTicketState = Object.assign({}, ticketState, { trello_cards: newLinkedCards.map(linkedCard => linkedCard.id) });
 
     const { appState } = this.props.dpapp;
+
     return appState
       .asyncSetShared(ticketId, newTicketState)
       .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
@@ -249,16 +257,18 @@ export default class TrelloApp extends React.Component {
   nextUIStateTransition = (nextState, transition) => {
 
     const { dpapp } = this.props;
+    const { stateTransitionsCount } = this.state;
     dpapp.ui.showLoading();
 
     return transition.then(
       value => {
         dpapp.ui.hideLoading();
-        this.setState({ authorizedUIState: nextState, uiState: nextState, ...value });
+        this.setState({ stateTransitionsCount: stateTransitionsCount+1, authorizedUIState: nextState, uiState: nextState, ...value });
         return value;
       },
       error => {
         dpapp.ui.hideLoading();
+
         return error;
       }
     );
@@ -305,21 +315,61 @@ export default class TrelloApp extends React.Component {
     );
   };
 
-  renderPickCard = () => {
+  loadBoards = () => {
     const { trelloClient } = this;
+
+    const executor = boards => {
+      if (boards.length === 0) { return { boards: [], lists: [], cards: [] }; }
+
+      const { id } = boards[0];
+      return this.loadBoardLists(id).then(data => ({ boards, ...data }));
+    };
+
+    return trelloClient.getBoards().then(executor);
+  };
+
+  loadBoardLists = boardId => {
+    const { trelloClient } = this;
+
+    return trelloClient
+      .getBoardLists(boardId)
+      .then(lists => {
+        if (lists.length === 0) { return { lists: [], cards: [] }; }
+
+        const { id } = lists[0];
+        const executor = data => ({ lists, ...data });
+
+        return this.loadListCards(id).then(executor);
+      });
+  };
+
+  loadListCards = listId => {
+    const { trelloClient } = this;
+    const executor = newCards => ({ cards: newCards });
+
+    return trelloClient.getListCards(listId).then(executor);
+  };
+
+  renderPickCard = () => {
     const { pickCardModel, boards, lists, cards } = this.state;
+    const { loadBoardLists, loadListCards } = this;
 
     const onCancel = () => {
-      this.nextUIStateTransition('ticket-loaded', Promise.resolve({ pickCardModel: null }));
+      this.nextUIStateTransition('ticket-loaded', Promise.resolve({ pickCardModel: null, cards: null, boards: [], lists: [] }));
     };
 
     const onChange = (key, value, model) => {
+      let onChangePromise;
+      const executor = data => ({ ...data, pickCardModel: model });
+
       if (key === 'board' && value) {
-        this.sameUIStateTransition(trelloClient.getBoardLists(value).then(newLists => ({ lists: newLists, pickCardModel: model })));
+        onChangePromise = loadBoardLists(value).then(executor);
+      } else if (key === 'list' && value) {
+        onChangePromise = loadListCards(value).then(executor);
       }
 
-      if (key === 'list' && value) {
-        this.sameUIStateTransition(trelloClient.getListCards(value).then(newCards => ({ cards: newCards, pickCardModel: model })));
+      if (onChangePromise) {
+        this.sameUIStateTransition(onChangePromise.then(finalState => { return finalState; }));
       }
     };
 
@@ -391,7 +441,7 @@ export default class TrelloApp extends React.Component {
     };
 
     const onPick = () => {
-      this.nextUIStateTransition('pick-card', trelloClient.getBoards().then(boards => ({ boards })));
+      this.nextUIStateTransition('pick-card', this.loadBoards());
     };
 
     const onSearch = () => {
@@ -416,11 +466,12 @@ export default class TrelloApp extends React.Component {
   };
 
   render() {
+    console.log('rendering ');
     const { uiState } = this.state;
+
     switch (uiState) {
       case 'authentication-required':
         return this.renderAuthenticationRequired();
-
       case 'create-card':
         return this.renderCreateCard();
       case 'pick-card':
@@ -429,7 +480,6 @@ export default class TrelloApp extends React.Component {
         return this.renderSearchCard();
       case 'ticket-loaded':
         return this.renderTicketLoaded();
-
       default:
         return null;
     }

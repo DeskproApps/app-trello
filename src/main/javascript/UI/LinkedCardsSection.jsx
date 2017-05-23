@@ -1,5 +1,4 @@
 import React from 'react';
-import { Header, Segment, Button, List, Container, Divider } from 'semantic-ui-react';
 import { Layout } from '@deskproapps/deskproapps-sdk-react';
 
 import CardListComponent from './CardListComponent';
