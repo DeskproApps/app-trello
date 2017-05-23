@@ -206,7 +206,7 @@ export default class TrelloApp extends React.Component {
       .then(() => this.retrieveTicketState(ticketId))
       .catch(err => { console.log('on authenticate error ', err); return err; })
       .then(mixed => {
-        dpapp.emit('ui-state', 'ready');
+        dpapp.ui.hideLoading();
         return mixed;
       });
   };
@@ -249,17 +249,16 @@ export default class TrelloApp extends React.Component {
   nextUIStateTransition = (nextState, transition) => {
 
     const { dpapp } = this.props;
-    dpapp.emit('ui-state', 'loading');
+    dpapp.ui.showLoading();
 
     return transition.then(
       value => {
-        dpapp.emit('ui-state', 'ready');
+        dpapp.ui.hideLoading();
         this.setState({ authorizedUIState: nextState, uiState: nextState, ...value });
         return value;
       },
       error => {
-        dpapp.emit('ui-state', 'ready');
-        //console.log('state transition error', error);
+        dpapp.ui.hideLoading();
         return error;
       }
     );
