@@ -466,7 +466,6 @@ export default class TrelloApp extends React.Component {
   };
 
   render() {
-    console.log('rendering ');
     const { uiState } = this.state;
 
     switch (uiState) {
