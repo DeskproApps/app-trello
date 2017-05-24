@@ -1,7 +1,8 @@
 import React from 'react';
 
 import * as TrellParsers from './Trello/TrelloParsers';
-import { TrelloApiClient, TrelloApiError, TrelloClient, TrelloClientError } from './Trello';
+import { TrelloApiClient, TrelloApiError, TrelloClient, TrelloClientError, parseTrelloCardUrl } from './Trello';
+
 import AuthenticationRequiredError from './AuthenticationRequiredError';
 import { CreateCardSection, LinkedCardsSection, LinkToCardSection, PickCardSection, SearchCardSection, AuthenticationRequiredPage } from './UI';
 
@@ -402,8 +403,21 @@ export default class TrelloApp extends React.Component {
     const { trelloClient } = this;
     const { cards } = this.state;
 
-    const onSearchChange = (query) => {
-      this.sameUIStateTransition(trelloClient.searchCards(query).then(foundCards => ({ cards: foundCards })));
+    const onSearchChange = query => {
+      const parsedCard = parseTrelloCardUrl(query);
+      let onSearchPromise = null;
+
+      if (parsedCard) {
+        const { shortLink } = parsedCard;
+        onSearchPromise = trelloClient.getCardList([ shortLink ]).then(foundCards => ({ cards: foundCards }));
+      } else {
+        onSearchPromise = trelloClient.searchCards(query).then(foundCards => ({ cards: foundCards }));
+      }
+
+      if (onSearchPromise) {
+        this.sameUIStateTransition(onSearchPromise);
+      }
+
     };
 
     const onCancel = () => {
