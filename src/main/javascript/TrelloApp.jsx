@@ -195,9 +195,9 @@ export default class TrelloApp extends React.Component {
 
   onAuthenticate = () => {
     const authOptions = {
-      expiration: '1hour',
+      expiration: 'never',
       interactive: true,
-      name: 'Deskpro Trello App',
+      name: 'Deskpro',
       persist: false,
       scope: {
         read: true,
@@ -473,7 +473,7 @@ export default class TrelloApp extends React.Component {
 
     return (
       <div>
-        <LinkedCardsSection cards={linkedCards} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} />
+        <LinkedCardsSection cards={linkedCards} onSelectCard={onGotoCard} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} />
         <LinkToCardSection onPick={onPick} onCreate={onCreate} onSearch={onSearch} />
       </div>
     );
