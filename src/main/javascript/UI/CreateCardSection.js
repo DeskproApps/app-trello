@@ -128,10 +128,14 @@ class CreateCardSection extends React.Component {
     const optionalFieldsStyle = {
       display: showOptionalFields ? 'block' : 'none'
     };
-    const toggleOptionalFieldsLabel = showOptionalFields ? 'HIDE OPTIONAL FIELDS' : 'SHOW 4 OPTIONAL FIELDS';
-
+    const toggleOptionalFieldsLabel = showOptionalFields ? 'HIDE OPTIONAL FIELDS' : 'SHOW 2 OPTIONAL FIELDS';
 
     const { model, onSubmit, onChange, onCancel } = this.props;
+
+    // <Layout.Block label="ATTACHEMENTS">
+    //   <Layout.Button> Choose files </Layout.Button>
+    // </Layout.Block>
+
     return (
       <Layout.Section title="CREATE A NEW CARD">
         <Form.Form
@@ -146,10 +150,6 @@ class CreateCardSection extends React.Component {
 
           <Layout.Block style={optionalFieldsStyle}>
             <Form.Fields fields={['duedate', 'labels']} />
-
-            <Layout.Block label="ATTACHEMENTS">
-              <Layout.Button> Choose files </Layout.Button>
-            </Layout.Block>
           </Layout.Block>
 
           <Layout.Block>
