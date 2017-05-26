@@ -19,8 +19,8 @@ html.deskpro-sidebar {
   @extend .text;
   line-height: normal;
   color: $dp-greyscale-850;
-  min-height: 600px;
-
+  margin: 0;
+  padding: 0;
 }
 
 /** globals **/
@@ -35,7 +35,8 @@ html.deskpro-sidebar {
     font-family: $open-sans;
     @extend .text;
     line-height: normal;
-    min-height: 600px;
+    margin: 0;
+    padding: 0;
   }
 
   .label {
