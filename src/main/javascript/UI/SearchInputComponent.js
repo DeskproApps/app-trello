@@ -21,12 +21,16 @@ class SearchInputComponent extends React.Component {
 
   handleOnKeyDown =(e) => {
     if (e.keyCode === 13) {
-      const { query } = this.state;
-      const { onChange, minCharacters } = this.props;
+      this.onSearch();
+    }
+  };
 
-      if (query.length >= minCharacters && onChange) {
-        onChange(query);
-      }
+  onSearch = () => {
+    const { query } = this.state;
+    const { onChange, minCharacters } = this.props;
+
+    if (query.length >= minCharacters && onChange) {
+      onChange(query);
     }
   };
 
@@ -54,7 +58,10 @@ class SearchInputComponent extends React.Component {
         {...inputProps}
       >
         <input onKeyDown={this.handleOnKeyDown} autofocus/>
-        <Icon name="search" />
+
+        <button className="ui button icon basic" onClick={this.onSearch} style={{borderLeft: 0}}>
+          <i className="ui search icon"></i>
+        </button>
       </Input>
     );
   }

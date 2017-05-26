@@ -179,6 +179,16 @@ class TrelloClient {
     ;
   };
 
+  getBoardLabels = (boardId) => {
+    const { trelloApiClient } = this;
+    const args = { fields: trelloListFields.join(',') };
+
+    return trelloApiClient
+      .get(`/1/boards/${boardId}/labels`, args)
+      .then(labels => labels.map(TrelloParsers.parseTrelloLabelJS))
+      ;
+  };
+
   getBoardLists = (boardId) => {
     const { trelloApiClient } = this;
     const args = { fields: trelloListFields.join(',') };
@@ -206,7 +216,7 @@ class TrelloClient {
   createLabels = (board, labels) => {
     const { trelloApiClient } = this;
 
-    const promiseList = labels.map(name => trelloApiClient.post('/1/labels', { name, color: null, idBoard: board.id }).then(data => data));
+    const promiseList = labels.map(name => trelloApiClient.post('/1/labels', { name, color: null, idBoard: board.id }).then(data => TrelloParsers.parseTrelloLabelJS(data)));
     return Promise.all(promiseList);
   };
 

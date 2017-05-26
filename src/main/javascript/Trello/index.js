@@ -7,6 +7,7 @@ import TrelloApiClient from './TrelloApiClient';
 import TrelloBoard from './TrelloBoard';
 import TrelloCard from './TrelloCard';
 import TrelloList from './TrelloList';
+import TrelloLabel from './TrelloLabel';
 
 export { TrelloApiClient, TrelloApiError, TrelloClient, TrelloClientError, TrelloBoard, TrelloCard, TrelloList };
 export { parseCardURL as parseTrelloCardUrl } from './TrelloURL';

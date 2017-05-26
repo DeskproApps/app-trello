@@ -9,7 +9,11 @@ class TrelloBoard {
     this.id = id;
     this.name = name;
     this.url = url;
-    this.labelNames = labelNames;
+    this.labels = labelNames;
+  }
+
+  get labelNames() {
+    return Object.keys(this.labelNames).reduce((acc, key) => acc.concat(this.labelNames[key]), []);
   }
 
   filterNewLabels = list => {

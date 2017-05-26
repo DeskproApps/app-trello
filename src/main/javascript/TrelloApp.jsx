@@ -162,11 +162,41 @@ export default class TrelloApp extends React.Component {
   };
 
   /**
+   * @param {TrelloBoard} board
+   * @param {Array<String>} labels
+   */
+  onCreateCardLabels = (board, labels) => {
+    if (labels.length === 0) {
+      return [];
+    }
+
+    const { trelloClient } = this;
+    const labelNames = labels.map (label => label.trim());
+
+    return trelloClient.getBoardLabels(board.id)
+      .then(labels => {
+
+        if (labels.length === 0) {
+          return { newLabels: labelNames, existingLabels: [] }
+        }
+
+        const existingLabelNames = labels.map(label => label.name);
+        const newLabels = labelNames.filter(name => existingLabelNames.indexOf(name) === -1);
+        const existingLabels = labels.filter(label => labelNames.indexOf(label.name) !== -1);
+
+        return {newLabels, existingLabels};
+      })
+      .then(
+        ({ newLabels, existingLabels }) => trelloClient.createLabels(board, newLabels).then(createdLabels => createdLabels.concat(existingLabels))
+      );
+  };
+
+  /**
    * @param {TrelloCard} card
    */
   onCreateAndLinkTrelloCard = (card) => {
     const { trelloClient } = this;
-    return trelloClient.createCard(card).then(newCard => this.onLinkTrelloCard(newCard));
+    return trelloClient.createCard(card).then(newCard => this.onLinkTrelloCard(card));
   };
 
   /**
@@ -298,14 +328,21 @@ export default class TrelloApp extends React.Component {
     };
 
     const onSubmit = (model) => {
-      // should be sent somewhere
-      this.setState({ createCardModel: model });
-      const trelloCard = TrellParsers.parseTrelloCardFormJS(model, boards, lists);
+      const createCardPromise = Promise.resolve(model)
+        .then(model => {
+          if (! model.labels || 0 == model.labels.length) { return []; }
 
-      this.nextUIStateTransition(
-        'ticket-loaded',
-        this.onCreateAndLinkTrelloCard(trelloCard).then(nextState => ({ ...nextState, createCardModel: null}))
-      );
+          const labels = model.labels.split(',');
+          const board = boards.filter(board => board.id === model.board).pop();
+          return this.onCreateCardLabels(board, labels)
+        })
+        .then(labels => TrellParsers.parseTrelloCardFormJS(model, boards, lists, labels))
+        .then(trelloCard => this.onCreateAndLinkTrelloCard(trelloCard))
+      ;
+
+      this
+        .nextUIStateTransition('ticket-loaded', createCardPromise)
+        .then(nextState => ({ ...nextState, createCardModel: null, boards:[], lists: [] }));
     };
 
     const onChange = (key, value, model) => {
@@ -316,7 +353,9 @@ export default class TrelloApp extends React.Component {
           const listId =  data.lists && data.lists.length ? data.lists[0].id : null;
           return { ...data, createCardModel: {...model, list: listId} };
         };
-        onChangePromise = loadBoardLists(value).then(executor);
+        const board = boards.filter(board => board.id === value).pop();
+
+        onChangePromise = loadBoardLists(board).then(executor);
       }
 
       if (onChangePromise) {
@@ -344,33 +383,45 @@ export default class TrelloApp extends React.Component {
     const executor = boards => {
       if (boards.length === 0) { return { boards: [], lists: [], cards: [] }; }
 
-      const { id } = boards[0];
-      return this.loadBoardLists(id).then(data => ({ boards, ...data }));
+      return this.loadBoardLists(boards[0]).then(data => ({ boards, ...data }));
     };
 
     return trelloClient.getBoards().then(executor);
   };
 
-  loadBoardLists = boardId => {
+  /**
+   * @param {TrelloBoard} board
+   * @return {Request|Promise.<TResult>}
+   */
+  loadBoardLists = board => {
     const { trelloClient } = this;
 
     return trelloClient
-      .getBoardLists(boardId)
+      .getBoardLists(board.id)
       .then(lists => {
         if (lists.length === 0) { return { lists: [], cards: [] }; }
 
-        const { id } = lists[0];
-        const executor = data => ({ lists, ...data });
+        const boardLists = lists.map(list => list.changeBoard(board));
+        const executor = data => ({ lists: boardLists, ...data });
 
-        return this.loadListCards(id).then(executor);
+        return this.loadListCards(boardLists[0]).then(executor);
       });
   };
 
-  loadListCards = listId => {
+  /**
+   * @param {TrelloList} list
+   * @return {Request|Promise.<{cards: *}>}
+   */
+  loadListCards = list => {
     const { trelloClient } = this;
+
+    const setCardListExecutor = cards => cards.map(card => card.changeList(list));
     const executor = newCards => ({ cards: newCards });
 
-    return trelloClient.getListCards(listId).then(executor);
+    return trelloClient.getListCards(list.id)
+      .then(setCardListExecutor)
+      .then(executor)
+      ;
   };
 
   renderPickCard = () => {
@@ -386,9 +437,11 @@ export default class TrelloApp extends React.Component {
       const executor = data => ({ ...data, pickCardModel: model });
 
       if (key === 'board' && value) {
-        onChangePromise = loadBoardLists(value).then(executor);
+        const board = boards.filter(board => board.id === value).pop();
+        onChangePromise = loadBoardLists(board).then(executor);
       } else if (key === 'list' && value) {
-        onChangePromise = loadListCards(value).then(executor);
+        const list = lists.filter(list => list.id === value).pop();
+        onChangePromise = loadListCards(list).then(executor);
       }
 
       if (onChangePromise) {

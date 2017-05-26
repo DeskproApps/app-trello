@@ -1,6 +1,7 @@
 import TrelloBoard from './TrelloBoard';
 import TrelloCard from './TrelloCard';
 import TrelloList from './TrelloList';
+import TrelloLabel from './TrelloLabel';
 
 /**
  * @param board
@@ -12,12 +13,20 @@ function parseTrelloBoardJS(board) {
 }
 
 /**
+ * @param labelJS
+ * @return {TrelloLabel}
+ */
+function parseTrelloLabelJS(labelJS) {
+  return new TrelloLabel(labelJS);
+}
+
+/**
  * @param list
  * @return {TrelloList}
  */
 function parseTrelloListJS(list) {
   const { id, name } = list;
-  return new TrelloList(id, name);
+  return new TrelloList(id, name, null);
 }
 
 /**
@@ -30,17 +39,17 @@ function parseTrelloCardJS(card) {
   const parsedBoard = board ? parseTrelloBoardJS(board) : null;
 
   const { id, name, url, subscribed, desc } = card;
-
-  return new TrelloCard(id, name, url, desc, subscribed, parsedBoard, parsedList);
+  return new TrelloCard({ id, name, url, description: desc, subscribed, board: parsedBoard, list: parsedList, labels: []});
 }
 
 /**
  * @param {{}} formModel
  * @param {Array<TrelloBoard>} boards
  * @param {Array<TrelloList>} lists
+ * @param {Array<TrelloLabel>} labels
  * @return {TrelloCard}
  */
-function parseTrelloCardFormJS(formModel, boards, lists) {
+function parseTrelloCardFormJS(formModel, boards, lists, labels) {
   const { title, description, subscribe } = formModel;
 
   let boardObject = null;
@@ -63,15 +72,7 @@ function parseTrelloCardFormJS(formModel, boards, lists) {
     }
   }
 
-  return new TrelloCard(
-    null,
-    title,
-    null,
-    description,
-    subscribe === 'yes',
-    boardObject,
-    listObject
-  );
+  return new TrelloCard({ id: '', name: title, url: '', description, subscribed: true, board: boardObject, list:listObject, labels });
 }
 
 /**
@@ -110,9 +111,13 @@ function trelloCardToJS(trelloCard) {
     }
   }
 
+  if (trelloCard.labels.length) {
+    target.idLabels = trelloCard.labels.map(label => label.id).join(',')
+  }
+
   return target;
 }
 
 const parseTrelloCardJSList = list => list.map(card => parseTrelloCardJS(card));
 
-export { parseTrelloCardJSList, parseTrelloCardJS, parseTrelloListJS, parseTrelloBoardJS, parseTrelloCardFormJS, trelloCardToJS };
+export { parseTrelloCardJSList, parseTrelloCardJS, parseTrelloListJS, parseTrelloBoardJS, parseTrelloCardFormJS, trelloCardToJS, parseTrelloLabelJS };
