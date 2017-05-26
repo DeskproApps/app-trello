@@ -7,8 +7,8 @@ import TrelloList from './TrelloList';
  * @return {TrelloBoard}
  */
 function parseTrelloBoardJS(board) {
-  const { id, name } = board;
-  return new TrelloBoard(id, name);
+  const { id, name, url, labelNames } = board;
+  return new TrelloBoard({ id, name, url, labelNames });
 }
 
 /**

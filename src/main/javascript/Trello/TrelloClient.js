@@ -25,6 +25,7 @@ const trelloBoardFields = [
   'id',
   'name',
   'url',
+  'labelNames',
 ];
 
 const trelloListFields = [
@@ -196,6 +197,17 @@ class TrelloClient {
       .get(`/1/lists/${listId}/cards`, args)
       .then(cards => cards.map(TrelloParsers.parseTrelloCardJS))
       ;
+  };
+
+  /**
+   * @param {TrelloBoard} board
+   * @param labels
+   */
+  createLabels = (board, labels) => {
+    const { trelloApiClient } = this;
+
+    const promiseList = labels.map(name => trelloApiClient.post('/1/labels', { name, color: null, idBoard: board.id }).then(data => data));
+    return Promise.all(promiseList);
   };
 
   /**

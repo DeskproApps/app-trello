@@ -50,12 +50,13 @@ function getFieldsDefinition(boards, lists) {
 
 const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onSubmit, onChange, model, boards, lists, cards, ...otherProps }) => {
   const fields = getFieldsDefinition(boards || [], lists || []);
+  const defaultModel = { board: boards.length ? boards[0].id : null, list: lists.length ? lists[0].id : null };
 
   return (
     <Layout.Section title="PICK AN EXISTING CARD">
       <Form.Form
         fields={fields}
-        model={model}
+        model={model || defaultModel}
         onSubmit={onSubmit}
         onChange={onChange}
         onCancel={onCancel}

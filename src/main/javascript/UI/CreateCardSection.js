@@ -122,6 +122,8 @@ class CreateCardSection extends React.Component {
 
   render () {
     const { boards, lists } = this.props;
+    const defaultModel = { board: boards.length ? boards[0].id : null, list: lists.length ? lists[0].id : null };
+
     const { showOptionalFields } = this.state;
     const fields = getFieldsDefinition(boards , lists);
 
@@ -132,6 +134,7 @@ class CreateCardSection extends React.Component {
 
     const { model, onSubmit, onChange, onCancel } = this.props;
 
+
     // <Layout.Block label="ATTACHEMENTS">
     //   <Layout.Button> Choose files </Layout.Button>
     // </Layout.Block>
@@ -140,7 +143,7 @@ class CreateCardSection extends React.Component {
       <Layout.Section title="CREATE A NEW CARD">
         <Form.Form
           fields={fields}
-          model={model}
+          model={ model || defaultModel }
           submitLabel={"Create card"}
           onSubmit={onSubmit}
           onChange={onChange}
