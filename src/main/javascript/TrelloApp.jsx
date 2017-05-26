@@ -38,7 +38,9 @@ export default class TrelloApp extends React.Component {
       uiState: this.initUiState,
 
       createCardModel: null,
-      pickCardModel: null
+      pickCardModel: null,
+
+      refreshCount: 0
     };
   };
 
@@ -47,12 +49,17 @@ export default class TrelloApp extends React.Component {
     return this.state.uiState != nextState.uiState
       || this.state.authorizedUIState !== nextState.authorizedUIState
       || this.state.stateTransitionsCount !== nextState.stateTransitionsCount
+      || this.state.refreshCount !== nextState.refreshCount
     ;
   }
 
   componentDidMount() {
     const { dpapp } = this.props;
     const { ticketId } = this.state.ticketState;
+
+    dpapp.on('app.refresh', () => {
+      this.sameUIStateTransition(Promise.resolve({ refreshCount: this.state.refreshCount + 1 }))
+    });
 
     dpapp.on('ui.show-settings', this.onSettings);
     dpapp.ui.showLoading();
@@ -486,7 +493,7 @@ export default class TrelloApp extends React.Component {
 
     return (
       <div>
-        <LinkedCardsSection cards={linkedCards} onSelectCard={onGotoCard} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} />
+        <LinkedCardsSection cards={linkedCards} onSelectCard={onGotoCard} onUnlinkCard={onUnlinkCard} />
         <LinkToCardSection onPick={onPick} onCreate={onCreate} onSearch={onSearch} />
       </div>
     );
