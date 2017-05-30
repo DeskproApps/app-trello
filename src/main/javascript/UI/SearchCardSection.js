@@ -1,9 +1,14 @@
 import React from 'react';
 import { Layout } from '@deskproapps/deskproapps-sdk-react';
+import { Divider } from 'semantic-ui-react';
 import CardsListComponent from './CardListComponent';
 import SearchInputComponent from './SearchInputComponent';
 
 const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange, cards, ...otherProps }) => {
+
+  let searchInput;
+  const onChange = value => { searchInput = value; };
+  const onSearchButtonClick = () => { if (searchInput) { onSearchChange(searchInput); };  };
 
   return (
     <Layout.Section title="SEARCH FOR A CARD">
@@ -12,7 +17,8 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
           fluid
           placeholder="Search card or paste URL..."
           minCharacters={3}
-          onChange={onSearchChange}
+          onSearch={onSearchChange}
+          onChange={onChange}
         />
       </Layout.Block>
 
@@ -21,6 +27,8 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
       </Layout.Block>
 
       <Layout.Block>
+        <Layout.Button onClick={onSearchButtonClick}>Search</Layout.Button>
+        <Divider hidden />
         <Layout.Button onClick={onCancel}>Cancel</Layout.Button>
       </Layout.Block>
 

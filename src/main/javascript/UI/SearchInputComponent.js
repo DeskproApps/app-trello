@@ -5,6 +5,7 @@ class SearchInputComponent extends React.Component {
 
   static propTypes = {
     onChange: React.PropTypes.func,
+    onSearch: React.PropTypes.func,
     minCharacters: React.PropTypes.number
   };
 
@@ -27,10 +28,10 @@ class SearchInputComponent extends React.Component {
 
   onSearch = () => {
     const { query } = this.state;
-    const { onChange, minCharacters } = this.props;
+    const { onSearch, minCharacters } = this.props;
 
-    if (query.length >= minCharacters && onChange) {
-      onChange(query);
+    if (onSearch && query.length >= minCharacters ) {
+      onSearch(query);
     }
   };
 
@@ -38,6 +39,11 @@ class SearchInputComponent extends React.Component {
     e.stopPropagation();
     const newQuery = e.target.value;
     this.setState({ query: newQuery });
+
+    const { onChange, minCharacters } = this.props;
+    if (onChange && newQuery.length >= minCharacters) {
+      onChange(newQuery);
+    }
   };
 
   filterInputProps = (props) => {
@@ -58,10 +64,7 @@ class SearchInputComponent extends React.Component {
         {...inputProps}
       >
         <input onKeyDown={this.handleOnKeyDown} autofocus/>
-
-        <button className="ui button icon basic" onClick={this.onSearch} style={{borderLeft: 0}}>
-          <i className="ui search icon"></i>
-        </button>
+        <Icon name="search" />
       </Input>
     );
   }
