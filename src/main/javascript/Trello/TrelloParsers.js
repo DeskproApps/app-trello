@@ -39,7 +39,7 @@ function parseTrelloCardJS(card) {
   const parsedBoard = board ? parseTrelloBoardJS(board) : null;
 
   const { id, name, url, subscribed, desc } = card;
-  return new TrelloCard({ id, name, url, description: desc, subscribed, board: parsedBoard, list: parsedList, labels: []});
+  return new TrelloCard({ id, name, url, description: desc, subscribed, board: parsedBoard, list: parsedList, due: null, labels: []});
 }
 
 /**
@@ -50,7 +50,7 @@ function parseTrelloCardJS(card) {
  * @return {TrelloCard}
  */
 function parseTrelloCardFormJS(formModel, boards, lists, labels) {
-  const { title, description, subscribe } = formModel;
+  const { title, description, subscribe: subscribed, duedate } = formModel;
 
   let boardObject = null;
   if (formModel.board) {
@@ -72,7 +72,8 @@ function parseTrelloCardFormJS(formModel, boards, lists, labels) {
     }
   }
 
-  return new TrelloCard({ id: '', name: title, url: '', description, subscribed: true, board: boardObject, list:listObject, labels });
+  const due = duedate instanceof Date ? duedate: null;
+  return new TrelloCard({ id: '', name: title, url: '', description, subscribed: true, board: boardObject, list:listObject, due, labels });
 }
 
 /**
@@ -86,6 +87,7 @@ function trelloCardToJS(trelloCard) {
     url: undefined,
     idList: undefined,
     desc: undefined,
+    due: undefined
   };
 
   if (trelloCard.id) {
@@ -102,6 +104,10 @@ function trelloCardToJS(trelloCard) {
 
   if (trelloCard.list && trelloCard.list.id) {
     source.idList = trelloCard.list.id;
+  }
+
+  if (trelloCard.due) {
+    source.due = trelloCard.due;
   }
 
   const target = {};

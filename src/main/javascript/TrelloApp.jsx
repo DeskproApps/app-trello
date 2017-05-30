@@ -138,30 +138,6 @@ export default class TrelloApp extends React.Component {
   };
 
   /**
-   * @param card
-   * @return {Promise.<{ticketState: {trello_cards: Array.<*>}}>}
-   */
-  onLinkTrelloCard = (card) => {
-    const { ticketState, linkedCards } = this.state;
-    const { ticketId } = this.state.ticketState;
-
-
-    if (linkedCards.filter(linkedCard => linkedCard.id === card.id).length) {
-      return Promise.resolve({ ticketState, linkedCards });
-    }
-
-    const newTicketState = Object.assign({}, ticketState, { trello_cards: [card.id].concat(ticketState.trello_cards) });
-    const newLinkedCards = [card].concat(linkedCards);
-
-    const { appState } = this.props.dpapp;
-
-    return appState
-      .asyncSetShared(ticketId, newTicketState)
-      .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
-    ;
-  };
-
-  /**
    * @param {TrelloBoard} board
    * @param {Array<String>} labels
    */
@@ -196,7 +172,30 @@ export default class TrelloApp extends React.Component {
    */
   onCreateAndLinkTrelloCard = (card) => {
     const { trelloClient } = this;
-    return trelloClient.createCard(card).then(newCard => this.onLinkTrelloCard(card));
+    return trelloClient.createCard(card).then(newCard => card.changeId(newCard.id)).then(newCard => this.onLinkTrelloCard(newCard));
+  };
+
+  /**
+   * @param card
+   * @return {Promise.<{ticketState: {trello_cards: Array.<*>}}>}
+   */
+  onLinkTrelloCard = (card) => {
+    const { ticketState, linkedCards } = this.state;
+    const { ticketId } = this.state.ticketState;
+
+    if (linkedCards.filter(linkedCard => linkedCard.id === card.id).length) {
+      return Promise.resolve({ ticketState, linkedCards });
+    }
+
+    const newTicketState = Object.assign({}, ticketState, { trello_cards: [card.id].concat(ticketState.trello_cards) });
+    const newLinkedCards = [card].concat(linkedCards);
+
+    const { appState } = this.props.dpapp;
+
+    return appState
+      .asyncSetShared(ticketId, newTicketState)
+      .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
+      ;
   };
 
   /**

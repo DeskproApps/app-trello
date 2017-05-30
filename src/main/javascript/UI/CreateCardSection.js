@@ -61,7 +61,7 @@ const getFieldsDefinition = (boards, lists) => {
         },
         duedate: {
             schema: {
-                type: String,
+                type: Date,
                 optional: true
             },
             ui: {
