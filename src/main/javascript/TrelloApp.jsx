@@ -12,7 +12,7 @@ export default class TrelloApp extends React.Component {
 
   constructor(props) {
     super(props);
-    this.initUiState = '';
+    this.initUiState = 'ticket-loaded';
 
     const key = '32388eb417f0326c4d75ab77c2a5d7e7';
     this.trelloApiClient = new TrelloApiClient(key);
@@ -62,7 +62,6 @@ export default class TrelloApp extends React.Component {
     });
 
     dpapp.on('ui.show-settings', this.onSettings);
-    dpapp.ui.showLoading();
     dpapp.ui.hideMenu();
 
     const { appState } = this.props.dpapp;
@@ -77,7 +76,6 @@ export default class TrelloApp extends React.Component {
         return err;
       })
       .then(mixed => {
-        dpapp.ui.hideLoading();
         return mixed;
       })
       .then(mixed => {
