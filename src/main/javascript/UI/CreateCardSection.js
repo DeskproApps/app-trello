@@ -1,5 +1,8 @@
-import React from 'react';
-import { Form, Layout } from '@deskproapps/deskproapps-sdk-react';
+import React from "react";
+import {Form, Layout} from "@deskproapps/deskproapps-sdk-react";
+
+const createNewListOption = { key: 'trello.newList', value: '--- CREATE LIST ---' };
+
 
 /**
  * @param {Array<TrelloBoard>} boards
@@ -29,12 +32,16 @@ const getFieldsDefinition = (boards, lists) => {
             schema: {
                 type: String,
                 optional: false,
-                allowedValues: lists.map(list => list.id)
+                allowedValues: lists.map(list => list.id).concat([createNewListOption.key])
             },
             ui: {
                 placeholder: 'Please select',
                 label: 'LIST',
                 transform(id) {
+                    if (id == createNewListOption.key) {
+                      return createNewListOption.value;
+                    }
+
                     for (const list of lists) {
                         if (list.id === id) {
                             return list.name;
@@ -42,6 +49,17 @@ const getFieldsDefinition = (boards, lists) => {
                     }
                 }
             }
+        },
+        newList: {
+          schema: {
+            type: String,
+            optional: true,
+            min: 1
+          },
+          ui: {
+            placeholder: 'Please enter list name',
+            label: 'LIST'
+          }
         },
         title: {
             schema: {
@@ -112,7 +130,7 @@ class CreateCardSection extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { showOptionalFields: false };
+    this.state = { showOptionalFields: false, showCreateList: false };
   }
 
   toggleOptionalFieldsVisibility  = () => {
@@ -120,20 +138,52 @@ class CreateCardSection extends React.Component {
     this.setState({ showOptionalFields: !showOptionalFields });
   };
 
+  handleOnSubmit = (model, ...others) => {
+
+    const { showCreateList } = this.state;
+    const { onSubmit } = this.props;
+
+    //make sure newList does not get included in the model if we don't have that option selected
+    const newModel = showCreateList ? model : { ...model, newList: null };
+    onSubmit(...[newModel, ...others]);
+  };
+
+  handleOnChangeEvent = (key, value, model) => {
+
+    let internalEvent = false;
+    let showCreateList = null;
+    if (key === 'list') {
+      showCreateList = value === createNewListOption.key;
+      internalEvent = showCreateList;
+    } else if (key === 'board') {
+      showCreateList = false;
+    }
+
+    if (showCreateList !== null) {
+      this.setState({ showCreateList });
+    }
+
+    if (internalEvent) { return ; }
+
+    const { onChange } = this.props;
+    onChange(key, value, model);
+  };
+
   render () {
     const { boards, lists } = this.props;
-    const defaultModel = { board: boards.length ? boards[0].id : null, list: lists.length ? lists[0].id : null };
+    const defaultModel = { board: boards.length ? boards[0].id : null, list: lists.length ? lists[0].id : null, newList: null };
 
-    const { showOptionalFields } = this.state;
+    const { showOptionalFields, showCreateList } = this.state;
     const fields = getFieldsDefinition(boards , lists);
 
-    const optionalFieldsStyle = {
-      display: showOptionalFields ? 'block' : 'none'
-    };
+
+    const hiddenStyle = { display: 'none' };
+    const visibleStyle = { display: 'block' };
     const toggleOptionalFieldsLabel = showOptionalFields ? 'HIDE OPTIONAL FIELDS' : 'SHOW 2 OPTIONAL FIELDS';
 
-    const { model, onSubmit, onChange, onCancel } = this.props;
-
+    const { model:injectedModel, onSubmit, onChange, onCancel } = this.props;
+    let model = injectedModel || defaultModel;
+    model = showCreateList ? { ...model, newList: null } : model;
 
     // <Layout.Block label="ATTACHEMENTS">
     //   <Layout.Button> Choose files </Layout.Button>
@@ -143,15 +193,25 @@ class CreateCardSection extends React.Component {
       <Layout.Section title="CREATE A NEW CARD">
         <Form.Form
           fields={fields}
-          model={ model || defaultModel }
+          model={ model }
           submitLabel={"Create card"}
-          onSubmit={onSubmit}
-          onChange={onChange}
+          onSubmit={this.handleOnSubmit}
+          onChange={this.handleOnChangeEvent}
           onCancel={onCancel}
         >
-          <Form.Fields fields={['board', 'list', 'title', 'description']} />
+          <Form.Fields fields={['board']} />
 
-          <Layout.Block style={optionalFieldsStyle}>
+          <Layout.Block style={showCreateList ? hiddenStyle: visibleStyle}>
+            <Form.Fields fields={['list']} />
+          </Layout.Block>
+
+          <Layout.Block style={showCreateList ? visibleStyle : hiddenStyle}>
+            <Form.Fields fields={['newList']} />
+          </Layout.Block>
+
+          <Form.Fields fields={['title', 'description']} />
+
+          <Layout.Block style={showOptionalFields ? visibleStyle : hiddenStyle}>
             <Form.Fields fields={['duedate', 'labels']} />
           </Layout.Block>
 

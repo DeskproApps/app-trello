@@ -170,7 +170,19 @@ export default class TrelloApp extends React.Component {
    */
   onCreateAndLinkTrelloCard = (card) => {
     const { trelloClient } = this;
-    return trelloClient.createCard(card).then(newCard => card.changeId(newCard.id)).then(newCard => this.onLinkTrelloCard(newCard));
+    const { list } = card;
+
+    return Promise.resolve(card)
+      .then(card => {
+          if (!list.id) {
+            return trelloClient.createList(list).then(newList => card.changeList(newList));
+          }
+          return card;
+      })
+      .then(card => trelloClient.createCard(card))
+      .then(newCard => card.changeId(newCard.id))
+      .then(newCard => this.onLinkTrelloCard(newCard))
+      ;
   };
 
   /**
@@ -324,7 +336,8 @@ export default class TrelloApp extends React.Component {
       this.nextUIStateTransition('ticket-loaded', Promise.resolve({ createCardModel: null, boards:[], lists: [] }));
     };
 
-    const onSubmit = (model) => {
+    const onSubmit = (model) =>
+    {
       const createCardPromise = Promise.resolve(model)
         .then(model => {
           if (! model.labels || 0 == model.labels.length) { return []; }

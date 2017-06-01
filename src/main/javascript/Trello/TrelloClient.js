@@ -234,6 +234,21 @@ class TrelloClient {
     return trelloApiClient.post('/1/cards', apiRepresentation).then(data => TrelloParsers.parseTrelloCardJS(data));
   };
 
+  /**
+   * @param {TrelloList} list
+   */
+  createList = (list) => {
+
+    const { board } = list;
+    if (!board || !board.id) {
+      throw new Error('failed to create list: missing board id');
+    }
+    const apiRepresentation = TrelloParsers.trelloListToJS(list);
+    const { trelloApiClient } = this;
+
+    return trelloApiClient.post('/1/lists', apiRepresentation).then(data => TrelloParsers.parseTrelloListJS(data));
+  };
+
   searchCards = (query) => {
     const { trelloApiClient } = this;
     const args = { query, card_fields: 'id', cards_limit: 25, modelTypes: 'cards' };

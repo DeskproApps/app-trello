@@ -26,7 +26,7 @@ function parseTrelloLabelJS(labelJS) {
  */
 function parseTrelloListJS(list) {
   const { id, name } = list;
-  return new TrelloList(id, name, null);
+  return new TrelloList({id, name, board:null});
 }
 
 /**
@@ -63,7 +63,10 @@ function parseTrelloCardFormJS(formModel, boards, lists, labels) {
   }
 
   let listObject = null;
-  if (formModel.list) {
+
+  if (formModel.newList) {
+    listObject = new TrelloList({ name: formModel.newList, id: null, board: boardObject });
+  } else if (formModel.list) {
     for (const list of lists) {
       if (list.id === formModel.list) {
         listObject = list;
@@ -124,6 +127,11 @@ function trelloCardToJS(trelloCard) {
   return target;
 }
 
+/**
+ * @param {TrelloList} list
+ */
+const trelloListToJS = list => ({ name: list.name, idBoard: list.board.id  });
+
 const parseTrelloCardJSList = list => list.map(card => parseTrelloCardJS(card));
 
-export { parseTrelloCardJSList, parseTrelloCardJS, parseTrelloListJS, parseTrelloBoardJS, parseTrelloCardFormJS, trelloCardToJS, parseTrelloLabelJS };
+export { parseTrelloCardJSList, parseTrelloCardJS, parseTrelloListJS, parseTrelloBoardJS, parseTrelloCardFormJS, trelloCardToJS, trelloListToJS, parseTrelloLabelJS };
