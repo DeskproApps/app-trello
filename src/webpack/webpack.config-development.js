@@ -92,6 +92,7 @@ module.exports = function (env) {
 
       new webpack.optimize.CommonsChunkPlugin({name: ['vendor'], minChunks: Infinity}),
       new webpack.NamedModulesPlugin(),
+
       CopyAssets.copyWebpackPlugin(PROJECT_ROOT_PATH)(`target/${BASE_PATH}`),
 
       new WriteFilePlugin({
