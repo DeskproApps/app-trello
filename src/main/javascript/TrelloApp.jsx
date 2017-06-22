@@ -46,12 +46,25 @@ export default class TrelloApp extends React.Component {
 
   shouldComponentUpdate (nextProps, nextState)
   {
-    return this.state.uiState != nextState.uiState
+    const shouldUpdate = this.state.uiState != nextState.uiState
       || this.state.authorizedUIState !== nextState.authorizedUIState
       || this.state.stateTransitionsCount !== nextState.stateTransitionsCount
       || this.state.refreshCount !== nextState.refreshCount
     ;
+
+    if (shouldUpdate) {
+      this.onStateChangeUpdateUI(nextState);
+    }
+
+    return shouldUpdate;
   }
+
+  onStateChangeUpdateUI = (state) => {
+    const { ui } = this.props.dpapp;
+    const { ticketState } = state;
+
+    ui.badgeCount = ticketState.trello_cards.length;
+  };
 
   componentDidMount() {
     const { dpapp } = this.props;
@@ -61,8 +74,10 @@ export default class TrelloApp extends React.Component {
       this.sameUIStateTransition(Promise.resolve({ refreshCount: this.state.refreshCount + 1 }))
     });
 
-    dpapp.on('ui.show-settings', this.onSettings);
+    dpapp.on('ui.show-settings', this.onUIShowSettings);
+
     dpapp.ui.hideMenu();
+    dpapp.ui.showBadgeCount();
 
     const { appState } = this.props.dpapp;
 
@@ -87,7 +102,7 @@ export default class TrelloApp extends React.Component {
     ;
   }
 
-  onSettings = () => { alert('on settings clicked'); };
+  onUIShowSettings = () => { alert('on settings clicked'); };
 
   onExistingAuthStateReceived = (authState) => {
     const { dpapp } = this.props;
