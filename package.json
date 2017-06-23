@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "devDependencies": {
-    "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.6",
+    "@deskproapps/deskproapps-sdk-react": "^1.0.0-alpha.8",
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-custom-scrollbars": "4.1.1",

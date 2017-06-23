@@ -1,7 +1,7 @@
 import React from 'react';
 
 import * as TrellParsers from './Trello/TrelloParsers';
-import { TrelloApiClient, TrelloApiError, TrelloClient, TrelloClientError, parseTrelloCardUrl } from './Trello';
+import { TrelloApiClient, TrelloApiError, TrelloServices, TrelloClientError, parseTrelloCardUrl } from './Trello';
 
 import AuthenticationRequiredError from './AuthenticationRequiredError';
 import { CreateCardSection, LinkedCardsSection, LinkToCardSection, PickCardSection, SearchCardSection, AuthenticationRequiredPage } from './UI';
@@ -16,7 +16,7 @@ export default class TrelloApp extends React.Component {
 
     const key = '32388eb417f0326c4d75ab77c2a5d7e7';
     this.trelloApiClient = new TrelloApiClient(key);
-    this.trelloClient = new TrelloClient();
+    this.trelloServices = new TrelloServices();
 
     this.initState();
   }
@@ -66,7 +66,8 @@ export default class TrelloApp extends React.Component {
     ui.badgeCount = ticketState.trello_cards.length;
   };
 
-  componentDidMount() {
+  componentDidMount()
+  {
     const { dpapp } = this.props;
     const { ticketId } = this.state.ticketState;
 
@@ -104,33 +105,42 @@ export default class TrelloApp extends React.Component {
 
   onUIShowSettings = () => { alert('on settings clicked'); };
 
-  onExistingAuthStateReceived = (authState) => {
-    const { dpapp } = this.props;
-    const { trelloApiClient, trelloClient } = this;
+  onExistingAuthStateReceived = (authState) =>
+  {
+    if (!authState) { return; }
 
-    if (authState) {
-      trelloApiClient.setToken(authState);
-      return this.verifyTrelloAuthentication()
-        .then(data => {
-          trelloClient.setApiClient(trelloApiClient);
-          this.setState({ authState, authUser: data });
-          dpapp.ui.showMenu();
-          return data;
-        });
-    }
+    const { dpapp } = this.props;
+    const { trelloApiClient, trelloServices } = this;
+    const { appState } = this.props.dpapp;
+
+    trelloApiClient.setToken(authState);
+    trelloServices.getAuthUser(trelloApiClient)
+      .then(data => {
+        this.setState({ authState, authUser: data });
+        dpapp.ui.showMenu();
+
+        return data;
+      })
+      .catch(err => {
+        if (err instanceof AuthenticationRequiredError) {
+          return appState.asyncDeletePrivate('auth').then(() => Promise.reject(err));
+        }
+        return Promise.reject(err);
+      });
+
   };
 
-  onNewAuthStateReceived = (authState) => {
-    const { trelloApiClient, trelloClient } = this;
+  onNewAuthStateReceived = (authState) =>
+  {
+    const { trelloApiClient, trelloServices } = this;
 
     if (authState) {
-      const { authorizedUIState } = this.state;
+      const { authorizedUIState } = this;
       trelloApiClient.setToken(authState);
-      trelloClient.setApiClient(trelloApiClient);
 
       const { appState, ui } = this.props.dpapp;
 
-      return this.retrieveTrelloAuthUser()
+      return trelloServices.getAuthUser(trelloApiClient)
         .then(data => appState.asyncSetPrivate('auth', authState).then(() => data))
         .then(data => {
           this.setState({ authState, authUser: data, uiState: authorizedUIState });
@@ -140,12 +150,14 @@ export default class TrelloApp extends React.Component {
     }
   };
 
-  onTicketStateReceived = newTicketState => {
+  onTicketStateReceived = newTicketState =>
+  {
+    const { trelloApiClient, trelloServices } = this;
+
     const uiState = this.getInitialUIState();
     const ticketState = newTicketState || this.state.ticketState; // TODO Must not overwrite state blindly like this !!!
 
-    this.trelloClient
-      .getCardList(ticketState.trello_cards)
+    trelloServices.getCardList(trelloApiClient, ticketState.trello_cards)
       .then(linkedCards => this.setState({ ...uiState, ticketState, linkedCards }))
     ;
   };
@@ -154,15 +166,16 @@ export default class TrelloApp extends React.Component {
    * @param {TrelloBoard} board
    * @param {Array<String>} labels
    */
-  onCreateCardLabels = (board, labels) => {
+  onCreateCardLabels = (board, labels) =>
+  {
     if (labels.length === 0) {
       return [];
     }
 
-    const { trelloClient } = this;
+    const { trelloApiClient, trelloServices } = this;
     const labelNames = labels.map (label => label.trim());
 
-    return trelloClient.getBoardLabels(board.id)
+    return trelloServices.getBoardLabels(trelloApiClient, board.id)
       .then(labels => {
 
         if (labels.length === 0) {
@@ -176,25 +189,26 @@ export default class TrelloApp extends React.Component {
         return {newLabels, existingLabels};
       })
       .then(
-        ({ newLabels, existingLabels }) => trelloClient.createLabels(board, newLabels).then(createdLabels => createdLabels.concat(existingLabels))
+        ({ newLabels, existingLabels }) => trelloServices.createLabels(trelloApiClient, board, newLabels).then(createdLabels => createdLabels.concat(existingLabels))
       );
   };
 
   /**
    * @param {TrelloCard} card
    */
-  onCreateAndLinkTrelloCard = (card) => {
-    const { trelloClient } = this;
+  onCreateAndLinkTrelloCard = (card) =>
+  {
+    const { trelloApiClient, trelloServices } = this;
     const { list } = card;
 
     return Promise.resolve(card)
       .then(card => {
           if (!list.id) {
-            return trelloClient.createList(list).then(newList => card.changeList(newList));
+            return trelloServices.createList(trelloApiClient, list).then(newList => card.changeList(newList));
           }
           return card;
       })
-      .then(card => trelloClient.createCard(card))
+      .then(card => trelloServices.createCard(trelloApiClient, card))
       .then(newCard => card.changeId(newCard.id))
       .then(newCard => this.onLinkTrelloCard(newCard))
       ;
@@ -204,7 +218,8 @@ export default class TrelloApp extends React.Component {
    * @param card
    * @return {Promise.<{ticketState: {trello_cards: Array.<*>}}>}
    */
-  onLinkTrelloCard = (card) => {
+  onLinkTrelloCard = (card) =>
+  {
     const { ticketState, linkedCards } = this.state;
     const { ticketId } = this.state.ticketState;
 
@@ -216,9 +231,12 @@ export default class TrelloApp extends React.Component {
     const newLinkedCards = [card].concat(linkedCards);
 
     const { appState } = this.props.dpapp;
+    const { tabUrl } = this.props.dpapp.context;
+    const { trelloApiClient, trelloServices } = this;
 
     return appState
       .asyncSetShared(ticketId, newTicketState)
+      .then(() => trelloServices.createCardLinkedComment(trelloApiClient, card, tabUrl))
       .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
       ;
   };
@@ -226,7 +244,8 @@ export default class TrelloApp extends React.Component {
   /**
    * @param {TrelloCard} card
    */
-  onUnlinkTrelloCard = (card) => {
+  onUnlinkTrelloCard = (card) =>
+  {
     const { ticketState, linkedCards } = this.state;
     const { ticketId } = this.state.ticketState;
 
@@ -237,9 +256,12 @@ export default class TrelloApp extends React.Component {
     const newTicketState = Object.assign({}, ticketState, { trello_cards: newLinkedCards.map(linkedCard => linkedCard.id) });
 
     const { appState } = this.props.dpapp;
+    const { trelloApiClient, trelloServices } = this;
+    const { tabUrl } = this.props.dpapp.context;
 
     return appState
       .asyncSetShared(ticketId, newTicketState)
+      .then(() => trelloServices.createCardUnlinkedComment(trelloApiClient, card, tabUrl))
       .then(() => ({ ticketState: newTicketState, linkedCards: newLinkedCards }))
     ;
   };
@@ -247,11 +269,13 @@ export default class TrelloApp extends React.Component {
   /**
    * @param {TrelloCard} card
    */
-  onGoToTrelloCard = (card) => {
+  onGoToTrelloCard = (card) =>
+  {
     window.open(card.url, '_blank');
   };
 
-  getInitialUIState = () => {
+  getInitialUIState = () =>
+  {
     const { authState } = this.state;
     const authorizedUIState = 'ticket-loaded';
     const uiState = authState ? authorizedUIState : 'authentication-required';
@@ -286,33 +310,15 @@ export default class TrelloApp extends React.Component {
       });
   };
 
-  verifyTrelloAuthentication = () => {
-    const { appState } = this.props.dpapp;
-
-    return this.trelloApiClient.get('/1/members/me?fields=username,fullName')
-      .catch(err => {
-        if (err instanceof TrelloApiError && err.response.status === 401) {
-          return appState.asyncDeletePrivate('auth').then(() => new AuthenticationRequiredError('authentication error', err));
-        }
-        return err;
-      })
-      .then(mixed => {
-        if (mixed instanceof Error) {
-          throw mixed;
-        }
-        return mixed;
-      });
-  };
-
-  retrieveTicketState = ticketId => {
+  retrieveTicketState = ticketId =>
+  {
     const { appState } = this.props.dpapp;
     // notify dp the app is ready
     return appState.asyncGetShared(ticketId).then(state => this.onTicketStateReceived(state));
   };
 
-  retrieveTrelloAuthUser = () => this.trelloApiClient.get('/1/members/me?fields=username,fullName');
-
-  sameUIStateTransition = (transition) => {
+  sameUIStateTransition = (transition) =>
+  {
     const { uiState } = this.state;
     return this.nextUIStateTransition(uiState, transition);
   };
@@ -321,8 +327,8 @@ export default class TrelloApp extends React.Component {
    * @param nextState
    * @param {Promise} transition
    */
-  nextUIStateTransition = (nextState, transition) => {
-
+  nextUIStateTransition = (nextState, transition) =>
+  {
     const { dpapp } = this.props;
     const { stateTransitionsCount } = this.state;
     dpapp.ui.showLoading();
@@ -331,19 +337,28 @@ export default class TrelloApp extends React.Component {
       value => {
         dpapp.ui.hideLoading();
         this.setState({ stateTransitionsCount: stateTransitionsCount+1, authorizedUIState: nextState, uiState: nextState, ...value });
-        return value;
+        return Promise.resolve(value);
       },
       error => {
         dpapp.ui.hideLoading();
 
-        return error;
+        if (error instanceof AuthenticationRequiredError) {
+          this.setState({
+            stateTransitionsCount: stateTransitionsCount+1,
+            authorizedUIState: null,
+            uiState: 'authentication-required'
+          });
+        }
+
+        return Promise.reject(error) ;
       }
     );
   };
 
   renderAuthenticationRequired = () => (<AuthenticationRequiredPage onAuthenticate={this.onAuthenticate} />);
 
-  renderCreateCard = () => {
+  renderCreateCard = () =>
+  {
     const { loadBoardLists } = this;
     const { createCardModel, boards, lists } = this.state;
 
@@ -402,8 +417,9 @@ export default class TrelloApp extends React.Component {
     );
   };
 
-  loadBoards = () => {
-    const { trelloClient } = this;
+  loadBoards = () =>
+  {
+    const { trelloApiClient, trelloServices } = this;
 
     const executor = boards => {
       if (boards.length === 0) { return { boards: [], lists: [], cards: [] }; }
@@ -411,24 +427,24 @@ export default class TrelloApp extends React.Component {
       return this.loadBoardLists(boards[0]).then(data => ({ boards, ...data }));
     };
 
-    return trelloClient.getBoards().then(executor);
+    return trelloServices.getBoards(trelloApiClient).then(executor);
   };
 
   /**
    * @param {TrelloBoard} board
    * @return {Request|Promise.<TResult>}
    */
-  loadBoardLists = board => {
-    const { trelloClient } = this;
+  loadBoardLists = board =>
+  {
+    const { trelloApiClient, trelloServices } = this;
 
-    return trelloClient
-      .getBoardLists(board.id)
+    return trelloServices
+      .getBoardLists(trelloApiClient, board.id)
       .then(lists => {
-        if (lists.length === 0) { return { lists: [], cards: [] }; }
+        const boardLists = lists.map((list) => list.changeBoard(board));
+        if (boardLists.length === 0) { return { lists: [], cards: [] }; }
 
-        const boardLists = lists.map(list => list.changeBoard(board));
         const executor = data => ({ lists: boardLists, ...data });
-
         return this.loadListCards(boardLists[0]).then(executor);
       });
   };
@@ -437,19 +453,21 @@ export default class TrelloApp extends React.Component {
    * @param {TrelloList} list
    * @return {Request|Promise.<{cards: *}>}
    */
-  loadListCards = list => {
-    const { trelloClient } = this;
+  loadListCards = list =>
+  {
+    const { trelloApiClient, trelloServices } = this;
 
     const setCardListExecutor = cards => cards.map(card => card.changeList(list));
     const executor = newCards => ({ cards: newCards });
 
-    return trelloClient.getListCards(list.id)
+    return trelloServices.getListCards(trelloApiClient, list.id)
       .then(setCardListExecutor)
       .then(executor)
       ;
   };
 
-  renderPickCard = () => {
+  renderPickCard = () =>
+  {
     const { pickCardModel, boards, lists, cards } = this.state;
     const { loadBoardLists, loadListCards } = this;
 
@@ -498,8 +516,9 @@ export default class TrelloApp extends React.Component {
     );
   };
 
-  renderSearchCard = () => {
-    const { trelloClient } = this;
+  renderSearchCard = () =>
+  {
+    const { trelloApiClient, trelloServices } = this;
     const { cards } = this.state;
 
     const onSearchChange = query => {
@@ -508,9 +527,9 @@ export default class TrelloApp extends React.Component {
 
       if (parsedCard) {
         const { shortLink } = parsedCard;
-        onSearchPromise = trelloClient.getCardList([ shortLink ]).then(foundCards => ({ cards: foundCards }));
+        onSearchPromise = trelloServices.getCardList(trelloApiClient, [ shortLink ]).then(foundCards => ({ cards: foundCards }));
       } else {
-        onSearchPromise = trelloClient.searchCards(query).then(foundCards => ({ cards: foundCards }));
+        onSearchPromise = trelloServices.searchCards(trelloApiClient, query).then(foundCards => ({ cards: foundCards }));
       }
 
       if (onSearchPromise) {
