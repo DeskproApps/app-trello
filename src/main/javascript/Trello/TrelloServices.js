@@ -28,6 +28,7 @@ const trelloBoardFields = [
   'name',
   'url',
   'labelNames',
+  'idOrganization',
 ];
 
 const trelloListFields = [
@@ -97,7 +98,7 @@ const handleTrelloApiErrors = (err) => {
 
 function buildCardPromise(trelloApiClient, cardId) {
   const executor = (resolve, reject) => {
-    trelloApiClient.get(`/1/cards/${cardId}`, { fields: trelloCardFields.join(',')})
+    trelloApiClient.get(`/1/cards/${cardId}`, { fields: trelloCardFields.join(','), organization: true})
       .catch(handleTrelloApiErrors)
       .then(data => resolve(data), err => { reject(err) });
   };
@@ -107,7 +108,7 @@ function buildCardPromise(trelloApiClient, cardId) {
 function buildCardBoardPromise(trelloApiClient, card) {
   const { idBoard } = card;
   const executor = (resolve, reject) => {
-    trelloApiClient.get(`/1/boards/${idBoard}`, { fields: trelloBoardFields.join(',')})
+    trelloApiClient.get(`/1/boards/${idBoard}`, { fields: trelloBoardFields.join(','), organization: true })
       .catch(handleTrelloApiErrors)
       .then(data => resolve(data), err => reject(err))
     ;
@@ -224,7 +225,7 @@ class TrelloServices
    */
   getBoards = (trelloApiClient) =>
   {
-    const args = { fields: trelloBoardFields.join(',') };
+    const args = { fields: trelloBoardFields.join(','), organization: true  };
 
     return trelloApiClient
       .get('/1/members/me/boards', args)

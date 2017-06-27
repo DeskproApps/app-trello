@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "appVersion": "0.1.0",
+  "appVersion": "0.2.0",
   "name": "deskproapps-trello",
   "title": "Trello",
   "description": "This application adds a sidebar that lets you link tickets to trello cards",
@@ -14,23 +14,7 @@
   "targets": [
     { "target": "ticket-sidebar", "url": "html/ticket-sidebar.html" }
   ],
-  "settings": [
-    {
-      "name": "my_setting",
-      "type": "text/textarea/select/hidden",
-      "default_value": "foo",
-
-      "is_private": false,
-
-      "options": [
-        {"name": "example_option", "value": "foo"}
-      ]
-    }
-  ],
+  "settings": [],
   "deskpro_api_tags": ["tickets.*"],
-  "external_apis": [
-    "https://my-domain.com/*",
-    "/^https?://w+.deskpro.com/.*?$",
-    "https://${settings.my_domain_name}.com/*"
-  ]
+  "external_apis": []
 }

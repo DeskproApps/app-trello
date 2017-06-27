@@ -1,11 +1,11 @@
 {
   "name": "deskproapps-trello",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {
     "dev": "dpat server .",
-    "package": "dpat clean . && dpat compile . && dpat verify ./dist && dpat package .",
+    "package": "dpat clean . && dpat compile . && dpat package .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,8 +27,10 @@
     "url": "https://github.com/DeskproApps/trello/issues"
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
+  "dependencies": {
+    "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.9"
+  },
   "devDependencies": {
-    "@deskproapps/deskproapps-sdk-react": "^1.0.0-alpha.8",
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-custom-scrollbars": "4.1.1",

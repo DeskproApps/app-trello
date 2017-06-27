@@ -8,8 +8,17 @@ import TrelloLabel from './TrelloLabel';
  * @return {TrelloBoard}
  */
 function parseTrelloBoardJS(board) {
-  const { id, name, url, labelNames } = board;
-  return new TrelloBoard({ id, name, url, labelNames });
+  const { id, name, url, labelNames, organization, idOrganization: organizationId } = board;
+
+  let orgProps = {};
+  if (organizationId) {
+    let {name : organizationName, displayName: organizationDisplayName} = organization;
+    orgProps = { organizationId, organizationName, organizationDisplayName }
+  }
+  const boardProps = { id, name, url, labelNames};
+  const props = {...boardProps, ...orgProps};
+
+  return new TrelloBoard(props);
 }
 
 /**
@@ -34,6 +43,7 @@ function parseTrelloListJS(list) {
  * @return {TrelloCard}
  */
 function parseTrelloCardJS(card) {
+
   const { list, board } = card;
   const parsedList = list ? parseTrelloListJS(list) : null;
   const parsedBoard = board ? parseTrelloBoardJS(board) : null;

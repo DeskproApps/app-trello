@@ -17,6 +17,7 @@ export default class TrelloApp extends React.Component {
     const key = '32388eb417f0326c4d75ab77c2a5d7e7';
     this.trelloApiClient = new TrelloApiClient(key);
     this.trelloServices = new TrelloServices();
+    this.stateTransitionCount = 0;
 
     this.initState();
   }
@@ -26,7 +27,7 @@ export default class TrelloApp extends React.Component {
 
     this.state = {
       authUser: null,
-      authState: null,
+      authToken: null,
       authorizedUIState: null,
       cards: null,
       boards: [],
@@ -59,107 +60,78 @@ export default class TrelloApp extends React.Component {
     return shouldUpdate;
   }
 
-  onStateChangeUpdateUI = (state) => {
+  onStateChangeUpdateUI = (state) =>
+  {
     const { ui } = this.props.dpapp;
     const { ticketState } = state;
 
-    ui.badgeCount = ticketState.trello_cards.length;
+    if (ticketState.trello_cards.length) {
+      ui.showBadgeCount();
+      ui.badgeCount = ticketState.trello_cards.length;
+    } else {
+      ui.hideBadgeCount();
+    }
   };
 
   componentDidMount()
   {
     const { dpapp } = this.props;
+    const { ui } = this.props.dpapp;
     const { ticketId } = this.state.ticketState;
 
     dpapp.on('app.refresh', () => {
-      this.sameUIStateTransition(Promise.resolve({ refreshCount: this.state.refreshCount + 1 }))
+      this.sameUIStateTransition(Promise.resolve({}), false)
     });
 
     dpapp.on('ui.show-settings', this.onUIShowSettings);
 
-    dpapp.ui.hideMenu();
-    dpapp.ui.showBadgeCount();
+    ui.hideMenu();
+    ui.hideBadgeCount();
 
     const { appState } = this.props.dpapp;
 
-    appState.asyncGetPrivate('auth')
-      .then(state => this.onExistingAuthStateReceived(state))
-      .then(() => this.retrieveTicketState(ticketId))
-      .catch(err => {
-        if (err instanceof AuthenticationRequiredError) {
-          this.setState({ uiState: 'authentication-required' });
-        }
-        return err;
-      })
-      .then(mixed => {
-        return mixed;
-      })
-      .then(mixed => {
-        if (mixed instanceof Error) {
-          throw mixed;
-        }
-        return mixed;
-      })
+    const transitionPromise = appState.asyncGetPrivate('auth')
+        .then(authToken => {
+          if (authToken) {
+            return this.onExistingAuthStateReceived(authToken)
+              .catch(error => {
+                console.log('ERROR: onExistingAuthStateReceived authentication failure', error);
+                return appState.asyncDeletePrivate('auth').then(() => Promise.reject(error));
+              });
+          }
+          return Promise.reject(new AuthenticationRequiredError('missing auth token'));
+        })
+        .then((authState) => this.retrieveTicketState(ticketId).then((ticketState) => ({ ...authState, ...ticketState })))
+        .then(state => { ui.showMenu(); return state;   })
     ;
+
+    this.sameUIStateTransition(transitionPromise, true);
   }
 
   onUIShowSettings = () => { alert('on settings clicked'); };
 
-  onExistingAuthStateReceived = (authState) =>
+  onExistingAuthStateReceived = (authToken) =>
   {
-    if (!authState) { return; }
-
-    const { dpapp } = this.props;
+    if (!authToken) { return {}; }
     const { trelloApiClient, trelloServices } = this;
-    const { appState } = this.props.dpapp;
 
-    trelloApiClient.setToken(authState);
-    trelloServices.getAuthUser(trelloApiClient)
-      .then(data => {
-        this.setState({ authState, authUser: data });
-        dpapp.ui.showMenu();
-
-        return data;
-      })
-      .catch(err => {
-        if (err instanceof AuthenticationRequiredError) {
-          return appState.asyncDeletePrivate('auth').then(() => Promise.reject(err));
-        }
-        return Promise.reject(err);
-      });
-
+    trelloApiClient.setToken(authToken);
+    return trelloServices.getAuthUser(trelloApiClient).then((data) => ({ authToken, authUser: data }));
   };
 
-  onNewAuthStateReceived = (authState) =>
+  onNewAuthStateReceived = (authToken) =>
   {
+    if (! authToken) { return {}; }
+
     const { trelloApiClient, trelloServices } = this;
+    const { appState} = this.props.dpapp;
 
-    if (authState) {
-      const { authorizedUIState } = this;
-      trelloApiClient.setToken(authState);
+    trelloApiClient.setToken(authToken);
 
-      const { appState, ui } = this.props.dpapp;
-
-      return trelloServices.getAuthUser(trelloApiClient)
-        .then(data => appState.asyncSetPrivate('auth', authState).then(() => data))
-        .then(data => {
-          this.setState({ authState, authUser: data, uiState: authorizedUIState });
-          ui.showMenu();
-          return authState;
-        });
-    }
-  };
-
-  onTicketStateReceived = newTicketState =>
-  {
-    const { trelloApiClient, trelloServices } = this;
-
-    const uiState = this.getInitialUIState();
-    const ticketState = newTicketState || this.state.ticketState; // TODO Must not overwrite state blindly like this !!!
-
-    trelloServices.getCardList(trelloApiClient, ticketState.trello_cards)
-      .then(linkedCards => this.setState({ ...uiState, ticketState, linkedCards }))
-    ;
+    return trelloServices.getAuthUser(trelloApiClient)
+      .then(data => appState.asyncSetPrivate('auth', authToken).then(() => data))
+      .then(data => ({ authToken, authUser: data }))
+      ;
   };
 
   /**
@@ -274,15 +246,6 @@ export default class TrelloApp extends React.Component {
     window.open(card.url, '_blank');
   };
 
-  getInitialUIState = () =>
-  {
-    const { authState } = this.state;
-    const authorizedUIState = 'ticket-loaded';
-    const uiState = authState ? authorizedUIState : 'authentication-required';
-
-    return { authorizedUIState, uiState };
-  };
-
   onAuthenticate = () => {
     const authOptions = {
       expiration: 'never',
@@ -295,59 +258,90 @@ export default class TrelloApp extends React.Component {
       },
       type: 'popup',
     };
-    const { dpapp } = this.props;
     const { trelloApiClient } = this;
     const { ticketId } = this.state.ticketState;
 
-    trelloApiClient.auth(authOptions)
+    const transitionPromise = trelloApiClient.auth(authOptions)
+      .then(() => this.nextUIStateTransition(this.initUiState, Promise.resolve({}), false))
       .then(() => trelloApiClient.token)
       .then(token => this.onNewAuthStateReceived(token))
-      .then(() => this.retrieveTicketState(ticketId))
-      .catch(err => { console.log('on authenticate error ', err); return err; })
-      .then(mixed => {
-        dpapp.ui.hideLoading();
-        return mixed;
-      });
+      .then((authState) =>
+        this.retrieveTicketState(ticketId).then((ticketState) => ({ ...authState, ...ticketState }))
+      );
+
+    this.nextUIStateTransition(this.initUiState, transitionPromise, true)
   };
 
   retrieveTicketState = ticketId =>
   {
     const { appState } = this.props.dpapp;
-    // notify dp the app is ready
-    return appState.asyncGetShared(ticketId).then(state => this.onTicketStateReceived(state));
-  };
+    const { trelloApiClient, trelloServices } = this;
+    const { ticketState: defaultTicketState } = this.state;
 
-  sameUIStateTransition = (transition) =>
-  {
-    const { uiState } = this.state;
-    return this.nextUIStateTransition(uiState, transition);
+    // notify dp the app is ready
+    return appState.asyncGetShared(ticketId)
+      .then(state => {
+        const ticketState = state || defaultTicketState;
+
+        if (ticketState.trello_cards.length) {
+          return trelloServices.getCardList(trelloApiClient, ticketState.trello_cards)
+            .then((linkedCards) => ({ linkedCards, ticketState }))
+        }
+
+        return { linkedCards: [], ticketState };
+      });
   };
 
   /**
-   * @param nextState
    * @param {Promise} transition
+   * @param {Boolean|undefined}hideLoader
    */
-  nextUIStateTransition = (nextState, transition) =>
+  sameUIStateTransition = (transition, hideLoader) =>
   {
+    const { uiState: nextUIState } = this.state;
+    return this.nextUIStateTransition(nextUIState, transition, hideLoader);
+  };
+
+  /**
+   * @param nextUIState
+   * @param {Promise} transition
+   * @param {Boolean|undefined}hideLoader
+   */
+  nextUIStateTransition = (nextUIState, transition, hideLoader) =>
+  {
+    if (!nextUIState) {
+      throw new Error('missing next ui state');
+    }
+
     const { dpapp } = this.props;
-    const { stateTransitionsCount } = this.state;
-    dpapp.ui.showLoading();
+    const stateTransitionsCount = this.stateTransitionCount++;
+
+    if (!hideLoader) {
+      dpapp.ui.showLoading();
+    }
 
     return transition.then(
-      value => {
+      newState => {
         dpapp.ui.hideLoading();
-        this.setState({ stateTransitionsCount: stateTransitionsCount+1, authorizedUIState: nextState, uiState: nextState, ...value });
-        return Promise.resolve(value);
+
+        const nextState = {
+          stateTransitionsCount,
+          authorizedUIState: nextUIState,
+          uiState: nextUIState,
+          ...newState
+        };
+
+        this.setState(nextState);
+        return Promise.resolve(newState);
       },
       error => {
         dpapp.ui.hideLoading();
+        console.log('ERROR: nextUIStateTransition', error);
 
         if (error instanceof AuthenticationRequiredError) {
-          this.setState({
-            stateTransitionsCount: stateTransitionsCount+1,
-            authorizedUIState: null,
-            uiState: 'authentication-required'
-          });
+          console.log('[AUTH]: ERROR ', error);
+          const nextState = {stateTransitionsCount, authorizedUIState: null, uiState: 'authentication-required'};
+          this.setState(nextState);
         }
 
         return Promise.reject(error) ;
@@ -386,7 +380,7 @@ export default class TrelloApp extends React.Component {
     };
 
     const onChange = (key, value, model) => {
-      let onChangePromise;
+      let stateChangePromise;
 
       if (key === 'board' && value) {
         const executor = data => {
@@ -395,11 +389,11 @@ export default class TrelloApp extends React.Component {
         };
         const board = boards.filter(board => board.id === value).pop();
 
-        onChangePromise = loadBoardLists(board).then(executor);
+        stateChangePromise = loadBoardLists(board).then(executor);
       }
 
-      if (onChangePromise) {
-        this.sameUIStateTransition(onChangePromise.then(finalState => { return finalState; }));
+      if (stateChangePromise) {
+        this.sameUIStateTransition(stateChangePromise, true);
       }
     };
 
@@ -476,19 +470,19 @@ export default class TrelloApp extends React.Component {
     };
 
     const onChange = (key, value, model) => {
-      let onChangePromise;
+      let stateChangePromise;
       const executor = data => ({ ...data, pickCardModel: model });
 
       if (key === 'board' && value) {
         const board = boards.filter(board => board.id === value).pop();
-        onChangePromise = loadBoardLists(board).then(executor);
+        stateChangePromise = loadBoardLists(board).then(executor);
       } else if (key === 'list' && value) {
         const list = lists.filter(list => list.id === value).pop();
-        onChangePromise = loadListCards(list).then(executor);
+        stateChangePromise = loadListCards(list).then(executor);
       }
 
-      if (onChangePromise) {
-        this.sameUIStateTransition(onChangePromise.then(finalState => { return finalState; }));
+      if (stateChangePromise) {
+        this.sameUIStateTransition(stateChangePromise, false);
       }
     };
 
@@ -533,7 +527,7 @@ export default class TrelloApp extends React.Component {
       }
 
       if (onSearchPromise) {
-        this.sameUIStateTransition(onSearchPromise);
+        this.sameUIStateTransition(onSearchPromise, false);
       }
 
     };
@@ -585,7 +579,7 @@ export default class TrelloApp extends React.Component {
      * @param {TrelloCard} card
      */
     const onUnlinkCard = card => {
-      this.sameUIStateTransition(this.onUnlinkTrelloCard(card));
+      this.sameUIStateTransition(this.onUnlinkTrelloCard(card), false);
     };
 
     return (
