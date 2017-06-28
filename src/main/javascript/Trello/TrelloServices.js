@@ -325,7 +325,7 @@ class TrelloServices
    */
   createCardLinkedComment = (trelloApiClient, card, ticketUrl) =>
   {
-    const comment = `card linked to deskpro ticket: ${ticketUrl}`;
+    const comment = `Card linked to DeskPRO ticket: ${ticketUrl}`;
     return this.createComment(trelloApiClient, card, comment);
   };
 
@@ -337,7 +337,7 @@ class TrelloServices
    */
   createCardUnlinkedComment = (trelloApiClient, card, ticketUrl) =>
   {
-    const comment = `card unlinked from deskpro ticket: ${ticketUrl}`;
+    const comment = `Card **unlinked** from DeskPRO ticket: ${ticketUrl}`;
     return this.createComment(trelloApiClient, card, comment);
   };
 

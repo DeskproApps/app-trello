@@ -1,6 +1,6 @@
 {
   "name": "deskproapps-trello",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {

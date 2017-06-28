@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "appVersion": "0.2.0",
+  "appVersion": "0.2.1",
   "name": "deskproapps-trello",
   "title": "Trello",
   "description": "This application adds a sidebar that lets you link tickets to trello cards",
