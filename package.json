@@ -1,6 +1,6 @@
 {
   "name": "deskproapps-trello",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DeskproApps/trello.git"
+    "url": "git+https://github.com/DeskproApps/app-trello.git"
   },
   "keywords": [
     "deskpro",
@@ -24,9 +24,9 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DeskproApps/trello/issues"
+    "url": "https://github.com/DeskproApps/app-trello/issues"
   },
-  "homepage": "https://github.com/DeskproApps/trello#readme",
+  "homepage": "https://github.com/DeskproApps/app-trello#readme",
   "dependencies": {
     "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.9"
   },
