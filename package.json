@@ -1,6 +1,6 @@
 {
-  "name": "deskproapps-trello",
-  "version": "0.2.2",
+  "name": "deskpro-app-trello",
+  "version": "0.2.3",
   "description": "Trello integration built with deskpro apps sdk",
   "main": "lib/main/javascript/index.js",
   "scripts": {
@@ -28,7 +28,7 @@
   },
   "homepage": "https://github.com/DeskproApps/app-trello#readme",
   "dependencies": {
-    "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.9"
+    "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.11"
   },
   "devDependencies": {
     "error-wrapper": "2.1.0",
@@ -38,5 +38,17 @@
     "semantic-ui-react": "0.67.2",
     "superagent": "3.5.2",
     "superagent-promise": "1.1.0"
+  },
+  "deskpro" : {
+    "version": "2.1.0",
+    "title": "Trello",
+    "isSingle": true,
+    "scope": "agent",
+    "targets": [
+      { "target": "ticket-sidebar", "url": "html/index.html" }
+    ],
+    "settings": [],
+    "deskproApiTags": ["tickets.*"],
+    "externalApis": []
   }
 }
