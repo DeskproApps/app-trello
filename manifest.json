@@ -16,5 +16,19 @@
   ],
   "settings": [],
   "deskpro_api_tags": ["tickets.*"],
-  "external_apis": []
+  "external_apis": [],
+  "state" : [
+    {
+      "name": "auth",
+      "isBackendOnly": false,
+      "permRead": "OWNER",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "cards",
+      "isBackendOnly": false,
+      "permRead": "OWNER",
+      "permWrite": "OWNER"
+    }
+  ]
 }
