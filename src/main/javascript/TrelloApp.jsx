@@ -35,6 +35,7 @@ export default class TrelloApp extends React.Component {
 
       stateTransitionsCount: 0,
       ticketState: { ticketId, trello_cards: [] },
+      linkedCards: [],
 
       uiState: this.initUiState,
 
@@ -89,8 +90,7 @@ export default class TrelloApp extends React.Component {
     ui.hideBadgeCount();
 
     const { state } = this.props.dpapp;
-
-    const transitionPromise = appState.getAppState('auth')
+    const transitionPromise = state.getAppState('auth')
         .then(authToken => {
           if (authToken) {
             return this.onExistingAuthStateReceived(authToken)
