@@ -1,11 +1,11 @@
 {
   "name": "deskpro-app-trello",
-  "version": "0.2.3",
+  "version": "0.2.4-beta.1",
   "description": "This application adds a sidebar that lets you link tickets to trello cards",
   "main": "lib/main/javascript/index.js",
   "scripts": {
     "dev": "dpat server .",
-    "package": "dpat clean . && dpat compile . && dpat package .",
+    "package": "dpat clean . && dpat compile . && dpat verify ./dist && dpat package .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "dependencies": {
-    "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.11"
+    "@deskproapps/deskproapps-sdk-react": "1.0.0-beta.1"
   },
   "devDependencies": {
     "@deskproapps/dpat": "0.4.9",
