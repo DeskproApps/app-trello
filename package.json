@@ -1,7 +1,7 @@
 {
   "name": "deskpro-app-trello",
   "version": "0.2.3",
-  "description": "Trello integration built with deskpro apps sdk",
+  "description": "This application adds a sidebar that lets you link tickets to trello cards",
   "main": "lib/main/javascript/index.js",
   "scripts": {
     "dev": "dpat server .",
@@ -10,27 +10,27 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DeskproApps/app-trello.git"
+    "url": "git+https://github.com/DeskproApps/trello.git"
   },
   "keywords": [
     "deskpro",
-    "apps",
-    "deskpro",
-    "sdk"
+    "deskpro apps"
   ],
   "author": {
-    "name": "Deskproapps",
-    "email": "apps@deskpro.com"
+    "name": "DeskPRO Ltd.",
+    "email": "apps@deskpro.com",
+    "url": "https://deskpro.com"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/DeskproApps/app-trello/issues"
+    "url": "https://github.com/DeskproApps/trello/issues"
   },
-  "homepage": "https://github.com/DeskproApps/app-trello#readme",
+  "homepage": "https://github.com/DeskproApps/trello#readme",
   "dependencies": {
     "@deskproapps/deskproapps-sdk-react": "1.0.0-alpha.11"
   },
   "devDependencies": {
+    "@deskproapps/dpat": "0.4.9",
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-custom-scrollbars": "4.1.1",
@@ -44,8 +44,22 @@
     "title": "Trello",
     "isSingle": true,
     "scope": "agent",
+    "state" : [
+      {
+        "name": "auth",
+        "isBackendOnly": false,
+        "permRead": "OWNER",
+        "permWrite": "OWNER"
+      },
+      {
+        "name": "cards",
+        "isBackendOnly": false,
+        "permRead": "OWNER",
+        "permWrite": "OWNER"
+      }
+    ],
     "targets": [
-      { "target": "ticket-sidebar", "url": "html/index.html" }
+      { "target": "ticket-sidebar", "url": "html/ticket-sidebar.html" }
     ],
     "settings": [],
     "deskproApiTags": ["tickets.*"],
