@@ -1,6 +1,6 @@
 {
   "name": "deskpro-app-trello",
-  "version": "0.2.4-beta.2",
+  "version": "0.2.4-beta.3",
   "dependencies": {
     "@deskproapps/deskproapps-sdk-core": {
       "version": "1.0.0-beta.9",
