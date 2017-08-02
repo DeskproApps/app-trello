@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "dependencies": {
-    "@deskproapps/deskproapps-sdk-react": "1.0.0-beta.2"
+    "@deskproapps/deskproapps-sdk-react": "^1.0.0-beta.3"
   },
   "devDependencies": {
     "@deskproapps/dpat": "0.4.9",
@@ -39,12 +39,12 @@
     "superagent": "3.5.2",
     "superagent-promise": "1.1.0"
   },
-  "deskpro" : {
+  "deskpro": {
     "version": "2.1.0",
     "title": "Trello",
     "isSingle": true,
     "scope": "agent",
-    "state" : [
+    "state": [
       {
         "name": "auth",
         "isBackendOnly": false,
@@ -59,10 +59,15 @@
       }
     ],
     "targets": [
-      { "target": "ticket-sidebar", "url": "html/ticket-sidebar.html" }
+      {
+        "target": "ticket-sidebar",
+        "url": "html/ticket-sidebar.html"
+      }
     ],
     "settings": [],
-    "deskproApiTags": ["tickets.*"],
+    "deskproApiTags": [
+      "tickets.*"
+    ],
     "externalApis": []
   }
 }
