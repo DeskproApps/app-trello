@@ -69,6 +69,9 @@
       "tickets.*"
     ],
     "externalApis": []
+  },
+  "optionalDependencies": {
+    "changelog-verify": "1.0.4",
+    "version-changelog": "2.1.0"
   }
-
 }
