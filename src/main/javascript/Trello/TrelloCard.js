@@ -51,6 +51,17 @@ class TrelloCard
   get labels() { return this.props.labels; }
 
   /**
+   * @param {String} newUrl
+   * @return {TrelloCard}
+   */
+  changeUrl = newUrl => {
+    const { url, ...rest } = this.props;
+    const newProps = Object.assign({}, this.props, { url: newUrl });
+
+    return new TrelloCard(newProps);
+  };
+
+  /**
    * @param {String} newId
    * @return {TrelloCard}
    */

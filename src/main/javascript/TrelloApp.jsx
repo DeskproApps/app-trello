@@ -64,11 +64,14 @@ export default class TrelloApp extends React.Component {
   onStateChangeUpdateUI = (state) =>
   {
     const { ui } = this.props.dpapp;
-    const { ticketState } = state;
+    const { linkedCards } = state;
 
-    if (ticketState.trello_cards.length) {
+    // instead of looking at ticketState, we look at linkedCards which reflects the tickets we actually retrieved from
+    // trello
+
+    if (linkedCards.length) {
       ui.showBadgeCount();
-      ui.badgeCount = ticketState.trello_cards.length;
+      ui.badgeCount = linkedCards.length;
     } else {
       ui.hideBadgeCount();
     }
@@ -181,7 +184,7 @@ export default class TrelloApp extends React.Component {
           return card;
       })
       .then(card => trelloServices.createCard(trelloApiClient, card))
-      .then(newCard => card.changeId(newCard.id))
+      .then(newCard => card.changeId(newCard.id).changeUrl(newCard.url))
       .then(newCard => this.onLinkTrelloCard(newCard))
       ;
   };
