@@ -4,6 +4,8 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.4-beta.5][] - 2017-08-16
+
 ### Changed
  - update dependencies
  - starting project changelog
@@ -12,3 +14,7 @@ This project is following [Semantic Versioning](http://semver.org)
  - missing url property of newly created card prevents visiting card on Trello
  - badge count not updated after card was deleted on Trello
 
+
+
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.4-beta.5...HEAD
+[0.2.4-beta.5]: https://github.com/DeskproApps/trello/tree/v0.2.4-beta.5
