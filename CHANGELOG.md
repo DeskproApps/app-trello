@@ -4,6 +4,10 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.4][] - 2017-08-22
+
+QA passed
+
 ## [0.2.4-beta.5][] - 2017-08-16
 
 ### Changed
@@ -16,5 +20,6 @@ This project is following [Semantic Versioning](http://semver.org)
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.4-beta.5...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.4...HEAD
+[0.2.4]: https://github.com/DeskproApps/trello/compare/v0.2.4-beta.5...v0.2.4
 [0.2.4-beta.5]: https://github.com/DeskproApps/trello/tree/v0.2.4-beta.5
