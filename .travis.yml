@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- '6'
+install:
+- npm install --no-optional && npm install @deskproapps/dpat@0.5.2
+script:
+- npm run package
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: OXrL4Hn3fd+QKFyiKFQWlr2v8XKEy9kWuhGXTgWRPsDK7nkc38vCBB9nikLrjS4gj7FiZsjC1MYRxoXTlLlNshpXduOITdvL03mfWYnDlGUk7ybFcYemBZ5yFgEMXR7fnvE9Wk/Sv11dVoNHxSHwpLnxcNKO3VUBD0yHeYgvjGwVA/7xwmmt3lSqb8w3BHv7TNlF4i/qN+rJieg01hXMvjGa851rM7PPdEtWAxoIP4e0gvtFOrGExp5YXEHq40hSSOn1r2DM3ESvxZnyuqVGcYI2p+ouIc4JkNFp8ExJVH4eD2xCkKB7+JzFzbOGsoHgRROr5IB5qFf53jSynVQHdbvMeLejzGIaI+kmvYxOH62ysq3YjhYbv0V2oh3e6lJDkFjGSnHia00+TGGKP/Zf8So2y+BUAXzAy7c3u8dYGApY/QvWwyvheACskn2wJ81W8V/o2+c9b/TyV3IPNy0YjnXzVE5kTzcs/D/KUvQMjnN0o+rHkFTBw31IWtOZ6FR61+Gdhr60spwkRa/5xiUg0V5WKd2pfgkZ/L+rjFmEfvIphEpm98WIa4ktNFM8tc8DIqEOWvgO94iRaCy2SxMkhpytyEWcy0Eq7SqHw51qod3VCVeiEd07GBtdF/taKcobD/UNUc7Yy3AYwvU4mR6gPeow8vdQEysI8AUFjHCg6G8=
+  file: dist/app.zip
+  on:
+    repo: DeskproApps/trello
+    tags: true
