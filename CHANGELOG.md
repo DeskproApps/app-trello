@@ -4,6 +4,11 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.5][] - 2017-08-31
+
+### Fixed 
+ - unable to share linked cards due to incorrect access settings in manifest
+ 
 ## [0.2.4][] - 2017-08-22
 
 QA passed
@@ -20,6 +25,7 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.4...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.5...HEAD
+[0.2.5]: https://github.com/DeskproApps/trello/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/DeskproApps/trello/compare/v0.2.4-beta.5...v0.2.4
 [0.2.4-beta.5]: https://github.com/DeskproApps/trello/tree/v0.2.4-beta.5
