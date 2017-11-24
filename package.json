@@ -1,11 +1,11 @@
 {
   "name": "deskpro-app-trello",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "This application adds a sidebar that lets you link tickets to trello cards",
   "main": "lib/main/javascript/index.js",
   "scripts": {
     "dev": "dpat server .",
-    "package": "dpat clean . && dpat compile . && dpat verify ./dist && dpat package .",
+    "package": "dpat clean . && dpat compile . && dpat bundle-installer . && dpat verify ./dist && dpat package .",
     "test": "echo \"Error: no test specified\" && exit 1",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md"
   },
@@ -28,10 +28,10 @@
   },
   "homepage": "https://github.com/DeskproApps/trello#readme",
   "dependencies": {
-    "@deskproapps/deskproapps-sdk-react": "1.0.0-beta.5"
+    "@deskproapps/deskproapps-sdk-react": "1.0.0-beta.9"
   },
   "devDependencies": {
-    "@deskproapps/dpat": "0.5.2",
+    "@deskpro/apps-dpat": "^0.9.6",
     "error-wrapper": "2.1.0",
     "react": "15.5.3",
     "react-custom-scrollbars": "4.1.1",
@@ -41,11 +41,17 @@
     "superagent-promise": "1.1.0"
   },
   "deskpro": {
-    "version": "2.1.0",
+    "version": "2.3.0",
     "title": "Trello",
     "isSingle": true,
     "scope": "agent",
-    "state": [
+    "storage": [
+      {
+        "name": "install",
+        "isBackendOnly": false,
+        "permRead": "EVERYBODY",
+        "permWrite": "OWNER"
+      },
       {
         "name": "auth",
         "isBackendOnly": false,
@@ -66,6 +72,14 @@
       }
     ],
     "settings": [],
+    "customFields": [
+      {
+        "type": "dataList",
+        "attachedTo": "ticket",
+        "alias": "trelloCards",
+        "title": "Trello linked cards"
+      }
+    ],
     "deskproApiTags": [
       "tickets.*"
     ],

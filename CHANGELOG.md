@@ -4,6 +4,15 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+### Added
+
+ - error message when app fails to initialize
+ - upgrade to to @deskpro/apps-dpat v0.9.5 
+
+### Changed
+ - update dependencies
+ - using ticket custom fields to store trello cards
+ 
 ## [0.2.5][] - 2017-08-31
 
 ### Fixed 
