@@ -4,6 +4,8 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.6][] - 2017-11-24
+
 ### Added
 
  - error message when app fails to initialize
@@ -34,7 +36,8 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.5...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.6...HEAD
+[0.2.5]: https://github.com/DeskproApps/trello/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/DeskproApps/trello/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/DeskproApps/trello/compare/v0.2.4-beta.5...v0.2.4
 [0.2.4-beta.5]: https://github.com/DeskproApps/trello/tree/v0.2.4-beta.5
