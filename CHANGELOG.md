@@ -4,6 +4,16 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.7-beta.2][] - 2017-12-13
+
+### Fixed 
+ - remove hardcoded container widths 
+
+### Changed 
+
+ - upgrade to @deskpro/apps-sdk-react version 0.2.4
+ - upgrade to @deskpro/react-components version 1.2.4 
+
 ## [0.2.7-beta.1][] - 2017-12-13
 
 ### Changed
@@ -45,7 +55,8 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.1...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.2...HEAD
+[0.2.7-beta.2]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.1...v0.2.7-beta.2
 [0.2.7-beta.1]: https://github.com/DeskproApps/trello/compare/v0.2.6...v0.2.7-beta.1
 [0.2.6]: https://github.com/DeskproApps/trello/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/DeskproApps/trello/compare/v0.2.4...v0.2.5
