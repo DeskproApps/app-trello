@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layout } from '@deskproapps/deskproapps-sdk-react';
+import { Section } from '@deskpro/react-components';
 
 import CardListComponent from './CardListComponent';
 
@@ -9,9 +9,9 @@ const LinkedCardsSection = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =
   }
 
   return (
-    <Layout.Section title="LINKED CARDS">
+    <Section title="LINKED CARDS">
       <CardListComponent cards={cards} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} onSelectCard={onSelectCard} />
-    </Layout.Section>
+    </Section>
   )};
 
 LinkedCardsSection.propTypes = {

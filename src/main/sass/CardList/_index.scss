@@ -34,9 +34,9 @@ $options-menu-width: 40px;
   }
 }
 
-.trelloapp-card-list .options-multiple:hover .options-hint { $color: $dp-sonic-primary }
+.dp-trello-card-list .options-multiple:hover .options-hint { $color: $dp-sonic-primary }
 
-.trelloapp-card-list .options-multiple .options-hint
+.dp-trello-card-list .options-multiple .options-hint
 {
   position: absolute;
   z-index: 2;
@@ -45,7 +45,6 @@ $options-menu-width: 40px;
   bottom: 0;
 
   width: $options-menu-width;
-  @include border-via-box-shadow($dp-sonic-primary);
 
   color: $dp-greyscale-950;
   background-color: #FFFFFF;
@@ -56,7 +55,7 @@ $options-menu-width: 40px;
   &:hover ~ .options:not(:hover) { left: 80%; }
 }
 
-.trelloapp-card-list .options-multiple .options
+.dp-trello-card-list .options-multiple .options
 {
   position: absolute;
   z-index: 4;
@@ -72,34 +71,22 @@ $options-menu-width: 40px;
 
   &:hover { left: 80%; }
 
-  nav {
-    border: solid 1px $dp-sonic-primary;
-    border-right-width: 0;
-    box-shadow: -1px 0 0 0 $dp-sonic-primary inset; /* right */
-    border-radius: 0.285714rem;
-    background-color: rgba(255,255,255, 1);
-  }
+  //nav {
+  //  border: solid 1px $dp-sonic-primary;
+  //  border-right-width: 0;
+  //  box-shadow: -1px 0 0 0 $dp-sonic-primary inset; /* right */
+  //  border-radius: 0.285714rem;
+  //  background-color: rgba(255,255,255, 1);
+  //}
 }
 
-.trelloapp-card-list .options nav
+.dp-trello-card-list .options-single, .dp-trello-card-list options-multiple
 {
-  position: absolute;
-  padding: 0.25em;
-
-  i.option
-  {
-    color: $dp-greyscale-400;
-    display: block;
-    text-align: left;
-
-    margin-bottom: 0.25em;
-
-    &:last-child { margin-bottom: 0; }
-    &:hover { color: $dp-sonic-primary; }
-  }
+  padding: 0.5em;
+  border-left: solid 1px $dp-sonic-primary;
 }
 
-.trelloapp-card-list .options-single
+.dp-trello-card-list .options-single
 {
   position: absolute;
   z-index: 2;
@@ -108,7 +95,6 @@ $options-menu-width: 40px;
   bottom: 0;
 
   width: $options-menu-width;
-  @include border-via-box-shadow($dp-sonic-primary);
 
   color: $dp-greyscale-950;
   background-color: #FFFFFF;
@@ -119,38 +105,33 @@ $options-menu-width: 40px;
 }
 
 
-.trelloapp-card-list
+.dp-trello-card-list
 {
   position: relative;
-  border-radius: 0.285714rem;
-  border: solid 1px #dedede;
-  @include border-via-box-shadow(transparent);
-  &:hover { @include border-via-box-shadow($dp-sonic-primary); }
 }
 
-.trelloapp-card-list .trelloapp-card-list-item
+ul.dp-list .dp-trello-card-list
+{
+  padding-left: 0;
+}
+
+.dp-trello-card-list-item
 {
   position: relative;
   overflow: hidden;
 
-  @include border-via-box-shadow($color: transparent, $bottom: #CCCCCC);
-
-  &:last-child
-  {
-    @include border-via-box-shadow($color: transparent);
-  }
-
   &:hover
   {
-    @include border-via-box-shadow($color: $dp-sonic-primary);
     .options-multiple .options-hint { right: 0; }
     .options-single { right: 0; }
   }
 
+  .link {
+    cursor: pointer;
+  }
+
   .content
   {
-    padding-left: 0.5em;
-
     .card-title {
       color: $dp-greyscale-950;
     }
@@ -164,9 +145,7 @@ $options-menu-width: 40px;
     .list-name { max-width: 50px; }
 
     &:hover {
-      @include border-via-box-shadow($color: transparent, $top: $dp-sonic-primary, $bottom: $dp-sonic-primary);
       background-color: $light-blue;
-
       .card-title, .board-name, .list-name, .content { color: $dp-sonic-primary }
     }
   }
@@ -180,31 +159,4 @@ $options-menu-width: 40px;
     white-space: nowrap;
     text-overflow: ellipsis;
   }
-}
-
-.trelloapp-card-list.borderless
-{
-  border: none;
-  &:hover { @include border-via-box-shadow(none); }
-}
-
-.trelloapp-card-list.borderless .options-hint
-{
-  box-shadow:
-    0 1px 0 0 $dp-sonic-primary inset, /* top */
-    0 -1px 0 0 $dp-sonic-primary inset, /* bottom */
-    1px 0 0 0 $dp-sonic-primary inset /* left */
-  ;
-
-}
-
-.trelloapp-card-list.borderless .trelloapp-card-list-item
-{
-  &:hover {
-    @include border-via-box-shadow($color: transparent, $top: $dp-sonic-primary, $bottom: $dp-sonic-primary);
-  }
-}
-
-.trelloapp-card-list .trelloapp-card-list-item.link {
-  cursor: pointer;
 }

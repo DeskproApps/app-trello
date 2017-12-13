@@ -1,10 +1,14 @@
 import ReactDOM from 'react-dom';
-import { DeskproAppContainer } from '@deskproapps/deskproapps-sdk-react';
+import { DeskproSDK, configureStore } from '@deskpro/apps-sdk-react';
 import TrelloApp from './TrelloApp';
 
 export function runApp(app) {
+
+  const store = configureStore(app);
+
   ReactDOM.render(
-    <DeskproAppContainer app={app} name={'Trello'} mainComponent={TrelloApp} />,
+    <DeskproSDK dpapp={app} store={store} component={TrelloApp} />,
     document.getElementById('deskpro-app')
   );
+
 }

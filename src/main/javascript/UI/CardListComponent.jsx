@@ -1,6 +1,5 @@
 import React from 'react';
-import { Icon } from 'semantic-ui-react';
-import { Scrollbars } from 'react-custom-scrollbars';
+import { Scrollbar, List, ListElement, Icon } from '@deskpro/react-components';
 
 class CardCommand {
   /**
@@ -134,14 +133,12 @@ function renderTitle(card, cardIndex) {
  */
 function renderCardOption(card, cardIndex, cardOption) {
   const { command, iconName } = cardOption;
+
   return (
     <Icon
       key={['icon', command.name, card.id].join('-')}
-      link
-      fitted
-      size="large"
+      size="l"
       name={iconName}
-      className="option"
       data-card-list-command={[command.name, cardIndex].join(':')}
     />
   );
@@ -153,8 +150,8 @@ function renderCardOptionsLayout(card, cardIndex, cardOptions) {
   if (options.length == 1) {
     return (
       <div className="options-single">
-        <div className="options">
-          <nav>{options}</nav>
+        <div className="options link">
+          {options}
         </div>
       </div>
     );
@@ -166,7 +163,7 @@ function renderCardOptionsLayout(card, cardIndex, cardOptions) {
         <i className="ellipsis horizontal large icon"/>
       </div>
 
-      <div className="options">
+      <div className="options link">
         <nav>{options}</nav>
       </div>
     </div>
@@ -181,8 +178,7 @@ function renderCardOptionsLayout(card, cardIndex, cardOptions) {
  */
 function renderCard(renderOptions, card, cardIndex, cardOptions) {
   return (
-    <div className="ui trelloapp-card-list-item">
-
+    <ListElement className="dp-trello-card-list-item">
       {renderCardOptionsLayout(card, cardIndex, cardOptions)}
 
       <div className="link content" data-card-list-command={['selectcard', cardIndex].join(':')}>
@@ -190,7 +186,7 @@ function renderCard(renderOptions, card, cardIndex, cardOptions) {
         {renderOptions.showCardLocation ? renderCardLocation(card, cardIndex) : null}
         {renderPeopleList(card, cardIndex)}
       </div>
-    </div>
+    </ListElement>
   );
 }
 
@@ -209,13 +205,13 @@ const CardListComponent = ({ cards, showCardLocation, showBorder, onGotoCard, on
   if (onGotoCard) {
     command = new CardCommand('gotocard', onGotoCard);
     commands.push(command);
-    cardOptions.push(new CardOption('sign in', command));
+    cardOptions.push(new CardOption('sign-in', command));
   }
 
   if (onUnlinkCard) {
     command = new CardCommand('unlinkcard', onUnlinkCard);
     commands.push(command);
-    cardOptions.push(new CardOption('broken chain', command));
+    cardOptions.push(new CardOption('chain-broken', command));
   }
 
   if (onSelectCard) {
@@ -224,15 +220,15 @@ const CardListComponent = ({ cards, showCardLocation, showBorder, onGotoCard, on
   }
 
   const children = cards.map((card, cardIndex) => renderCard(renderOptions, card, cardIndex, cardOptions));
-  const classNames = ['trelloapp-card-list'];
-  if (!showBorder) {
-    classNames.push('borderless');
-  }
+  const classNames = ['dp-form-group'];
+
   return (
     <div onClick={createOnClickHandler(cards, commands)} className={classNames.join(' ')}>
-      <Scrollbars renderThumbVertical={renderScrollbarThumb} autoHeightMax={400} autoHeight={true} autoHideTimeout={500}>
-      {children}
-      </Scrollbars>
+      <Scrollbar renderThumbVertical={renderScrollbarThumb} autoHeightMax={400} autoHeight={true} autoHideTimeout={500}>
+        <List className="dp-trello-card-list">
+          {children}
+        </List>
+      </Scrollbar>
     </div>
   );
 };

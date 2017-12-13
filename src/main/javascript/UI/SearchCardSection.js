@@ -1,6 +1,7 @@
 import React from 'react';
-import { Layout } from '@deskproapps/deskproapps-sdk-react';
-import { Divider } from 'semantic-ui-react';
+
+import { Section, Button, Container, Group } from '@deskpro/react-components';
+
 import CardsListComponent from './CardListComponent';
 import SearchInputComponent from './SearchInputComponent';
 
@@ -11,28 +12,25 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
   const onSearchButtonClick = () => { if (searchInput) { onSearchChange(searchInput); };  };
 
   return (
-    <Layout.Section title="SEARCH FOR A CARD">
-      <Layout.Block>
+    <Container class="dp-jira">
+      <Section title="SEARCH FOR A CARD">
+
         <SearchInputComponent
-          fluid
-          placeholder="Search card or paste URL..."
+          placeholder="Enter text or paste URL..."
           minCharacters={3}
           onSearch={onSearchChange}
           onChange={onChange}
         />
-      </Layout.Block>
 
-      <Layout.Block>
         <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} showBorder={true} />
-      </Layout.Block>
 
-      <Layout.Block>
-        <Layout.Button onClick={onSearchButtonClick}>Search</Layout.Button>
-        <Divider hidden />
-        <Layout.Button onClick={onCancel}>Cancel</Layout.Button>
-      </Layout.Block>
+        <div className="dp-trello-form-buttons dp-form-group">
+          <Button onClick={onSearchButtonClick}>Search</Button>
+          <Button type="secondary" onClick={onCancel}>Cancel</Button>
+        </div>
 
-    </Layout.Section>
+      </Section>
+    </Container>
   );
 };
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon, Input } from 'semantic-ui-react';
+import { Input, Group } from '@deskpro/react-components';
 
 class SearchInputComponent extends React.Component {
 
@@ -35,11 +35,8 @@ class SearchInputComponent extends React.Component {
     }
   };
 
-  handleSearchChange = (e) => {
-    e.stopPropagation();
-    const newQuery = e.target.value;
+  handleSearchChange = (newQuery) => {
     this.setState({ query: newQuery });
-
     const { onChange, minCharacters } = this.props;
     if (onChange && newQuery.length >= minCharacters) {
       onChange(newQuery);
@@ -56,16 +53,15 @@ class SearchInputComponent extends React.Component {
     const { query } = this.state;
 
     return (
-      <Input
-        value={query}
-        icon
-        focus
-        onChange={this.handleSearchChange}
-        {...inputProps}
-      >
-        <input onKeyDown={this.handleOnKeyDown} autofocus/>
-        <Icon name="search" />
-      </Input>
+      <Group>
+        <Input
+          value={query}
+          icon="search"
+          onChange={this.handleSearchChange}
+          onKeyDown={this.handleOnKeyDown}
+          {...inputProps}
+        />
+      </Group>
     );
   }
 }

@@ -1,12 +1,10 @@
 import React from "react";
-import {Form, Layout} from "@deskproapps/deskproapps-sdk-react";
-import TrelloBoard from '../Trello/TrelloBoard';
+
+import { Form, Input, Textarea, Datepicker, validators, Select } from '@deskpro/react-components/lib/bindings/redux-form';
+import { Section, Button, Container, HiddenFields } from '@deskpro/react-components';
+import { SubmitButton } from './SubmitButton';
 
 const createNewListOption = { value: 'trello.newList', label: '--- CREATE LIST ---' };
-
-const transformListToOption = (list) => {
-  return { value: list.id, label: list.name};
-};
 
 const transformBoardToOptionGroup = (board, defaultLabel) => {
   const {organization: org} = board;
@@ -15,7 +13,7 @@ const transformBoardToOptionGroup = (board, defaultLabel) => {
   return { label, options: [] };
 };
 
-const transformBoardToOption= (board, defaultGroup) => {
+const transformBoardToOption = (board, defaultGroup) => {
   const {organization: org} = board;
 
   const group = org.id ? org.displayName ? org.displayName  : org.name : defaultGroup;
@@ -24,123 +22,6 @@ const transformBoardToOption= (board, defaultGroup) => {
     label: board.name,
     group
   };
-};
-
-/**
- * @param {Array<TrelloBoard>} boards
- * @param {Array<TrelloList>} lists
- */
-const getFieldsDefinition = (boards, lists) => {
-    return {
-        board: {
-            schema: {
-                type: String,
-                optional: false,
-                blackbox: true
-                // allowed values will be constructed from the list of options returned by ui.options
-                // allowedValues: boards.map(board => board.id),
-            },
-            ui: {
-                placeholder: 'Please select',
-                label: 'BOARD',
-                groups() {
-                  const sort = (a, b) => a < b ? -1 : a > b ? 1 : 0;
-                  const unique = (item, pos, prevItem) => !pos || item != prevItem;
-                  const defaultLabel = 'Personal Boards';
-
-                  const groups = boards.map((board) => transformBoardToOptionGroup(board, defaultLabel))
-                    .sort((a,b) => sort(a.label, b.label))
-                    .filter((item, pos, ary) => unique(item.label, pos, pos ? ary[pos - 1].label : null))
-                  ;
-
-                  // put the default groups on top
-                  const groupsWithoutDefault = groups.filter((group) => group.label !== defaultLabel);
-                  if (groupsWithoutDefault.length === groups.length) { return groups; }
-
-                  const defaultGroups = groups.filter((group) => group.label === defaultLabel);
-                  return defaultGroups.concat(groupsWithoutDefault);
-                },
-                options() {
-                  const defaultGroup = 'Personal Boards';
-                  return boards.map((board) => transformBoardToOption(board, defaultGroup));
-                }
-            }
-        },
-        list: {
-            schema: {
-                type: String,
-                optional: false
-                // allowed values will be constructed from the list of options returned by ui.options
-                // allowedValues: lists.map(list => list.id).concat([createNewListOption.value])
-            },
-            ui: {
-                placeholder: 'Please select',
-                label: 'LIST',
-                options() {
-                  const allLists = lists.map(transformListToOption);
-                  return [{ ...createNewListOption}].concat(allLists);
-                }
-            }
-        },
-        newList: {
-          schema: {
-            type: String,
-            optional: true,
-            min: 1
-          },
-          ui: {
-            placeholder: 'Please enter list name',
-            label: 'LIST'
-          }
-        },
-        title: {
-            schema: {
-                type: String,
-                optional: false
-            }
-        },
-        description: {
-            schema: {
-                type: String,
-                optional: true
-            },
-            ui: {
-                label: 'DESCRIPTION',
-                component: Form.FieldTypes.Textarea
-            }
-        },
-        duedate: {
-            schema: {
-                type: Date,
-                optional: true
-            },
-            ui: {
-                placeholder: 'dd / mm / yyyy',
-                label: 'DUE DATE'
-            }
-        },
-        labels: {
-            schema: {
-                type: String,
-                optional: true
-            },
-            ui: {
-                placeholder: 'Add by name',
-                label: 'LABELS'
-            }
-        },
-        subscribe: {
-            schema: {
-                type: String,
-                defaultValue: 'yes',
-                allowedValues: ['yes', 'no'],
-                optional: true
-            },
-            ui: {
-                label: 'SUBSCRIBE'
-            }
-        },
-    };
 };
 
 class CreateCardSection extends React.Component {
@@ -162,97 +43,127 @@ class CreateCardSection extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { showOptionalFields: false, showCreateList: false };
+    this.state = {
+      showOptionalFields: false,
+      showCreateList: false,
+      isSubmitting: false,
+      values: {}
+    };
   }
 
-  toggleOptionalFieldsVisibility  = () => {
-    const { showOptionalFields } = this.state;
-    this.setState({ showOptionalFields: !showOptionalFields });
-  };
+  handleOnSubmit = (values) => {
 
-  handleOnSubmit = (model, ...others) => {
-
-    const { showCreateList } = this.state;
     const { onSubmit } = this.props;
+    const { showCreateList } = this.state;
 
     //make sure newList does not get included in the model if we don't have that option selected
-    const newModel = showCreateList ? model : { ...model, newList: null };
-    onSubmit(...[newModel, ...others]);
+    const nextModel = {
+      ...values,
+      list: showCreateList ? null : values.list,
+      newList: showCreateList ? values.newList : null
+    };
+
+    this.setState({
+      isSubmitting: true
+    });
+
+    onSubmit(nextModel);
   };
 
-  handleOnChangeEvent = (key, value, model) => {
-
-    let internalEvent = false;
-    let showCreateList = null;
-    if (key === 'list') {
-      showCreateList = value === createNewListOption.value;
-      internalEvent = showCreateList;
-    } else if (key === 'board') {
-      showCreateList = false;
+  onChange = (values, dispatch, props) => {
+    if (!props) { // not the event we're expecting
+      return;
     }
+    const showCreateList = values.list === createNewListOption.value;
 
-    if (showCreateList !== null) {
-      this.setState({ showCreateList });
+    if (this.state.showCreateList !== showCreateList) {
+      this.setState({ showCreateList});
     }
+  };
 
-    if (internalEvent) { return ; }
-
+  onBoardChange = (value) => {
     const { onChange } = this.props;
-    onChange(key, value, model);
+    const nextModel = { board: value };
+    onChange('board', value, nextModel);
   };
 
   render () {
-    const { boards, lists } = this.props;
-    const defaultModel = { board: boards.length ? boards[0].id : null, list: lists.length ? lists[0].id : null, newList: null };
-
-    const { showOptionalFields, showCreateList } = this.state;
-    const fields = getFieldsDefinition(boards , lists);
-
-
-    const hiddenStyle = { display: 'none' };
-    const visibleStyle = { display: 'block' };
-    const toggleOptionalFieldsLabel = showOptionalFields ? 'HIDE OPTIONAL FIELDS' : 'SHOW 2 OPTIONAL FIELDS';
-
-    const { model:injectedModel, onSubmit, onChange, onCancel } = this.props;
-    let model = injectedModel || defaultModel;
-    model = showCreateList ? { ...model, newList: null } : model;
+    const { boards, lists, model } = this.props;
+    const { showOptionalFields, showCreateList, isSubmitting } = this.state;
+    const { onCancel } = this.props;
 
     // <Layout.Block label="ATTACHEMENTS">
     //   <Layout.Button> Choose files </Layout.Button>
     // </Layout.Block>
 
     return (
-      <Layout.Section title="CREATE A NEW CARD">
-        <Form.Form
-          fields={fields}
-          model={ model }
-          submitLabel={"Create card"}
-          onSubmit={this.handleOnSubmit}
-          onChange={this.handleOnChangeEvent}
-          onCancel={onCancel}
-        >
-          <Form.Fields fields={['board']} />
+      <Container class="dp-jira">
+        <Section title="CREATE A NEW CARD">
 
-          <Layout.Block style={showCreateList ? hiddenStyle: visibleStyle}>
-            <Form.Fields fields={['list']} />
-          </Layout.Block>
+          <Form name="create_card" onSubmit={this.handleOnSubmit} onChange={this.onChange} initialValues={{
+            board: model && model.board ? model.board : boards.length ? boards[0].id : null,
+            list: lists.length ? lists[0].id : null
+          }}>
 
-          <Layout.Block style={showCreateList ? visibleStyle : hiddenStyle}>
-            <Form.Fields fields={['newList']} />
-          </Layout.Block>
+            <Select
+              label="Board"
+              id="board"
+              name="board"
+              options={ boards.map(board => transformBoardToOption(board, 'Personal Boards')) }
+              onChange={ this.onBoardChange }
+            />
 
-          <Form.Fields fields={['title', 'description']} />
+            <Select
+              label="List"
+              id="list"
+              name="list"
+              options={ lists.map(list => ({ value: list.id, label: list.name})).concat([createNewListOption]) }
 
-          <Layout.Block style={showOptionalFields ? visibleStyle : hiddenStyle}>
-            <Form.Fields fields={['duedate', 'labels']} />
-          </Layout.Block>
+            />
 
-          <Layout.Block>
-            <a href="#" onClick={this.toggleOptionalFieldsVisibility} className="text small">{toggleOptionalFieldsLabel}</a>
-          </Layout.Block>
-        </Form.Form>
-      </Layout.Section>
+            { showCreateList && <Input
+              label="List"
+              id="newList"
+              name="newList"
+              validate={ validators.required }
+            /> }
+
+            <Input label="Title" id="title" name="title" validate={validators.required} />
+
+            <Textarea
+              label="Description"
+              id="description"
+              name="description"
+            />
+
+            <HiddenFields
+              className="dp-form-group"
+              opened={showOptionalFields}
+              labelShow={"SHOW 2 OPTIONAL FIELDS"}
+              labelHide={"HIDE OPTIONAL FIELDS"}
+            >
+
+              <Datepicker
+                label="DUE DATE"
+                id="duedate"
+                name="duedate"
+              />
+
+              <Textarea label="Labels" id="labels" name="labels"/>
+
+            </HiddenFields>
+
+            <div className="dp-trello-form-buttons dp-form-group">
+              <SubmitButton disabled={isSubmitting}> Create </SubmitButton>
+              <Button type="secondary" onClick={(e) => { e.preventDefault(); onCancel(e); }}> Cancel </Button>
+            </div>
+
+          </Form>
+
+        </Section>
+      </Container>
     );
+
   }
 }
 

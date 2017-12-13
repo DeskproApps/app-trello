@@ -1,11 +1,8 @@
 import React from 'react';
-import { Layout, Form } from '@deskproapps/deskproapps-sdk-react';
+import { Form, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
+import { Section, Button, Container, Group, Label } from '@deskpro/react-components';
 
 import CardsListComponent from './CardListComponent';
-
-const transformListToOption = (list) => {
-  return { value: list.id, label: list.name};
-};
 
 const transformBoardToOptionGroup = (board, defaultLabel) => {
   const {organization: org} = board;
@@ -25,80 +22,67 @@ const transformBoardToOption= (board, defaultGroup) => {
   };
 };
 
-/**
- * @param {Array<TrelloBoard>} boards
- * @param {Array<TrelloList>} lists
- */
-function getFieldsDefinition(boards, lists) {
-  return {
-    board: {
-      schema: {
-        type: String,
-        optional: false,
-        // allowed values will be constructed from the list of options returned by ui.options
-        // allowedValues: boards.map(board => board.id)
-      },
-      ui: {
-        placeholder: 'Please select',
-        label: 'BOARD',
-        groups() {
-          const sort = (a, b) => a < b ? -1 : a > b ? 1 : 0;
-          const unique = (item, pos, prevItem) => !pos || item != prevItem;
-          const defaultLabel = 'Personal Boards';
+const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, boards, lists, cards, ...otherProps }) => {
+  const board = model && model.board ? model.board : boards.length ? boards[0] : null;
+  const list = model && model.list ? model.list : lists.length ? lists[0] : null;
 
-          const groups = boards.map((board) => transformBoardToOptionGroup(board, defaultLabel))
-              .sort((a,b) => sort(a.label, b.label))
-              .filter((item, pos, ary) => unique(item.label, pos, pos ? ary[pos - 1].label : null))
-            ;
+  const onModelChange = (value, key) => {
+    let nextModel = null;
 
-          // put the default groups on top
-          const groupsWithoutDefault = groups.filter((group) => group.label !== defaultLabel);
-          if (groupsWithoutDefault.length === groups.length) { return groups; }
+    if (key === 'board') {
+      const board = boards.filter(board => board.id === value).pop();
+      nextModel  = {...model, board };
+    } else if (key === 'list') {
+      const list = lists.filter(list => list.id === value).pop();
+      nextModel  = {...model, list }
+    }
 
-          const defaultGroups = groups.filter((group) => group.label === defaultLabel);
-          return defaultGroups.concat(groupsWithoutDefault);
-        },
-        options() {
-          const defaultGroup = 'Personal Boards';
-          return boards.map((board) => transformBoardToOption(board, defaultGroup));
-        }
-      }
-    },
-    list: {
-      schema: {
-        type: String,
-        optional: false,
-        // allowed values will be constructed from the list of options returned by ui.options
-        // allowedValues: lists.map(list => list.id)
-      },
-      ui: {
-        placeholder: 'Please select',
-        label: 'LIST',
-        options() { return lists.map(transformListToOption); }
-      }
+    if (nextModel) {
+      onChange(key, value, nextModel);
     }
   };
-}
-
-const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onSubmit, onChange, model, boards, lists, cards, ...otherProps }) => {
-  const fields = getFieldsDefinition(boards || [], lists || []);
-  const defaultModel = { board: boards.length ? boards[0].id : null, list: lists.length ? lists[0].id : null };
 
   return (
-    <Layout.Section title="PICK AN EXISTING CARD">
-      <Form.Form
-        fields={fields}
-        model={model || defaultModel}
-        onSubmit={onSubmit}
-        onChange={onChange}
-        onCancel={onCancel}
-      >
-        <Form.Fields fields={['board', 'list']} />
-        <Layout.Block label="CARDS">
-          <CardsListComponent cards={cards || []} onGotoCard={onGotoCard} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
-        </Layout.Block>
-      </Form.Form>
-    </Layout.Section>
+    <Container class="dp-jira">
+      <Section title="PICK AN EXISTING CARD">
+
+        <Form name="pick_card" initialValues={{
+          board: model && model.board ? model.board.id : boards.length ? boards[0].id : null,
+          list: lists.length ? lists[0].id : null
+        }}>
+
+          <Select
+            id="board"
+            name="board"
+            label="Board"
+            value={ board ? board.id : null }
+            options={ boards.map(board => transformBoardToOption(board, 'Personal Boards')) }
+            validate={ validators.required }
+            onChange={ onModelChange }
+          />
+
+          <Select
+            id="list"
+            name="list"
+            label="List"
+            value={ list ? list.id : null }
+            options={ lists.map(list => ({ value: list.id, label: list.name})) }
+            validate={ validators.required }
+            onChange={ onModelChange }
+          />
+
+          <Group label="Cards" >
+            <CardsListComponent cards={cards || []} onGotoCard={onGotoCard} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
+          </Group>
+
+          <Button onClick={(e) => { e.preventDefault(); onCancel(e); }}>
+            Cancel
+          </Button>
+
+        </Form>
+
+      </Section>
+    </Container>
   );
 };
 

@@ -7,6 +7,8 @@ import AuthenticationRequiredError from './AuthenticationRequiredError';
 import {InstallError} from './InstallError';
 import { CreateCardSection, LinkedCardsSection, LinkToCardSection, PickCardSection, SearchCardSection, AuthenticationRequiredPage } from './UI';
 
+import { Container } from '@deskpro/react-components';
+
 export default class TrelloApp extends React.Component {
 
   static propTypes = { dpapp: React.PropTypes.object.isRequired };
@@ -407,7 +409,6 @@ export default class TrelloApp extends React.Component {
     };
 
     return (
-      <div>
         <CreateCardSection
           onCancel={onCancel}
           onSubmit={onSubmit}
@@ -416,7 +417,6 @@ export default class TrelloApp extends React.Component {
           boards={boards}
           lists={lists}
         />
-      </div>
     );
   };
 
@@ -483,11 +483,9 @@ export default class TrelloApp extends React.Component {
       const executor = data => ({ ...data, pickCardModel: model });
 
       if (key === 'board' && value) {
-        const board = boards.filter(board => board.id === value).pop();
-        stateChangePromise = loadBoardLists(board).then(executor);
+        stateChangePromise = loadBoardLists(model.board).then(executor );
       } else if (key === 'list' && value) {
-        const list = lists.filter(list => list.id === value).pop();
-        stateChangePromise = loadListCards(list).then(executor);
+        stateChangePromise = loadListCards(model.list).then(executor);
       }
 
       if (stateChangePromise) {
@@ -504,18 +502,16 @@ export default class TrelloApp extends React.Component {
     const onGotoCard = this.onGoToTrelloCard;
 
     return (
-      <div>
-        <PickCardSection
-          onGotoCard={onGotoCard}
-          onSelectCard={onSelectCard}
-          onCancel={onCancel}
-          onChange={onChange}
-          model={pickCardModel}
-          boards={boards}
-          lists={lists}
-          cards={cards}
-        />
-      </div>
+      <PickCardSection
+        onGotoCard={onGotoCard}
+        onSelectCard={onSelectCard}
+        onCancel={onCancel}
+        onChange={onChange}
+        model={pickCardModel}
+        boards={boards || []}
+        lists={lists || []}
+        cards={cards}
+      />
     );
   };
 
@@ -555,15 +551,13 @@ export default class TrelloApp extends React.Component {
     const onGotoCard = this.onGoToTrelloCard;
 
     return (
-      <div>
-        <SearchCardSection
-          cards={cards}
-          onGotoCard={onGotoCard}
-          onSelectCard={onSelectCard}
-          onCancel={onCancel}
-          onSearchChange={onSearchChange}
-        />
-      </div>
+      <SearchCardSection
+        cards={cards}
+        onGotoCard={onGotoCard}
+        onSelectCard={onSelectCard}
+        onCancel={onCancel}
+        onSearchChange={onSearchChange}
+      />
     );
   };
 
@@ -592,10 +586,10 @@ export default class TrelloApp extends React.Component {
     };
 
     return (
-      <div>
+      <Container class="dp-jira">
         <LinkedCardsSection cards={linkedCards} onSelectCard={onGotoCard} onUnlinkCard={onUnlinkCard} />
         <LinkToCardSection onPick={onPick} onCreate={onCreate} onSearch={onSearch} />
-      </div>
+      </Container>
     );
   };
 
@@ -604,9 +598,9 @@ export default class TrelloApp extends React.Component {
 
     switch (uiState) {
       case 'error':
-        return (<div> The app encountered an error. Try re-opening the ticket. </div>);
+        return (<Container class="dp-jira">The app encountered an error. Try re-opening the ticket. </Container>);
       case 'admin-install-required':
-        return (<div> Your admin has not installed the app yet.</div>);
+        return (<Container class="dp-jira">Your admin has not installed the app yet.</Container>);
       case 'authentication-required':
         return this.renderAuthenticationRequired();
       case 'create-card':

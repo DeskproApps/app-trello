@@ -4,6 +4,15 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.7-beta.1][] - 2017-12-13
+
+### Changed
+ - use latest version of apps-sdk-react
+
+### Fixed 
+ - duplicate cards created by repeatedly pressing the create card button 
+
+
 ## [0.2.6][] - 2017-11-24
 
 ### Added
@@ -36,8 +45,9 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.6...HEAD
-[0.2.5]: https://github.com/DeskproApps/trello/compare/v0.2.5...v0.2.6
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.1...HEAD
+[0.2.7-beta.1]: https://github.com/DeskproApps/trello/compare/v0.2.6...v0.2.7-beta.1
+[0.2.6]: https://github.com/DeskproApps/trello/compare/v0.2.5...v0.2.6
 [0.2.5]: https://github.com/DeskproApps/trello/compare/v0.2.4...v0.2.5
 [0.2.4]: https://github.com/DeskproApps/trello/compare/v0.2.4-beta.5...v0.2.4
 [0.2.4-beta.5]: https://github.com/DeskproApps/trello/tree/v0.2.4-beta.5

@@ -1,14 +1,14 @@
 import React from 'react';
-import { Layout } from '@deskproapps/deskproapps-sdk-react';
+import { Container, Button } from '@deskpro/react-components';
 
 const AuthenticationRequiredPage = ({ onAuthenticate }) => (
-  <Layout.Section>
+  <Container class="dp-jira">
     <p>
       Sign into your Trello account to get started:
     </p>
 
-    <Layout.Button primary onClick={onAuthenticate}>Login with Trello</Layout.Button>
-  </Layout.Section>
+    <Button primary onClick={onAuthenticate}>Login with Trello</Button>
+  </Container>
 );
 
 AuthenticationRequiredPage.propTypes = {

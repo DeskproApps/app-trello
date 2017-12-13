@@ -1,16 +1,23 @@
 import React from 'react';
-import { Divider } from 'semantic-ui-react';
-import { Layout } from '@deskproapps/deskproapps-sdk-react';
+import { Section, Button, Group } from '@deskpro/react-components';
 
 const LinkToCardSection = ({ onCreate, onPick, onSearch }) => {
   return (
-    <Layout.Section title="LINK TO ANOTHER CARD">
-      <Layout.Button onClick={onSearch}>Search for card</Layout.Button>
-      <Divider hidden />
-      <Layout.Button onClick={onPick}>Pick card</Layout.Button>
-      <Divider hidden />
-      <Layout.Button onClick={onCreate}>Create new card</Layout.Button>
-    </Layout.Section>
+    <div className="dp-trello-main-nav">
+      <Section title="LINK A TRELLO CARD" >
+        <div className="dp-form-group">
+          <Button onClick={onSearch}>Search for card</Button>
+        </div>
+
+        <div className="dp-form-group">
+          <Button onClick={onPick}>Pick card</Button>
+        </div>
+
+        <div className="dp-form-group">
+          <Button onClick={onCreate}>Create new card</Button>
+        </div>
+      </Section>
+    </div>
   )};
 
 LinkToCardSection.propTypes = {

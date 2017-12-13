@@ -1,4 +1,51 @@
+$dp-styles-font-path: "~@deskpro/react-components/src/styles/fonts/";
+@import "~@deskpro/react-components/src/styles/main.scss";
+
+/** normalize **/
+$viewport-width: 240px;
+
+html.deskpro-sidebar
+{
+  height: auto;
+  margin: 0;
+  padding: 0;
+}
+
+/** globals **/
+.deskpro-sidebar {
+  body {
+    height: inherit; // must be overwritten to allow for autoresize in xcomponent
+    width: $viewport-width;
+    min-width: $viewport-width;
+    max-width: $viewport-width;
+    margin: 0;
+  }
+}
+
+.dp-trello-main-nav {
+
+  .dp-button {
+    width: 100%;
+  }
+}
+
+.dp-trello-form-buttons {
+
+  .dp-button--primary {
+    float: left
+  }
+
+  .dp-button--secondary {
+    float: right
+  }
+
+  clear: both;
+}
+
 @import "./deskpro/colors";
-@import "./semantic-ui/globals/reset.overrides";
 @import "./CardList/index";
+
+
+
+
 
