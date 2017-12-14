@@ -586,7 +586,7 @@ export default class TrelloApp extends React.Component {
     };
 
     return (
-      <Container class="dp-jira">
+      <Container className="dp-trello-container">
         <LinkedCardsSection cards={linkedCards} onSelectCard={onGotoCard} onUnlinkCard={onUnlinkCard} />
         <LinkToCardSection onPick={onPick} onCreate={onCreate} onSearch={onSearch} />
       </Container>
@@ -598,9 +598,9 @@ export default class TrelloApp extends React.Component {
 
     switch (uiState) {
       case 'error':
-        return (<Container class="dp-jira">The app encountered an error. Try re-opening the ticket. </Container>);
+        return (<Container className="dp-trello-container">The app encountered an error. Try re-opening the ticket. </Container>);
       case 'admin-install-required':
-        return (<Container class="dp-jira">Your admin has not installed the app yet.</Container>);
+        return (<Container className="dp-trello-container">Your admin has not installed the app yet.</Container>);
       case 'authentication-required':
         return this.renderAuthenticationRequired();
       case 'create-card':

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Section, Button, Container, Group } from '@deskpro/react-components';
+import { Heading, Button, Container, Group } from '@deskpro/react-components';
 
 import CardsListComponent from './CardListComponent';
 import SearchInputComponent from './SearchInputComponent';
@@ -12,24 +12,21 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
   const onSearchButtonClick = () => { if (searchInput) { onSearchChange(searchInput); };  };
 
   return (
-    <Container class="dp-jira">
-      <Section title="SEARCH FOR A CARD">
+    <Container className="dp-trello-container">
+      <Heading size={2}>SEARCH FOR CARD</Heading>
+      <SearchInputComponent
+        placeholder="Enter text or paste URL..."
+        minCharacters={3}
+        onSearch={onSearchChange}
+        onChange={onChange}
+      />
 
-        <SearchInputComponent
-          placeholder="Enter text or paste URL..."
-          minCharacters={3}
-          onSearch={onSearchChange}
-          onChange={onChange}
-        />
+      <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} showBorder={true} />
 
-        <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} showBorder={true} />
-
-        <div className="dp-trello-form-buttons dp-form-group">
-          <Button onClick={onSearchButtonClick}>Search</Button>
-          <Button type="secondary" onClick={onCancel}>Cancel</Button>
-        </div>
-
-      </Section>
+      <div className="dp-trello-form-buttons dp-form-group">
+        <Button onClick={onSearchButtonClick}>Search</Button>
+        <Button type="secondary" onClick={onCancel}>Cancel</Button>
+      </div>
     </Container>
   );
 };

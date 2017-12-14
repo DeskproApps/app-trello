@@ -4,6 +4,12 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.7-beta.3][] - 2017-12-14
+
+### Fixed 
+ - remove semantic-ui styles which caused style and scroll issues
+ - style changes
+
 ## [0.2.7-beta.2][] - 2017-12-13
 
 ### Fixed 
@@ -55,7 +61,8 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.2...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.3...HEAD
+[0.2.7-beta.3]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.2...v0.2.7-beta.3
 [0.2.7-beta.2]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.1...v0.2.7-beta.2
 [0.2.7-beta.1]: https://github.com/DeskproApps/trello/compare/v0.2.6...v0.2.7-beta.1
 [0.2.6]: https://github.com/DeskproApps/trello/compare/v0.2.5...v0.2.6

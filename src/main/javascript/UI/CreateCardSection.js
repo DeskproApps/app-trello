@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Form, Input, Textarea, Datepicker, validators, Select } from '@deskpro/react-components/lib/bindings/redux-form';
-import { Section, Button, Container, HiddenFields } from '@deskpro/react-components';
+import { Heading, Button, Container, HiddenFields } from '@deskpro/react-components';
 import { SubmitButton } from './SubmitButton';
 
 const createNewListOption = { value: 'trello.newList', label: '--- CREATE LIST ---' };
@@ -97,70 +97,68 @@ class CreateCardSection extends React.Component {
     // </Layout.Block>
 
     return (
-      <Container class="dp-jira">
-        <Section title="CREATE A NEW CARD">
+      <Container className="dp-trello-container">
+        <Heading size={2}>CREATE A NEW CARD</Heading>
 
-          <Form name="create_card" onSubmit={this.handleOnSubmit} onChange={this.onChange} initialValues={{
-            board: model && model.board ? model.board : boards.length ? boards[0].id : null,
-            list: lists.length ? lists[0].id : null
-          }}>
+        <Form name="create_card" onSubmit={this.handleOnSubmit} onChange={this.onChange} initialValues={{
+          board: model && model.board ? model.board : boards.length ? boards[0].id : null,
+          list: lists.length ? lists[0].id : null
+        }}>
 
-            <Select
-              label="Board"
-              id="board"
-              name="board"
-              options={ boards.map(board => transformBoardToOption(board, 'Personal Boards')) }
-              onChange={ this.onBoardChange }
+          <Select
+            label="Board"
+            id="board"
+            name="board"
+            options={ boards.map(board => transformBoardToOption(board, 'Personal Boards')) }
+            onChange={ this.onBoardChange }
+          />
+
+          <Select
+            label="List"
+            id="list"
+            name="list"
+            options={ lists.map(list => ({ value: list.id, label: list.name})).concat([createNewListOption]) }
+
+          />
+
+          { showCreateList && <Input
+            label="List"
+            id="newList"
+            name="newList"
+            validate={ validators.required }
+          /> }
+
+          <Input label="Title" id="title" name="title" validate={validators.required} />
+
+          <Textarea
+            label="Description"
+            id="description"
+            name="description"
+          />
+
+          <HiddenFields
+            className="dp-form-group"
+            opened={showOptionalFields}
+            labelShow={"SHOW 2 OPTIONAL FIELDS"}
+            labelHide={"HIDE OPTIONAL FIELDS"}
+          >
+
+            <Datepicker
+              label="DUE DATE"
+              id="duedate"
+              name="duedate"
             />
 
-            <Select
-              label="List"
-              id="list"
-              name="list"
-              options={ lists.map(list => ({ value: list.id, label: list.name})).concat([createNewListOption]) }
+            <Textarea label="Labels" id="labels" name="labels"/>
 
-            />
+          </HiddenFields>
 
-            { showCreateList && <Input
-              label="List"
-              id="newList"
-              name="newList"
-              validate={ validators.required }
-            /> }
+          <div className="dp-trello-form-buttons dp-form-group">
+            <SubmitButton disabled={isSubmitting}> Create </SubmitButton>
+            <Button type="secondary" onClick={(e) => { e.preventDefault(); onCancel(e); }}> Cancel </Button>
+          </div>
 
-            <Input label="Title" id="title" name="title" validate={validators.required} />
-
-            <Textarea
-              label="Description"
-              id="description"
-              name="description"
-            />
-
-            <HiddenFields
-              className="dp-form-group"
-              opened={showOptionalFields}
-              labelShow={"SHOW 2 OPTIONAL FIELDS"}
-              labelHide={"HIDE OPTIONAL FIELDS"}
-            >
-
-              <Datepicker
-                label="DUE DATE"
-                id="duedate"
-                name="duedate"
-              />
-
-              <Textarea label="Labels" id="labels" name="labels"/>
-
-            </HiddenFields>
-
-            <div className="dp-trello-form-buttons dp-form-group">
-              <SubmitButton disabled={isSubmitting}> Create </SubmitButton>
-              <Button type="secondary" onClick={(e) => { e.preventDefault(); onCancel(e); }}> Cancel </Button>
-            </div>
-
-          </Form>
-
-        </Section>
+        </Form>
       </Container>
     );
 

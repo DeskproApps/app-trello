@@ -1,5 +1,5 @@
 import React from 'react';
-import { Section } from '@deskpro/react-components';
+import { Container, Heading } from '@deskpro/react-components';
 
 import CardListComponent from './CardListComponent';
 
@@ -9,9 +9,11 @@ const LinkedCardsSection = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =
   }
 
   return (
-    <Section title="LINKED CARDS">
+    <Container className="dp-trello-container">
+      <Heading size={2}>LINKED CARDS</Heading>
+
       <CardListComponent cards={cards} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} onSelectCard={onSelectCard} />
-    </Section>
+    </Container>
   )};
 
 LinkedCardsSection.propTypes = {

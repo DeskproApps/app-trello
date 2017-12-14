@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
-import { Section, Button, Container, Group, Label } from '@deskpro/react-components';
+import { Heading, Button, Container, Group, Label } from '@deskpro/react-components';
 
 import CardsListComponent from './CardListComponent';
 
@@ -43,45 +43,41 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, 
   };
 
   return (
-    <Container class="dp-jira">
-      <Section title="PICK AN EXISTING CARD">
+    <Container className="dp-trello-container">
+      <Heading size={2}>PICK A CARD</Heading>
+      <Form name="pick_card" initialValues={{
+        board: model && model.board ? model.board.id : boards.length ? boards[0].id : null,
+        list: lists.length ? lists[0].id : null
+      }}>
 
-        <Form name="pick_card" initialValues={{
-          board: model && model.board ? model.board.id : boards.length ? boards[0].id : null,
-          list: lists.length ? lists[0].id : null
-        }}>
+        <Select
+          id="board"
+          name="board"
+          label="Board"
+          value={ board ? board.id : null }
+          options={ boards.map(board => transformBoardToOption(board, 'Personal Boards')) }
+          validate={ validators.required }
+          onChange={ onModelChange }
+        />
 
-          <Select
-            id="board"
-            name="board"
-            label="Board"
-            value={ board ? board.id : null }
-            options={ boards.map(board => transformBoardToOption(board, 'Personal Boards')) }
-            validate={ validators.required }
-            onChange={ onModelChange }
-          />
+        <Select
+          id="list"
+          name="list"
+          label="List"
+          value={ list ? list.id : null }
+          options={ lists.map(list => ({ value: list.id, label: list.name})) }
+          validate={ validators.required }
+          onChange={ onModelChange }
+        />
 
-          <Select
-            id="list"
-            name="list"
-            label="List"
-            value={ list ? list.id : null }
-            options={ lists.map(list => ({ value: list.id, label: list.name})) }
-            validate={ validators.required }
-            onChange={ onModelChange }
-          />
+        <Group label="Cards" >
+          <CardsListComponent cards={cards || []} onGotoCard={onGotoCard} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
+        </Group>
 
-          <Group label="Cards" >
-            <CardsListComponent cards={cards || []} onGotoCard={onGotoCard} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
-          </Group>
-
-          <Button onClick={(e) => { e.preventDefault(); onCancel(e); }}>
-            Cancel
-          </Button>
-
-        </Form>
-
-      </Section>
+        <Button onClick={(e) => { e.preventDefault(); onCancel(e); }}>
+          Cancel
+        </Button>
+      </Form>
     </Container>
   );
 };
