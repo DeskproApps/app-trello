@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Button } from '@deskpro/react-components';
 
 const AuthenticationRequiredPage = ({ onAuthenticate }) => (
-  <Container class="dp-jira">
+  <Container class="dp-trello-container">
     <p>
       Sign into your Trello account to get started:
     </p>

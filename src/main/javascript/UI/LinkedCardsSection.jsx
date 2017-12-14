@@ -10,7 +10,7 @@ const LinkedCardsSection = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =
 
   return (
     <Container className="dp-trello-container">
-      <Heading size={2}>LINKED CARDS</Heading>
+      <Heading size={3}>Linked cards</Heading>
 
       <CardListComponent cards={cards} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} onSelectCard={onSelectCard} />
     </Container>

@@ -5,7 +5,7 @@ const LinkToCardSection = ({ onCreate, onPick, onSearch }) => {
   return (
 
     <div className="dp-trello-main-nav">
-      <Heading size={2}>LINK A CARD</Heading>
+      <Heading size={3}>Link a card</Heading>
 
       <div className="dp-form-group">
         <Button onClick={onSearch}>Search for card</Button>

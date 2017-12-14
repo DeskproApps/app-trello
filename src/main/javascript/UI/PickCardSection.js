@@ -44,7 +44,7 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, 
 
   return (
     <Container className="dp-trello-container">
-      <Heading size={2}>PICK A CARD</Heading>
+      <Heading size={3}>Pick a card</Heading>
       <Form name="pick_card" initialValues={{
         board: model && model.board ? model.board.id : boards.length ? boards[0].id : null,
         list: lists.length ? lists[0].id : null

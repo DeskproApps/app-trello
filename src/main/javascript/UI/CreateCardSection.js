@@ -98,7 +98,7 @@ class CreateCardSection extends React.Component {
 
     return (
       <Container className="dp-trello-container">
-        <Heading size={2}>CREATE A NEW CARD</Heading>
+        <Heading size={3}>Create a card</Heading>
 
         <Form name="create_card" onSubmit={this.handleOnSubmit} onChange={this.onChange} initialValues={{
           board: model && model.board ? model.board : boards.length ? boards[0].id : null,

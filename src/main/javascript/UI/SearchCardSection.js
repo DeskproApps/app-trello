@@ -13,7 +13,7 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
 
   return (
     <Container className="dp-trello-container">
-      <Heading size={2}>SEARCH FOR CARD</Heading>
+      <Heading size={3}>Search for card</Heading>
       <SearchInputComponent
         placeholder="Enter text or paste URL..."
         minCharacters={3}
