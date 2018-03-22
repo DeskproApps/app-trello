@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
+import { Form, Select, validators } from '@deskpro/redux-components';
 import { Heading, Button, Container, Group, Label } from '@deskpro/react-components';
 
 import CardsListComponent from './CardListComponent';

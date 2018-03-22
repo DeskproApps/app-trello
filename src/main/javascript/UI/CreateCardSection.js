@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Form, Input, Textarea, Datepicker, validators, Select } from '@deskpro/react-components/lib/bindings/redux-form';
+import { Form, Input, Textarea, Datepicker, Select, validators } from '@deskpro/redux-components';
 import { Heading, Button, Container, HiddenFields } from '@deskpro/react-components';
 import { SubmitButton } from './SubmitButton';
 
