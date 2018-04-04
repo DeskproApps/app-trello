@@ -1,17 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Container, Button } from '@deskpro/react-components';
 
 const AuthenticationRequiredPage = ({ onAuthenticate }) => (
-  <Container class="dp-trello-container">
+  <Container className="dp-trello-container">
     <p>
       Sign into your Trello account to get started:
     </p>
 
-    <Button primary onClick={onAuthenticate}>Login with Trello</Button>
+    <Button onClick={onAuthenticate}>Login with Trello</Button>
   </Container>
 );
 
 AuthenticationRequiredPage.propTypes = {
-  onAuthenticate: React.PropTypes.func.isRequired
+  onAuthenticate: PropTypes.func.isRequired
 };
 export default AuthenticationRequiredPage;

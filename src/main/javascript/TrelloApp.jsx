@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import * as TrellParsers from './Trello/TrelloParsers';
 import { TrelloApiClient, TrelloApiError, TrelloServices, TrelloClientError, parseTrelloCardUrl } from './Trello';
@@ -11,7 +12,7 @@ import { Container } from '@deskpro/react-components';
 
 export default class TrelloApp extends React.Component {
 
-  static propTypes = { dpapp: React.PropTypes.object.isRequired };
+  static propTypes = { dpapp: PropTypes.object.isRequired };
 
   constructor(props) {
 
@@ -29,7 +30,7 @@ export default class TrelloApp extends React.Component {
   }
 
   initState = () => {
-    const { entityId: ticketId } = this.props.dpapp.context;
+    const { id: ticketId } = this.props.dpapp.context.object;
 
     this.state = {
       authUser: null,
@@ -222,7 +223,7 @@ export default class TrelloApp extends React.Component {
     const newLinkedCardIds = newLinkedCards.map(card => card.id);
 
     const { context } = this.props.dpapp;
-    const { tabUrl } = this.props.dpapp.context;
+    const { tabUrl } = this.props.dpapp.context.hostUI;
     const { trelloApiClient, trelloServices } = this;
 
     return context.customFields.setField(`app:${this.props.dpapp.instanceId}:${this.customField}`, newLinkedCardIds)
@@ -247,7 +248,7 @@ export default class TrelloApp extends React.Component {
 
     const { trelloApiClient, trelloServices } = this;
     const { context } = this.props.dpapp;
-    const { tabUrl } = context;
+    const { tabUrl } = context.hostUI;
 
     return context.customFields.setField(`app:${this.props.dpapp.instanceId}:${this.customField}`, newLinkedCardIds)
       .then(() => trelloServices.createCardUnlinkedComment(trelloApiClient, card, tabUrl))

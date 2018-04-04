@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { Heading, Button, Container, Group } from '@deskpro/react-components';
 
@@ -33,11 +34,11 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
 
 
 SearchCardSection.propTypes = {
-  cards: React.PropTypes.array,
-  onCancel: React.PropTypes.func,
-  onSearchChange: React.PropTypes.func,
-  onSelectCard: React.PropTypes.func,
-  onGotoCard: React.PropTypes.func
+  cards: PropTypes.array,
+  onCancel: PropTypes.func,
+  onSearchChange: PropTypes.func,
+  onSelectCard: PropTypes.func,
+  onGotoCard: PropTypes.func
 };
 
 export default SearchCardSection;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Container, Heading, Button, Group } from '@deskpro/react-components';
 
 const LinkToCardSection = ({ onCreate, onPick, onSearch }) => {
@@ -23,8 +24,8 @@ const LinkToCardSection = ({ onCreate, onPick, onSearch }) => {
   )};
 
 LinkToCardSection.propTypes = {
-  onCreate: React.PropTypes.func.isRequired,
-  onPick: React.PropTypes.func.isRequired,
-  onSearch: React.PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired,
+  onPick: PropTypes.func.isRequired,
+  onSearch: PropTypes.func.isRequired,
 };
 export default LinkToCardSection;

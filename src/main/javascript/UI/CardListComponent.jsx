@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Scrollbar, List, ListElement, Icon } from '@deskpro/react-components';
 
 class CardCommand {
@@ -246,12 +247,12 @@ const renderScrollbarThumb = ({ style, ...props }) => {
 };
 
 CardListComponent.propTypes = {
-  cards: React.PropTypes.array.isRequired,
-  showCardLocation: React.PropTypes.bool,
-  showBorder: React.PropTypes.bool,
-  onGotoCard: React.PropTypes.func,
-  onUnlinkCard: React.PropTypes.func,
-  onSelectCard: React.PropTypes.func,
+  cards: PropTypes.array.isRequired,
+  showCardLocation: PropTypes.bool,
+  showBorder: PropTypes.bool,
+  onGotoCard: PropTypes.func,
+  onUnlinkCard: PropTypes.func,
+  onSelectCard: PropTypes.func,
 };
 
 CardListComponent.defaultProps = {

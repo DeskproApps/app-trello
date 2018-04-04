@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
 import { Form, Input, Textarea, Datepicker, Select, validators } from '@deskpro/redux-components';
 import { Heading, Button, Container, HiddenFields } from '@deskpro/react-components';
@@ -27,13 +28,13 @@ const transformBoardToOption = (board, defaultGroup) => {
 class CreateCardSection extends React.Component {
 
   static propTypes = {
-    onCancel: React.PropTypes.func,
-    onSubmit: React.PropTypes.func,
-    onChange: React.PropTypes.func,
+    onCancel: PropTypes.func,
+    onSubmit: PropTypes.func,
+    onChange: PropTypes.func,
 
-    model: React.PropTypes.object,
-    boards: React.PropTypes.array,
-    lists: React.PropTypes.array
+    model: PropTypes.object,
+    boards: PropTypes.array,
+    lists: PropTypes.array
   };
 
   static defaultProps = {

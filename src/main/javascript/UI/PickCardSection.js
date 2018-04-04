@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Form, Select, validators } from '@deskpro/redux-components';
 import { Heading, Button, Container, Group, Label } from '@deskpro/react-components';
 
@@ -83,15 +84,15 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, 
 };
 
 PickCardSection.propTypes = {
-  model: React.PropTypes.object,
-  cards: React.PropTypes.array,
-  boards: React.PropTypes.array,
-  lists: React.PropTypes.array,
-  onCancel: React.PropTypes.func,
-  onSubmit: React.PropTypes.func,
-  onChange: React.PropTypes.func,
-  onSelectCard: React.PropTypes.func,
-  onGotoCard: React.PropTypes.func
+  model: PropTypes.object,
+  cards: PropTypes.array,
+  boards: PropTypes.array,
+  lists: PropTypes.array,
+  onCancel: PropTypes.func,
+  onSubmit: PropTypes.func,
+  onChange: PropTypes.func,
+  onSelectCard: PropTypes.func,
+  onGotoCard: PropTypes.func
 };
 
 export default PickCardSection;

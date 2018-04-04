@@ -1,12 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Input, Group } from '@deskpro/react-components';
 
 class SearchInputComponent extends React.Component {
 
   static propTypes = {
-    onChange: React.PropTypes.func,
-    onSearch: React.PropTypes.func,
-    minCharacters: React.PropTypes.number
+    onChange: PropTypes.func,
+    onSearch: PropTypes.func,
+    minCharacters: PropTypes.number
   };
 
   static defaultProps = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Container, Heading } from '@deskpro/react-components';
 
 import CardListComponent from './CardListComponent';
@@ -17,10 +18,10 @@ const LinkedCardsSection = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =
   )};
 
 LinkedCardsSection.propTypes = {
-  cards: React.PropTypes.array.isRequired,
-  onGotoCard: React.PropTypes.func,
-  onUnlinkCard: React.PropTypes.func,
-  onSelectCard: React.PropTypes.func
+  cards: PropTypes.array.isRequired,
+  onGotoCard: PropTypes.func,
+  onUnlinkCard: PropTypes.func,
+  onSelectCard: PropTypes.func
 };
 export default LinkedCardsSection;
 
