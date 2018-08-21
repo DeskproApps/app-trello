@@ -1,53 +1,36 @@
 # Trello
 
-This application adds a sidebar that lets you link tickets to trello cards
+This application adds a sidebar that lets you link Trello cards with Deskpro tickets
 
-## Contents
-- [Installation](#installation)
-- [Development](#development)
-- [Packaging](#packaging)
+This project was bootstrapped with [@deskpro/apps-react-scripts](https://github.com/deskpro/apps-create).
 
-## Installation
-    
-This project requires [Deskpro Apps Tool](https://github.com/deskpro/deskproapps-dpat) to be installed alongside the other dependencies. You can install [Deskpro Apps Tool](https://github.com/deskpro/deskproapps-dpat) either locally or globally. We recommend to install it globally so you have it always availabe
-    
-To install the dependencies and [Deskpro Apps Tool](https://github.com/deskpro/deskproapps-dpat) locally, run:
-    
-    npm install && npm install @deskproapps/dpat   
+# Getting Started
 
-If you already have [Deskpro Apps Tool](https://github.com/deskpro/deskproapps-dpat) installed, run:
- 
-    npm install
+First, install the dependencies by running the following command in the root of the project:
 
-## Development
-             
-In your project folder run    
-    
-    npm run dev
- 
-Go to your deskpro installation, login to the agent interface, and navigate to the link below: 
-    
-    https://your-local-deskpro.com/agent/?appstore.environment=development
+```
+  NODE_ENV=dev yarn install
+``` 
 
-Notice the **appstore.environment=development** query parameter that tells Deskpro to load your application from the development server
+You can modify your code in `src/`. There are three files that exist by default:
 
-### Changing the default application
- 
-To start making changes, open the following file in  your favourite editor.
- 
-    src/main/javascript/App.jsx
-    
-While the development server is on,  any change will cause the application to be reloaded in the Deskpro window, giving 
-you a nice live preview.
+* `src/App.js` is your main app component. This is where your app "starts".
+* `src/index.js` is where the browser entry point is. This is pre-configured to boot and render your app, and you probably won't need to modify it.
+* `src/styles.css` is a CSS file that is imported by default. Use it to add any custom styles you might need.
 
-## Packaging
+For more indepth information, you can refer to the [Apps Developer Guide](https://deskpro.gitbook.io/apps-developer-guide).
 
-Once you are satisfied with your application, you will probably want to install it on your production or test installation of [DeskPRO](https://www.deskpro.com).
-To do that, you must package your application files in a distribution package that can be understood by [DeskPRO](https://www.deskpro.com) when it will install your application,
+# Developing Your App
 
-To package the application, in your project folder run:    
-    
-    npm run package
+You can use `yarn start` to start a local development server with a bit of fake data. You don't even need a Deskpro instance to use this. It's useful for quick prototyping and testing, but obviously if you need access to real Deskpro APIs and real data, then you need to run your app against a real Deskpro instance.
 
-This will create a `dist` folder inside your project folder which contains all the unpacked and compiled assets
-and a zip file named `app.zip`. This `app.zip` file is the one required to install your application via the DeskPro admin interface. 
+To run your app against a real Deskpro instance:
+
+1. Start your app with `yarn start`
+2. Go to Deskpro > Admin > Apps > Install Development App
+
+After you install your development app, you can load the Agent Interface and see your app. Your app is being loaded into Deskpro, but the app files are being served from your local computer. As you make changes on your computer, the app in Deskpro will update too.
+
+# Package your app
+
+To build your app, run `yarn build`. This will generate a production-ready ZIP file in the `build/` directory. This ZIP file can then be used to install the app on any Deskpro site.

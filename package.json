@@ -1,54 +1,65 @@
 {
   "name": "deskpro-app-trello",
-  "version": "0.2.9",
-  "description": "This application adds a sidebar that lets you link tickets to trello cards",
-  "main": "lib/main/javascript/index.js",
+  "version": "0.2.10",
+  "private": true,
+  "dependencies": {
+    "@deskpro/apps-components": "^0.7.1",
+    "@deskpro/apps-installer": "0.4.5",
+    "@deskpro/apps-react-scripts": "0.2.8",
+    "@deskpro/apps-sdk": "^0.7.1",
+    "changelog-verify": "^1.1.0",
+    "error-wrapper": "^2.1.0",
+    "moment": "^2.22.2",
+    "prop-types": "^15.6.2",
+    "react": "^16.4.2",
+    "react-datepicker": "^1.6.0",
+    "react-dom": "^16.4.2",
+    "react-redux": "^5.0.7",
+    "react-select": "^2.0.0",
+    "react-textarea-autosize": "^7.0.4",
+    "redux": "^4.0.0",
+    "redux-form": "^7.4.2",
+    "superagent": "^3.8.3",
+    "superagent-promise": "^1.1.0",
+    "version-changelog": "^3.1.0"
+  },
+  "devDependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "react-test-renderer": "^16.4.2"
+  },
+  "homepage": ".",
   "scripts": {
-    "dpat": "dpat",
-    "dev": "dpat server .",
-    "package": "dpat clean . && dpat compile . && dpat bundle-installer . && dpat verify ./dist && dpat package .",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "PORT=31080 react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "lint": "react-scripts eslint src test",
+    "format": "react-scripts prettier --write \"{src,test}/**/*.js\"",
+    "format:check": "react-scripts prettier --list-different \"{src,test}/**/*.js\"",
     "version": "version-changelog CHANGELOG.md && changelog-verify CHANGELOG.md && git add CHANGELOG.md"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/DeskproApps/trello.git"
-  },
-  "keywords": [
-    "deskpro",
-    "deskpro apps"
-  ],
+  "description": "This application adds a sidebar that lets you link tickets to trello cards",
   "author": {
     "name": "Deskpro Ltd.",
     "email": "apps@deskpro.com",
     "url": "https://deskpro.com"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/DeskproApps/trello/issues"
-  },
-  "homepage": "https://github.com/DeskproApps/trello#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "@deskpro/apps-dpat": "0.10.4",
-    "@deskpro/apps-sdk-react": "0.2.13",
-    "@deskpro/react-components": "1.3.11",
-    "@deskpro/redux-components": "^1.0.2",
-    "error-wrapper": "2.1.0",
-    "prop-types": "^15.6.1",
-    "react": "15.5.3",
-    "react-dom": "15.5.3",
-    "react-redux": "5.0.6",
-    "redux": "3.7.2",
-    "redux-form": "^7.2.0",
-    "superagent": "3.5.2",
-    "superagent-promise": "1.1.0"
   },
   "deskpro": {
     "version": "2.3.0",
     "title": "Trello",
     "isSingle": true,
     "scope": "agent",
+    "targets": [
+      {
+        "target": "ticket-sidebar",
+        "url": "index.html"
+      },
+      {
+        "target": "install",
+        "url": "html/install.html"
+      }
+    ],
     "storage": [
       {
         "name": "install",
@@ -69,12 +80,6 @@
         "permWrite": "EVERYBODY"
       }
     ],
-    "targets": [
-      {
-        "target": "ticket-sidebar",
-        "url": "html/ticket-sidebar.html"
-      }
-    ],
     "settings": [],
     "customFields": [
       {
@@ -84,13 +89,25 @@
         "title": "Trello linked cards"
       }
     ],
-    "deskproApiTags": [
-      "tickets.*"
-    ],
+    "deskproApiTags": [],
     "externalApis": []
   },
-  "optionalDependencies": {
-    "changelog-verify": "1.0.4",
-    "version-changelog": "2.1.0"
+  "eslintConfig": {
+    "extends": "react-app",
+    "rules": {
+      "jsx-a11y/href-no-hash": "off"
+    },
+    "overrides": [
+      {
+        "files": "test/**/*.js",
+        "env": {
+          "jest": true
+        }
+      }
+    ]
+  },
+  "prettier": {
+    "trailingComma": "all",
+    "singleQuote": true
   }
 }
