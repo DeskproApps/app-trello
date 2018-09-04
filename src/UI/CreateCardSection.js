@@ -82,7 +82,7 @@ class CreateCardSection extends React.Component {
     // </Layout.Block>
 
 
-    const board = model && model.board ? model.board : boards.length ? boards[0].id : null
+    const board = model && model.board ? model.board : boards.length ? boards[0].id : null;
     const list = lists.length ? lists[0].id : null;
 
     return (

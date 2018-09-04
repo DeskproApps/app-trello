@@ -10,7 +10,7 @@ const LinkedCardsSection = ({ cards, onGotoCard, onUnlinkCard, onSelectCard }) =
   }
 
   return (
-    <Panel title={"Linked cards"} className="dp-trello-container">
+    <Panel title={"Linked cards"} border="none" className="dp-trello-container">
       <CardListComponent cards={cards} onGotoCard={onGotoCard} onUnlinkCard={onUnlinkCard} onSelectCard={onSelectCard} />
     </Panel>
   )};

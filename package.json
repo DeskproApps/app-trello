@@ -3,10 +3,10 @@
   "version": "0.2.10",
   "private": true,
   "dependencies": {
-    "@deskpro/apps-components": "^0.7.1",
-    "@deskpro/apps-installer": "0.4.5",
-    "@deskpro/apps-react-scripts": "0.2.8",
-    "@deskpro/apps-sdk": "^0.7.1",
+    "@deskpro/apps-components": "0.8.0",
+    "@deskpro/apps-installer": "^1.0.4",
+    "@deskpro/apps-react-scripts": "0.3.4",
+    "@deskpro/apps-sdk": "0.8.0",
     "changelog-verify": "^1.1.0",
     "error-wrapper": "^2.1.0",
     "moment": "^2.22.2",
@@ -57,7 +57,7 @@
       },
       {
         "target": "install",
-        "url": "html/install.html"
+        "url": "install.html"
       }
     ],
     "storage": [

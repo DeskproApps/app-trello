@@ -1,4 +1,4 @@
-import { Field, reduxForm, reducer as reduxFormReducer } from 'redux-form'
+import { reducer as reduxFormReducer } from 'redux-form'
 import { createStore, combineReducers } from 'redux';
 
 const reducer = combineReducers({

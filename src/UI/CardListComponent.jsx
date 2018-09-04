@@ -23,7 +23,7 @@ function renderCardAction(card, cardIndex, cardAction) {
  */
 function renderCard(renderOptions, card, cardIndex, cardActions) {
   return (
-    <ListItem onMouseOver={() => alert('sss')}>
+    <ListItem>
 
       <ActionBar title={card.name}>
         { cardActions.map(action => renderCardAction(card, cardIndex, action)) }
