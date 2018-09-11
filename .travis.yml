@@ -6,6 +6,7 @@ before_install:
 install:
   - NODE_ENV=dev yarn install
   - if [ ! -z "$UPLOAD_ARTIFACT" ]; then curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash; fi
+  - if [ ! -z "$UPLOAD_ARTIFACT" ]; then yarn add @deskpro/apps-ci-tools; fi
 script:
   - yarn test && CI=false yarn build
 cache:
@@ -14,7 +15,7 @@ cache:
     - node_modules
 after_success:
   - if [ ! -z "$UPLOAD_ARTIFACT" ] ; then artifacts upload --target-paths /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION} build/app.zip ; fi
-  - if [ ! -z "$UPLOAD_ARTIFACT" ] && [ ! -z "$TRAVIS_PULL_REQUEST_SLUG" ] ; then echo "commenting on PRs is disabled ( npm run dpat -- travis pr-comment . --s3target /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION} )" ; fi
+  - if [ ! -z "$UPLOAD_ARTIFACT" ] && [ ! -z "$TRAVIS_PULL_REQUEST_SLUG" ] ; then node node_modules/.bin/dpbuild -- travis pr-comment . --s3target /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION} ; fi
 deploy:
   skip_cleanup: true
   provider: releases
