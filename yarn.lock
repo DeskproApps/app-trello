@@ -49,9 +49,9 @@
     uniforms "^1.25.0"
     uniforms-unstyled "^1.25.0"
 
-"@deskpro/apps-react-scripts@0.3.4":
-  version "0.3.4"
-  resolved "https://registry.yarnpkg.com/@deskpro/apps-react-scripts/-/apps-react-scripts-0.3.4.tgz#e75a741da0a526a4cb0093fb191b5bf483cb7cdf"
+"@deskpro/apps-react-scripts@0.3.5":
+  version "0.3.5"
+  resolved "https://registry.yarnpkg.com/@deskpro/apps-react-scripts/-/apps-react-scripts-0.3.5.tgz#cc73ad4eabed1deb177720d2fada470ce1bdcc16"
   dependencies:
     "@deskpro/apps-sdk" "^0.8.0"
     archiver "^2.1.1"
