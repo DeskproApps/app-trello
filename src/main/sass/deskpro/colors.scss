@@ -1,7 +1,0 @@
-@import "./variables";
-
-@each $item, $color in $dp-colors {
-  .#{$item} {
-    color: map_get($dp-colors, $item);
-  }
-}
