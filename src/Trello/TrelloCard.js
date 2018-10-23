@@ -8,10 +8,11 @@ class TrelloCard
    * @param {boolean} subscribed
    * @param {TrelloBoard} board
    * @param {TrelloList} list
+   * @param {Array<TrelloMember>} members
    * @param {Date|null} due
    * @param {Array<TrelloLabel>} labels
    * */
-  constructor({id, name, url, description, subscribed, board, list, due, labels}) {
+  constructor({id, name, url, description, subscribed, board, list, members, due, labels}) {
 
     this.props = {
       id,
@@ -21,6 +22,7 @@ class TrelloCard
       subscribed,
       board,
       list,
+      members,
       due,
       labels
     };
@@ -50,12 +52,13 @@ class TrelloCard
 
   get labels() { return this.props.labels; }
 
+  get members() { return this.props.members; }
+
   /**
    * @param {String} newUrl
    * @return {TrelloCard}
    */
   changeUrl = newUrl => {
-    const { url, ...rest } = this.props;
     const newProps = Object.assign({}, this.props, { url: newUrl });
 
     return new TrelloCard(newProps);
@@ -66,7 +69,6 @@ class TrelloCard
    * @return {TrelloCard}
    */
   changeId = newId => {
-    const { id, ...rest } = this.props;
     const newProps = Object.assign({}, this.props, { id: newId });
 
     return new TrelloCard(newProps);
@@ -77,7 +79,6 @@ class TrelloCard
    * @return {TrelloCard}
    */
   changeBoard = newBoard => {
-    const { board, list, ...rest } = this.props;
     const newProps = Object.assign({}, this.props, { board: newBoard, list: null });
 
     return new TrelloCard(newProps);

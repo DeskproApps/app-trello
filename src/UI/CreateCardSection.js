@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import { Form, Input, Textarea, Datepicker, Select, required, HiddenFields } from '../Forms';
 import { SubmitButton } from './SubmitButton';
-import { Button, Panel } from '@deskpro/apps-components';
+import { Action, ActionBar, Button, Panel } from '@deskpro/apps-components';
 import { listToOption, boardsToOptions, boardToOption } from './utils'
 
 const createNewListOption = { value: 'trello.newList', label: '--- CREATE LIST ---' };
@@ -37,7 +37,7 @@ class CreateCardSection extends React.Component {
     const { onSubmit } = this.props;
     const { showCreateList } = this.state;
 
-    const { board, list, duedate } = values;
+    const { board, duedate } = values;
 
     //make sure newList does not get included in the model if we don't have that option selected
     const nextModel = {
@@ -66,6 +66,12 @@ class CreateCardSection extends React.Component {
     }
   };
 
+  onCancel = () => {
+    const { history } = this.props;
+    history.push("ticket-loaded", null);
+    history.go(1);
+  };
+
   onBoardChange = (value) => {
     const { onChange } = this.props;
     const nextModel = { board: value };
@@ -75,7 +81,6 @@ class CreateCardSection extends React.Component {
   render () {
     const { boards, lists, model } = this.props;
     const { showOptionalFields, showCreateList, isSubmitting } = this.state;
-    const { onCancel } = this.props;
 
     // <Layout.Block label="ATTACHEMENTS">
     //   <Layout.Button> Choose files </Layout.Button>
@@ -86,8 +91,10 @@ class CreateCardSection extends React.Component {
     const list = lists.length ? lists[0].id : null;
 
     return (
-      <Panel title={"Create a card"} className="dp-trello-container">
-
+      <Panel className="dp-trello-container">
+        <ActionBar title="Create card">
+          <Action icon="close" onClick={this.onCancel} />
+        </ActionBar>
         <Form name="create_card" onSubmit={this.handleOnSubmit} onChange={this.onChange} initialValues={{
           board: JSON.stringify(board ? boardToOption('Personal Boards')(board): null),
           list: JSON.stringify(list ? listToOption(list) : null)
@@ -138,7 +145,7 @@ class CreateCardSection extends React.Component {
 
           <div className="dp-form-group dp-form-controls">
             <SubmitButton disabled={isSubmitting} className={"dp-form-control dp-Button--wide"}> Create </SubmitButton>
-            <Button type="secondary" onClick={(e) => { e.preventDefault(); onCancel(e); }} className={"dp-form-control dp-Button--wide"}> Cancel </Button>
+            <Button type="secondary" onClick={(e) => { e.preventDefault(); this.onCancel(e); }} className={"dp-form-control dp-Button--wide"}> Cancel </Button>
           </div>
 
         </Form>

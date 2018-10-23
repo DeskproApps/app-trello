@@ -1,19 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Button, Panel } from '@deskpro/apps-components';
+import { Action, ActionBar, Panel } from '@deskpro/apps-components';
+import debounce from '@deskpro/js-utils/dist/debounce';
 
 import CardsListComponent from './CardListComponent';
 import SearchInputComponent from './SearchInputComponent';
 
-const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange, cards, ...otherProps }) => {
+const SearchCardSection = ({ onSelectCard, onSearchChange, cards, history }) => {
+  const debouncedSearch = debounce(onSearchChange, 500);
 
-  let searchInput;
-  const onChange = value => { searchInput = value; };
-  const onSearchButtonClick = () => { if (searchInput) { onSearchChange(searchInput); };  };
+  const onChange = value => {
+    debouncedSearch(value);
+  };
+
+  const onCancel = () => {
+    history.push("ticket-loaded", null);
+    history.go(1);
+  };
 
   return (
-    <Panel title={"Search for card"}>
+    <Panel>
+      <ActionBar title="Search for card">
+        <Action icon="close" onClick={onCancel} />
+      </ActionBar>
       <div className="dp-form-group">
         <SearchInputComponent
           placeholder   ="Enter text or paste URL..."
@@ -23,12 +33,7 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
         />
       </div>
 
-      <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} onGotoCard={onGotoCard} showBorder={true} />
-
-      <div className="dp-form-group dp-form-controls">
-        <Button onClick={onSearchButtonClick} className={"dp-form-control dp-Button--wide"}>Search</Button>
-        <Button type="secondary" onClick={onCancel} className={"dp-form-control dp-Button--wide"}>Cancel</Button>
-      </div>
+      <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} showBorder={true} />
     </Panel>
   );
 };
@@ -36,10 +41,8 @@ const SearchCardSection = ({ onSelectCard, onGotoCard, onCancel, onSearchChange,
 
 SearchCardSection.propTypes = {
   cards: PropTypes.array,
-  onCancel: PropTypes.func,
   onSearchChange: PropTypes.func,
   onSelectCard: PropTypes.func,
-  onGotoCard: PropTypes.func
 };
 
 export default SearchCardSection;

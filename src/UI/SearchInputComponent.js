@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from '@deskpro/apps-components';
 
 class SearchInputComponent extends React.Component {
 
@@ -46,7 +45,7 @@ class SearchInputComponent extends React.Component {
   };
 
   filterInputProps = (props) => {
-    const { onChange, value, icon, minCharacters, ...allowed } = props;
+    const { onChange, onSearch, value, icon, minCharacters, ...allowed } = props;
     return allowed;
   };
 

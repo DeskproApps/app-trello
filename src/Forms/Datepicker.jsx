@@ -13,7 +13,7 @@ class DatepickerComponent extends React.Component
 
   static propTypes = {
 
-    onChange:      PropTypes.string,
+    onChange:      PropTypes.func,
 
     /**
      *

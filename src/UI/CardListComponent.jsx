@@ -1,117 +1,203 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { List, ListItem, Icon, Level, Action, ActionBar } from '@deskpro/apps-components';
+import { Avatar, List, ListItem, Level, Menu, Action, ActionBar } from '@deskpro/apps-components';
+import trelloLogo from '../main/resources/icon.png';
 
+class Card extends React.Component
+{
+  static propTypes = {
+    renderOptions: PropTypes.object.isRequired,
+    card:          PropTypes.object,
+    cardIndex:     PropTypes.number,
+    onUnlinkCard:  PropTypes.func,
+    onSelectCard:  PropTypes.func,
+  };
 
-/**
- * @param {TrelloCard} card
- * @param cardIndex
- * @param {{icon, name, handler}} cardAction
- * @return {XML}
- */
-function renderCardAction(card, cardIndex, cardAction) {
-  const { icon, label, handler } = cardAction;
+  /**
+   * @param {TrelloCard} card
+   * @param cardIndex
+   * @param {{icon, name, handler}} cardAction
+   * @return {XML}
+   */
+  static renderCardAction(card, cardIndex, cardAction) {
 
-  return <Action labelDisplay={"onHover"} label={label} icon={icon} onClick={() => handler(card)} />
-}
+    const { icon, label, handler } = cardAction;
 
-/**
- * @param {Object} renderOptions
- * @param {TrelloCard} card
- * @param {Number} cardIndex
- * @param {Array} cardActions
- */
-function renderCard(renderOptions, card, cardIndex, cardActions) {
-  return (
-    <ListItem>
+    return <Action key={label} label={label} icon={icon} onClick={() => handler(card)} />
+  }
 
-      <ActionBar title={card.name}>
-        { cardActions.map(action => renderCardAction(card, cardIndex, action)) }
-      </ActionBar>
+  constructor(props) {
+    super(props);
+    this.menu = React.createRef();
 
+    this.state = {
+      menuOpen: false,
+      confirmUnlink: false,
+    };
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('mousedown', this.closeMenu);
+  }
+
+  toggleMenu = () => {
+    if (this.state.menuOpen) {
+      this.closeMenu();
+    } else {
+      this.openMenu();
+    }
+  };
+
+  /**
+   * @param {TrelloCard} card
+   */
+  static onGotoCard = (card) =>
+  {
+    window.open(card.url, '_blank');
+  };
+
+  openMenu = () => {
+    this.setState({
+      menuOpen: true
+    });
+    document.addEventListener('mousedown', this.closeMenu);
+  };
+
+  closeMenu = (e) => {
+    if (e && this.menu.current && this.menu.current.contains(e.target)) {
+      return;
+    }
+    this.setState({
+      menuOpen: false,
+      confirmUnlink: false
+    });
+    document.removeEventListener('mousedown', this.closeMenu);
+  };
+
+  confirmUnlink = () => {
+    this.setState({
+      confirmUnlink: true,
+    });
+  };
+
+  /**
+   * @param {Object} renderOptions
+   * @param {TrelloCard} card
+   * @param {Number} cardIndex
+   * @param {Array} cardActions
+   */
+  render() {
+    const { card, cardIndex, onSelectCard, onUnlinkCard } = this.props;
+    const { menuOpen, confirmUnlink } = this.state;
+
+    const cardActions = [
       {
-        renderOptions.showCardLocation &&
+        icon:     "open",
+        label:     "Open",
+        handler:   Card.onGotoCard
+      }
+    ];
+
+
+    if (onSelectCard) {
+      cardActions.push({
+        icon:     "link",
+        label:     "Link",
+        handler:   onSelectCard
+      });
+    }
+
+    if (onUnlinkCard) {
+      if (confirmUnlink) {
+        cardActions.push({
+          label:     "Are you sure?",
+          handler:   onUnlinkCard
+        });
+      } else {
+        cardActions.push({
+          icon:     "unlink",
+          label:     "Unlink",
+          handler:   this.confirmUnlink
+        });
+      }
+    }
+
+    return (
+      <ListItem>
+
+        <ActionBar
+          title={<a href={card.url} target="_blank">{card.name}</a>}
+          iconUrl={trelloLogo}
+        >
+          <Menu
+            onClick={this.toggleMenu}
+            isOpen={menuOpen}
+            ref={this.menu}
+          >
+            { cardActions.map(action => Card.renderCardAction(card, cardIndex, action)) }
+          </Menu>
+        </ActionBar>
+
         <Level>
           <Level align={"left"}>
-            <b>Board</b>
+            <span>{ card.board && card.board.name ? card.board.name : "" }&nbsp;
+            |&nbsp;{ card.list && card.list.name ? card.list.name : "" }</span>
           </Level>
           <Level align={"right"}>
-            <span>{ card.board && card.board.name ? card.board.name : "" }</span>
+            { card.members && card.members.length > 0 ? card.members.map(member =>
+              <Avatar
+                shape="round"
+                src={`${member.avatarUrl}/30.png`}
+                title={member.fullName}
+              />
+            ) : "" }
           </Level>
         </Level>
-      }
-
-      {
-        renderOptions.showCardLocation &&
-        <Level>
-          <Level align={"left"}>
-            <b>List</b>
-          </Level>
-          <Level align={"right"}>
-            <span>{ card.list && card.list.name ? card.list.name : "" }</span>
-          </Level>
-        </Level>
-      }
 
 
-    </ListItem>
-  );
+      </ListItem>
+    );
+  };
 }
 
+class CardListComponent extends React.PureComponent
+{
+  static propTypes = {
+    cards: PropTypes.array.isRequired,
+    showBorder: PropTypes.bool,
+    onUnlinkCard: PropTypes.func,
+    onSelectCard: PropTypes.func,
+  };
+
+  static defaultProps = {
+    showBorder: false
+  };
+
+  render() {
+    const { cards, showBorder, onUnlinkCard, onSelectCard } = this.props;
+
+    if (! cards.length) {
+      return <noscript/>;
+    }
+
+    const renderOptions = { showCardLocation: true, showBorder };
 
 
-const CardListComponent = ({ cards, showCardLocation, showBorder, onGotoCard, onUnlinkCard, onSelectCard }) => {
-
-  if (! cards.length) {
-    return <noscript/>;
+    return (
+      <List className="dp-form-group dp-trello-card-list">
+        {cards.map((card, cardIndex) =>
+          <Card
+            key={cardIndex}
+            renderOptions={renderOptions}
+            card={card}
+            cardIndex={cardIndex}
+            onSelectCard={onSelectCard}
+            onUnlinkCard={onUnlinkCard}
+          />
+        )}
+      </List>
+    );
   }
+}
 
-  const cardActions = [];
-  const renderOptions = { showCardLocation: true, showBorder };
-
-  if (onGotoCard) {
-    cardActions.push({
-      icon:     "open",
-      label:     "Open",
-      handler:   onGotoCard
-    });
-  }
-
-  if (onSelectCard) {
-    cardActions.push({
-      icon:     "link",
-      label:     "Link",
-      handler:   onSelectCard
-    });
-  }
-
-  if (onUnlinkCard) {
-    cardActions.push({
-      icon:     "unlink",
-      label:     "Unlink",
-      handler:   onUnlinkCard
-    });
-  }
-
-
-  return (
-    <List className="dp-form-group dp-trello-card-list">
-      {cards.map((card, cardIndex) => renderCard(renderOptions, card, cardIndex, cardActions))}
-    </List>
-  );
-};
-
-CardListComponent.propTypes = {
-  cards: PropTypes.array.isRequired,
-  showCardLocation: PropTypes.bool,
-  showBorder: PropTypes.bool,
-  onGotoCard: PropTypes.func,
-  onUnlinkCard: PropTypes.func,
-  onSelectCard: PropTypes.func,
-};
-
-CardListComponent.defaultProps = {
-  showCardLocation: true,
-  showBorder: false
-};
 export default CardListComponent;

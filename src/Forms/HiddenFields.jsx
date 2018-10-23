@@ -84,7 +84,7 @@ export default class HiddenFields extends React.Component {
           {children}
         </div>
         <Button
-          classname={"dp-Button--wide"}
+          className={"dp-Button--wide"}
           appearance= {"text"}
           onClick=    {this.handleClick}
         >

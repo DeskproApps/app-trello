@@ -1,13 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Panel } from '@deskpro/apps-components';
+import { Panel } from '@deskpro/apps-components';
 
 import { Form, Select, required, Group } from '../Forms';
 import CardsListComponent from './CardListComponent';
 import { listToOption, boardsToOptions, boardToOption } from './utils'
 
-const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, boards, lists, cards, ...otherProps }) => {
-
+const PickCardSection = ({ onSelectCard, onChange, model, boards, lists, cards }) => {
   const onModelChange = (value, key) => {
     let nextModel = null;
 
@@ -24,12 +23,12 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, 
     }
   };
 
-  const board = model && model.board ? model.board : boards.length ? boards[0] : null;
+  const board = model && model.board ? model.board : null;
   const list = model && model.list ? model.list : lists.length ? lists[0] : null;
 
 
   return (
-    <Panel title={"Pick a card"} className="dp-trello-container">
+    <Panel className="dp-trello-container">
       <Form name="pick_card" initialValues={{
         board: JSON.stringify(board ? boardToOption('Personal Boards')(board): null),
         list: JSON.stringify(list ? listToOption(list) : null)
@@ -51,15 +50,11 @@ const PickCardSection = ({ onSelectCard, onGotoCard, onCancel, onChange, model, 
           onChange= { onModelChange }
         />
 
-        <Group label="Cards" >
-          <CardsListComponent cards={cards || []} onGotoCard={onGotoCard} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
-        </Group>
-
-        <div className="dp-form-group">
-          <Button onClick={(e) => { e.preventDefault(); onCancel(e); }}>
-            Cancel
-          </Button>
-        </div>
+        {cards.length > 0 &&
+          <Group label="Cards" >
+            <CardsListComponent cards={cards || []} onSelectCard={onSelectCard} showCardLocation={false} showBorder={true} />
+          </Group>
+        }
       </Form>
     </Panel>
   );
@@ -73,8 +68,7 @@ PickCardSection.propTypes = {
   onCancel: PropTypes.func,
   onSubmit: PropTypes.func,
   onChange: PropTypes.func,
-  onSelectCard: PropTypes.func,
-  onGotoCard: PropTypes.func
+  onSelectCard: PropTypes.func
 };
 
 export default PickCardSection;

@@ -98,7 +98,7 @@ const handleTrelloApiErrors = (err) => {
 
 function buildCardPromise(trelloApiClient, cardId) {
   const executor = (resolve, reject) => {
-    trelloApiClient.get(`/1/cards/${cardId}`, { fields: trelloCardFields.join(','), organization: true})
+    trelloApiClient.get(`/1/cards/${cardId}`, { fields: trelloCardFields.join(','), organization: true, members: true})
       .catch(handleTrelloApiErrors)
       .then(data => resolve(data), err => { reject(err) });
   };
@@ -273,7 +273,7 @@ class TrelloServices
    */
   getListCards = (trelloApiClient, listId) =>
   {
-    const args = { fields: trelloListCardFields.join(',') };
+    const args = { fields: trelloListCardFields.join(','), members: true };
 
     return trelloApiClient
       .get(`/1/lists/${listId}/cards`, args)
@@ -380,7 +380,7 @@ class TrelloServices
    */
   searchCards = (trelloApiClient, query) =>
   {
-    const args = { query, card_fields: 'id', cards_limit: 25, modelTypes: 'cards' };
+    const args = { query, card_fields: 'id', cards_limit: 10, modelTypes: 'cards' };
     return trelloApiClient.get('/1/search', args)
       .catch(handleTrelloApiErrors)
       .then(data => data.cards.map(card => card.id))
