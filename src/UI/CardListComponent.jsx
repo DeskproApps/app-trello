@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar, List, ListItem, Level, Menu, Action, ActionBar } from '@deskpro/apps-components';
-import trelloLogo from '../main/resources/icon.png';
+import trelloLogo from '../trelloLogo.png';
 
 class Card extends React.Component
 {
@@ -139,9 +139,8 @@ class Card extends React.Component
         </ActionBar>
 
         <Level>
-          <Level align={"left"}>
-            <span>{ card.board && card.board.name ? card.board.name : "" }&nbsp;
-            |&nbsp;{ card.list && card.list.name ? card.list.name : "" }</span>
+          <Level align={"left"} style={{flexShrink: 1}}>
+              <span>{ card.board && card.board.name ? card.board.name : "" } &nbsp;|&nbsp; { card.list && card.list.name ? card.list.name : "" }</span>
           </Level>
           <Level align={"right"}>
             { card.members && card.members.length > 0 ? card.members.map(member =>
