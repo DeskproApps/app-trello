@@ -6,9 +6,11 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [0.2.10][] - 2018-08-21
 
- - use the new apps structure
- - use @deskpro/apps-sdk@0.7.1
- - use @deskpro/apps-components@0.7.1
+### Changed
+
+ - use the new apps structure, and various ux improvements
+ - use @deskpro/apps-sdk@0.8.0
+ - use @deskpro/apps-components@0.8.3
 
 ## [0.2.9][] - 2018-03-29
 
