@@ -4,6 +4,14 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.2.10][] - 2018-08-21
+
+### Changed
+
+ - use the new apps structure, and various ux improvements
+ - use @deskpro/apps-sdk@0.8.0
+ - use @deskpro/apps-components@0.8.3
+
 ## [0.2.9][] - 2018-03-29
 
 ### Added
@@ -82,7 +90,9 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.9...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.10...HEAD
+[0.2.10]: https://github.com/DeskproApps/trello/compare/v0.1.1...v0.2.10
+[0.1.1]: https://github.com/DeskproApps/trello/compare/v0.2.9...v0.1.1
 [0.2.9]: https://github.com/DeskproApps/trello/compare/v0.2.8...v0.2.9
 [0.2.8]: https://github.com/DeskproApps/trello/compare/v0.2.7...v0.2.8
 [0.2.7]: https://github.com/DeskproApps/trello/compare/v0.2.7-beta.3...v0.2.7

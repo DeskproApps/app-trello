@@ -1,23 +1,26 @@
 language: node_js
 node_js:
-- '6'
+- '8'
 before_install:
 - if [ ! -z "$ARTIFACTS_BUCKET" ] && [ ! -z "ARTIFACTS_KEY" ] && [ ! -z "ARTIFACTS_SECRET" ] ; then export UPLOAD_ARTIFACT=yes ; else echo artifact uploading is disabled; fi
 install:
-  - npm install -g npm@5.3.0 && npm -v
-  - npm install --no-optional --no-save --no-update-dependencies
+  - NODE_ENV=dev yarn install
   - if [ ! -z "$UPLOAD_ARTIFACT" ]; then curl -sL https://raw.githubusercontent.com/travis-ci/artifacts/master/install | bash; fi
+  - if [ ! -z "$UPLOAD_ARTIFACT" ]; then yarn add @deskpro/apps-ci-tools; fi
 script:
-  - npm run package
+  - yarn test && CI=false yarn build
+cache:
+  yarn: true
+  directories:
+    - node_modules
 after_success:
-  - if [ ! -z "$UPLOAD_ARTIFACT" ] ; then artifacts upload --target-paths /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION} dist/app.zip ; fi
-  - if [ ! -z "$UPLOAD_ARTIFACT" ] && [ ! -z "$TRAVIS_PULL_REQUEST_SLUG" ] ; then npm run dpat -- travis pr-comment . --s3target /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION}; fi
+  - if [ ! -z "$UPLOAD_ARTIFACT" ] ; then artifacts upload --target-paths /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION} build/app.zip ; fi
+  - if [ ! -z "$UPLOAD_ARTIFACT" ] && [ ! -z "$TRAVIS_PULL_REQUEST_SLUG" ] ; then node node_modules/.bin/dpbuild -- travis pr-comment . --s3target /${TRAVIS_REPO_SLUG}/${TRAVIS_BUILD_NUMBER}/NODE-${TRAVIS_NODE_VERSION} ; fi
 deploy:
   skip_cleanup: true
   provider: releases
   api_key:
-    secure: OXrL4Hn3fd+QKFyiKFQWlr2v8XKEy9kWuhGXTgWRPsDK7nkc38vCBB9nikLrjS4gj7FiZsjC1MYRxoXTlLlNshpXduOITdvL03mfWYnDlGUk7ybFcYemBZ5yFgEMXR7fnvE9Wk/Sv11dVoNHxSHwpLnxcNKO3VUBD0yHeYgvjGwVA/7xwmmt3lSqb8w3BHv7TNlF4i/qN+rJieg01hXMvjGa851rM7PPdEtWAxoIP4e0gvtFOrGExp5YXEHq40hSSOn1r2DM3ESvxZnyuqVGcYI2p+ouIc4JkNFp8ExJVH4eD2xCkKB7+JzFzbOGsoHgRROr5IB5qFf53jSynVQHdbvMeLejzGIaI+kmvYxOH62ysq3YjhYbv0V2oh3e6lJDkFjGSnHia00+TGGKP/Zf8So2y+BUAXzAy7c3u8dYGApY/QvWwyvheACskn2wJ81W8V/o2+c9b/TyV3IPNy0YjnXzVE5kTzcs/D/KUvQMjnN0o+rHkFTBw31IWtOZ6FR61+Gdhr60spwkRa/5xiUg0V5WKd2pfgkZ/L+rjFmEfvIphEpm98WIa4ktNFM8tc8DIqEOWvgO94iRaCy2SxMkhpytyEWcy0Eq7SqHw51qod3VCVeiEd07GBtdF/taKcobD/UNUc7Yy3AYwvU4mR6gPeow8vdQEysI8AUFjHCg6G8=
-  file: dist/app.zip
+    secure: FPCfceOC8S0SOniYMT0Igds4mM6r/YoTKPB2aCND3vAo+3Tm7fIJiyP64klezuA9sXHhFIBPk73IXhoPkYiujVsTCRN7YJ0L6xm9O/Cr8Jd6gBeyI6l/wALlNwa/0ewBIUcu458gHK1DxfZpg25kXxOKOsRHEHO+WuDYrYg+FF1HsHQqu3zOu4WfpI+kDtQLExVl+34KpYBqD35w1fYWtFMHnOb6t1211S9t6sHjcghxeyiLRsoa5FrKpFZoj/5kJL97nJYxSja+s2PNPkzgQ0yiATALQ+N5WJdqy5oV4GHi/QpD0fvsM0NlvkjPduduP3Y3ltFXGnr/eE5MBefpZYw0Ioen4j5/ci7kSjPtrDVapVT44KmW7qLK1KClbobSsLcFu7cMp4I0YKPvXXZC24/iJfMllkbO6rHXnl46fa1qracf6hEJd2N/5ag4x0MaWTbRxvOm1BC0bL8kBLjum5eGVu1hOjZI6cen6eS8y0prNDViJ0T/j0mbHzkkFumXlDKsV8tMELTOSp2mEIeCaUZUoGne84UkpO7XSmEkeeUVA5QunrlHf8eMV5JbJGhqzLO1Ua79bb84i2zWJbpbI8nslx4kfDUwV1/sXUZFBFauF08R67Xtxq4HH3jLuxBwG4++FvqrUyk1w2qkP5aYtKUkIX4fMSeqHFlIXlpop68=
+  file: build/app.zip
   on:
-    repo: DeskproApps/trello
     tags: true
