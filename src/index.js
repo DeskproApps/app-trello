@@ -15,6 +15,7 @@ import { createMemoryHistory as createHistory } from "history";
 import './styles.css';
 import TrelloApp from './TrelloApp';
 import store from './store';
+import AppPlaceholder from './UI/AppPlaceholder';
 
 const history = createHistory({
   initialEntries: ["loading"],
@@ -25,7 +26,7 @@ createApp(dpapp => props =>
   ReactDOM.render(
     <AppFrame {...props}>
       <Provider store={store}>
-        <TrelloApp dpapp={dpapp} history={history}/>
+        {dpapp.getProperty('isPreRender') ? <AppPlaceholder /> : <TrelloApp dpapp={dpapp} history={history}/>}
       </Provider>
     </AppFrame>,
     document.getElementById('root')
