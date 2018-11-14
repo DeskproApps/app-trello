@@ -1,6 +1,6 @@
 {
   "name": "deskpro-app-trello",
-  "version": "0.2.10",
+  "version": "0.3.0",
   "private": true,
   "dependencies": {
     "@deskpro/apps-components": "0.11.0",

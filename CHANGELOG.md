@@ -4,6 +4,16 @@ This project is following [Semantic Versioning](http://semver.org)
 
 ## [Unreleased][]
 
+## [0.3.0][] - 2018-11-14
+
+### Added
+
+ - show an application placeholder before the app gets a change to load
+
+### Changed
+
+ - upgrade dependencies
+
 ## [0.2.10][] - 2018-08-21
 
 ### Changed
@@ -90,7 +100,8 @@ QA passed
 
 
 
-[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.2.10...HEAD
+[Unreleased]: https://github.com/DeskproApps/trello/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/DeskproApps/trello/compare/v0.2.10...v0.3.0
 [0.2.10]: https://github.com/DeskproApps/trello/compare/v0.1.1...v0.2.10
 [0.1.1]: https://github.com/DeskproApps/trello/compare/v0.2.9...v0.1.1
 [0.2.9]: https://github.com/DeskproApps/trello/compare/v0.2.8...v0.2.9
