@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '6'
+- '8'
 before_install:
 - if [ ! -z "$ARTIFACTS_BUCKET" ] && [ ! -z "ARTIFACTS_KEY" ] && [ ! -z "ARTIFACTS_SECRET" ] ; then export UPLOAD_ARTIFACT=yes ; else echo artifact uploading is disabled; fi
 install:
