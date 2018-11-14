@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '8'
+- '6'
 before_install:
 - if [ ! -z "$ARTIFACTS_BUCKET" ] && [ ! -z "ARTIFACTS_KEY" ] && [ ! -z "ARTIFACTS_SECRET" ] ; then export UPLOAD_ARTIFACT=yes ; else echo artifact uploading is disabled; fi
 install:
@@ -19,8 +19,7 @@ after_success:
 deploy:
   skip_cleanup: true
   provider: releases
-  api_key:
-    secure: FPCfceOC8S0SOniYMT0Igds4mM6r/YoTKPB2aCND3vAo+3Tm7fIJiyP64klezuA9sXHhFIBPk73IXhoPkYiujVsTCRN7YJ0L6xm9O/Cr8Jd6gBeyI6l/wALlNwa/0ewBIUcu458gHK1DxfZpg25kXxOKOsRHEHO+WuDYrYg+FF1HsHQqu3zOu4WfpI+kDtQLExVl+34KpYBqD35w1fYWtFMHnOb6t1211S9t6sHjcghxeyiLRsoa5FrKpFZoj/5kJL97nJYxSja+s2PNPkzgQ0yiATALQ+N5WJdqy5oV4GHi/QpD0fvsM0NlvkjPduduP3Y3ltFXGnr/eE5MBefpZYw0Ioen4j5/ci7kSjPtrDVapVT44KmW7qLK1KClbobSsLcFu7cMp4I0YKPvXXZC24/iJfMllkbO6rHXnl46fa1qracf6hEJd2N/5ag4x0MaWTbRxvOm1BC0bL8kBLjum5eGVu1hOjZI6cen6eS8y0prNDViJ0T/j0mbHzkkFumXlDKsV8tMELTOSp2mEIeCaUZUoGne84UkpO7XSmEkeeUVA5QunrlHf8eMV5JbJGhqzLO1Ua79bb84i2zWJbpbI8nslx4kfDUwV1/sXUZFBFauF08R67Xtxq4HH3jLuxBwG4++FvqrUyk1w2qkP5aYtKUkIX4fMSeqHFlIXlpop68=
+  api_key: $GITHUB_TOKEN
   file: build/app.zip
   on:
     tags: true
