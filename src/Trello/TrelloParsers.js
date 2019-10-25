@@ -12,7 +12,7 @@ function parseTrelloBoardJS(board) {
   const { id, name, url, labelNames, organization, idOrganization: organizationId } = board;
 
   let orgProps = {};
-  if (organizationId) {
+  if (organizationId && organization) {
     let {name : organizationName, displayName: organizationDisplayName} = organization;
     orgProps = { organizationId, organizationName, organizationDisplayName }
   }
